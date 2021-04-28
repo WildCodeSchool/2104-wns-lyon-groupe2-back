@@ -2,7 +2,8 @@ import {
   createUser,
   allUsers,
   deleteUser,
-} from '../controllers/userController';
+  updateUser,
+} from '../controllers/userController'
 
 export const resolvers = {
   Query: {
@@ -10,7 +11,7 @@ export const resolvers = {
   },
   Mutation: {
     createUser: createUser,
-    // updateWilder: controller.update,
-    // deleteUser: deleteUser,
+    updateUser: updateUser,
+    deleteUser: deleteUser,
   },
-};
+}

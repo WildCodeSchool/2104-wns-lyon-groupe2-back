@@ -17,10 +17,21 @@ export const allUsers = async () => {
   return result
 }
 
-export const deleteUser = async (parent: any, args: IUser) => {
-  const user = await UserModel.findById(args.id)
+export const deleteUser = async (parent: any, args: any) => {
+  const id: String = args.input.id
+  const user = await UserModel.findById(id)
   if (user) {
-    const result = await UserModel.deleteOne({ _id: args.id })
+    const result = await UserModel.deleteOne({ _id: id })
   }
-  return `User ${args.id} has been successfully deleted`
+  console.log(user)
+  return `User ${user.firstname} ${user.lastname} has been successfully deleted`
+}
+
+export const updateUser = async (parent: any, args: any) => {
+  const input: IUser = args.input // values send by client
+  const user = await UserModel.findById(input.id) // find corresponding user in DB
+  if (user) {
+    user._doc = { ...user._doc, ...input } // update user's datas
+    return await user.save() // save datas
+  }
 }
