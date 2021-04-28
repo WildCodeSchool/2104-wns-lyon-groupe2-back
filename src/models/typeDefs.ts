@@ -1,32 +1,23 @@
-import { gql } from 'apollo-server-core'
+import { gql } from 'apollo-server-core';
 
 export const TYPE_DEFS = gql`
-  type Skill {
+  type Users {
     id: ID
-    title: String
-    votes: Int
+    lastname: String
+    firstname: String
+    avatar: String
+    email: String
+    password: String
+    school_id: String
+    theme_id: String
+    is_school_admin: Boolean
+    user_type: String
+    workspaces_admin: [WorkspacesAdmin]
   }
-
-  type Wilder {
+  type WorkspacesAdmin {
     id: ID
-    name: String
-    city: String
-    skills: [Skill]
   }
-
-  input InputWilder {
-    id: ID
-    name: String!
-    city: String!
-  }
-
   type Query {
-    allWilders: [Wilder]
-  }
-
-  type Mutation {
-    createWilder(input: InputWilder): Wilder
-    updateWilder(input: InputWilder): Wilder
-    deleteWilder(id: String!): Wilder
-  }
-`
+        allUsers: [Users]
+    }
+`;

@@ -1,12 +1,12 @@
 // import des controllers
 
 export const resolvers = {
-  // Query: {
-  //   allWilders: controller.read,
-  // },
+  Query: {
+    allUsers: () => console.log('coucou'),
+  },
   // Mutation: {
   //   createWilder: controller.create,
   //   updateWilder: controller.update,
   //   deleteWilder: controller.delete,
   // },
-}
+};
