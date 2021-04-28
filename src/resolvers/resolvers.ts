@@ -1,12 +1,12 @@
-// import des controllers
+import { createUser, allUsers } from '../controllers/userController';
 
 export const resolvers = {
   Query: {
-    allUsers: () => console.log('coucou'),
+    allUsers: allUsers,
   },
-  // Mutation: {
-  //   createWilder: controller.create,
-  //   updateWilder: controller.update,
-  //   deleteWilder: controller.delete,
-  // },
+  Mutation: {
+    createUser: createUser,
+    // updateWilder: controller.update,
+    // deleteWilder: controller.delete,
+  },
 };

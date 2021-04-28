@@ -18,6 +18,24 @@ export const TYPE_DEFS = gql`
     id: ID
   }
   type Query {
-        allUsers: [Users]
-    }
+    allUsers: [Users]
+  }
+  type Mutation {
+    createUser(input: InputUser!): Users
+  }
+  input InputUser {
+    lastname: String!
+    firstname: String!
+    avatar: String
+    email: String!
+    password: String!
+    school_id: String!
+    theme_id: String
+    is_school_admin: Boolean!
+    user_type: String!
+    workspaces_admin: [InputWorkspacesAdmin]
+  }
+  input InputWorkspacesAdmin {
+    id: String
+  }
 `;
