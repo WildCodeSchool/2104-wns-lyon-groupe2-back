@@ -1,10 +1,12 @@
-const myobject = {
-  cle1: 'test',
-  cle2: 'test',
-  cle3: 'test',
-  cle4: 'test',
-  cle5: 'test',
-  cle6: 'test',
-  cle: 'test',
-  cle9: 'test',
-}
+const { ApolloServer, gql } = require('apollo-server')
+import { TYPE_DEFS } from './models/typeDefs'
+import { resolvers } from './resolvers/resolvers'
+
+const server = new ApolloServer({
+  typeDefs: TYPE_DEFS,
+  resolvers: resolvers,
+})
+
+server.listen().then((server: any) => {
+  console.log(`🚀  Server ready at ${server.url}`)
+})
