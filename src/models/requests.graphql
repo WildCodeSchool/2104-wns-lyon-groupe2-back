@@ -1,0 +1,88 @@
+# WORKSPACES REQUESTS _____________________________________________________
+#  get all workspaces  _____________________________________________________
+
+{
+  allWorkspaces {
+    id
+    title
+    is_school_workspace
+    feed {
+      id
+      feed_name
+    }
+    assets {
+      id
+      asset_name
+    }
+  }
+}
+#  create workspace   _____________________________________________________
+mutation createWorspaces($input: InputWorkspaces!) {
+  createWorkspaces(input: $input) {
+    id
+    title
+    is_school_workspace
+    feed {
+      id
+      feed_name
+    }
+    assets {
+      id
+      asset_name
+    }
+  }
+}
+
+# Query Variables
+# {"input":{
+#   "title": "Général",
+#   "is_school_workspace": true,
+# "feed": {
+#   "feed_name": "Social"
+# },
+# "assets": {
+#   "asset_name": "Ressources"
+# }}
+# }
+
+#  update workspace   _____________________________________________________
+
+mutation updateWorkspaces($input: UpdateWorkspaces!) {
+  updateWorkspaces(input: $input) {
+    id
+    title
+    is_school_workspace
+    feed {
+      id
+      feed_name
+    }
+    assets {
+      id
+      asset_name
+    }
+  }
+}
+
+# Query Variables
+# {"input":{
+#   "id": "608a791bbde5ff2c48dc239b",
+#   "title": "Alternance",
+#   "is_school_workspace": false,
+# "feed": {
+#   "feed_name": "Sociale"
+# },
+# "assets": {
+#   "asset_name": "Ressources"
+# }}
+# }
+
+#  delete workspace   _____________________________________________________
+
+mutation deleteWorkspaces($input: WorkspaceId!) {
+  deleteWorkspaces(input: $input)
+}
+# Query Variables
+# {"input":{
+#   "id": "608a791bbde5ff2c48dc239b"
+# }
+# }
