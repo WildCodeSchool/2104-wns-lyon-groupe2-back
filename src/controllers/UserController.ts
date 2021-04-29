@@ -2,15 +2,14 @@ import UserModel from '../models/UserModel'
 import { IUser } from '../interfaces'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
-import { Interface } from 'node:readline'
-import { isContext } from 'node:vm'
-import { ConnectionStates } from 'mongoose'
+const { ForbiddenError } = require('apollo-server')
 
 const env: IConfig = config
 
 // do no forget parent !!!
 
 export const registerUser = async (parent: any, args: any) => {
+  console.log(args)
   const input: IUser = args.input
   await UserModel.init()
   const model = new UserModel(input)
@@ -51,9 +50,12 @@ export const deleteUser = async (parent: any, args: any, context: any) => {
   return `User ${user.firstname} ${user.lastname} has been successfully deleted`
 }
 
-export const updateUser = async (parent: any, args: any) => {
+export const updateUser = async (parent: any, args: any, context: any) => {
   const input: IUser = args.input // values send by client
   const user = await UserModel.findById(input.id) // find corresponding user in DB
+  if (context.user.id !== user.id) {
+    throw new ForbiddenError("You're only allowed to update your profile !")
+  }
   if (user) {
     user._doc = { ...user._doc, ...input } // update user's datas
     return await user.save() // save datas

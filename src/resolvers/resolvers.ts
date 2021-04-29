@@ -17,13 +17,13 @@ export const resolvers = {
     registerUser: (parent: any, args: any, context: any) => {
       if (!context.user || context.user.user_type !== 'admin')
         throw new ForbiddenError("You're not allowed to perform this operation")
-      return registerUser
+      return registerUser(parent, args)
     },
     updateUser: updateUser,
     deleteUser: (parent: any, args: any, context: any) => {
       if (!context.user || context.user.user_type !== 'admin')
         throw new ForbiddenError("You're not allowed to perform this operation")
-      return deleteUser
+      return deleteUser(parent, args, context)
     },
   },
 }

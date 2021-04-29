@@ -17,7 +17,6 @@ const server = new ApolloServer({
       return { user }
     }
     const user = await getOneUser(token)
-    console.log(user)
     return { user }
   },
 })
