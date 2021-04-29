@@ -1,18 +1,4 @@
-export interface IUser {
-  id: string
-  lastname: string
-  firstname: string
-  avatar: string
-  email: string
-  password: string
-  school_id: string
-  theme_id: string
-  is_school_admin: boolean
-  user_type: string
-  workspaces_admin: string[]
-}
-
-export interface Assets {
+export interface Share_Assets {
   id: string
   asset_name: string
   folders: Folders[]
@@ -22,7 +8,7 @@ export interface Folders {
   folder_name: string
   parent_id: string
   title: string
-  assets: Assets[]
+  assets: Share_Assets[]
 }
 
 export interface IWorkspaces {
@@ -57,7 +43,7 @@ export interface IWorkspaces {
       ]
     },
   ]
-  assets: Assets[]
+  assets: Share_Assets[]
 
   visio: string
 }

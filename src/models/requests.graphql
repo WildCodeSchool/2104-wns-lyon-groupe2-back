@@ -17,8 +17,8 @@
   }
 }
 #  create workspace   _____________________________________________________
-mutation createWorspaces($input: InputWorkspaces!) {
-  createWorkspaces(input: $input) {
+mutation createWorspace($input: InputWorkspace!) {
+  createWorkspace(input: $input) {
     id
     title
     is_school_workspace
@@ -47,8 +47,8 @@ mutation createWorspaces($input: InputWorkspaces!) {
 
 #  update workspace   _____________________________________________________
 
-mutation updateWorkspaces($input: UpdateWorkspaces!) {
-  updateWorkspaces(input: $input) {
+mutation updateWorkspace($input: UpdateWorkspace!) {
+  updateWorkspace(input: $input) {
     id
     title
     is_school_workspace
@@ -79,10 +79,63 @@ mutation updateWorkspaces($input: UpdateWorkspaces!) {
 #  delete workspace   _____________________________________________________
 
 mutation deleteWorkspaces($input: WorkspaceId!) {
-  deleteWorkspaces(input: $input)
+  deleteWorkspace(input: $input)
 }
 # Query Variables
 # {"input":{
 #   "id": "608a791bbde5ff2c48dc239b"
+# }
+# }
+
+# ASSETS REQUESTS _____________________________________________________
+#  get all assets  _____________________________________________________
+
+{
+  allAssets {
+    id
+    title
+    type
+    likes
+  }
+} #  create asset   _____________________________________________________
+mutation createAsset($input: InputAsset!) {
+  createAsset(input: $input) {
+    title
+    type
+    likes
+  }
+}
+
+# Query Variables
+# {"input": {"title": "fiche récap JS", "type": "Word", "likes":10 }}
+
+#  update asset   _____________________________________________________
+
+mutation updateAsset($input: UpdateAsset!) {
+  updateAsset(input: $input) {
+    id
+    title
+    type
+    likes
+  }
+}
+
+# Query Variables
+# {"input":{
+#   "id": "608ab34ddd534422e086066a",
+#   "title": "fiche récap React",
+#   "type": "Word",
+#   "likes":10
+# }
+# }
+
+#  delete asset   _____________________________________________________
+
+mutation deleteAsset($input: AssetId!) {
+  deleteAsset(input: $input)
+}
+# Query Variables
+# {"input":{
+#   "id": "608ab34ddd534422e086066a"
 # }
 # }

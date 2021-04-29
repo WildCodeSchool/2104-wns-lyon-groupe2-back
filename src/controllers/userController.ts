@@ -1,5 +1,5 @@
 import UserModel from '../models/models'
-import { IUser } from '../interfaces'
+import { IUser } from '../interfaces/userInterface'
 
 // do no forget parent !!!
 

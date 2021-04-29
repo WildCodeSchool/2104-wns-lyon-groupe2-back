@@ -4,14 +4,18 @@ export const TYPE_DEFS = gql`
   type Query {
     allUsers: [Users]
     allWorkspaces: [Workspaces]
+    allAssets: [Assets]
   }
   type Mutation {
     createUser(input: InputUser!): Users
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
-    createWorkspaces(input: InputWorkspaces!): Workspaces
-    deleteWorkspaces(input: WorkspaceId!): String
-    updateWorkspaces(input: UpdateWorkspaces!): Workspaces
+    createWorkspace(input: InputWorkspace!): Workspaces
+    deleteWorkspace(input: WorkspaceId!): String
+    updateWorkspace(input: UpdateWorkspace!): Workspaces
+    createAsset(input: InputAsset!): Assets
+    deleteAsset(input: AssetId!): String
+    updateAsset(input: UpdateAsset!): Assets
   }
 
   # USERS _____________________________________________________
@@ -76,7 +80,7 @@ export const TYPE_DEFS = gql`
     users_allowed: [String]
     title: String
     feed: [feed]
-    assets: [assets]
+    assets: [sharedAssets]
     visio: String
   }
   type feed {
@@ -100,7 +104,7 @@ export const TYPE_DEFS = gql`
     user_id: String
     created_at: String
   }
-  type assets {
+  type sharedAssets {
     id: String
     asset_name: String
     folders: [folders]
@@ -110,21 +114,21 @@ export const TYPE_DEFS = gql`
     folder_name: String
     parent_id: String
     title: String
-    assets: [assets]
+    assets: [sharedAssets]
   }
 
   # Inputs _____________________________________________________
-  input InputWorkspaces {
+  input InputWorkspace {
     school_id: String
     user_admin: String
     is_school_workspace: Boolean!
     users_allowed: [String]
     title: String!
     feed: [InputFeed]
-    assets: [InputAssets]
+    assets: [InputAsset]
     visio: String
   }
-  input UpdateWorkspaces {
+  input UpdateWorkspace {
     id: ID!
     school_id: String
     user_admin: String
@@ -132,7 +136,7 @@ export const TYPE_DEFS = gql`
     users_allowed: [String]
     title: String!
     feed: [InputFeed]
-    assets: [InputAssets]
+    assets: [InputSharedAssets]
     visio: String
   }
 
@@ -157,7 +161,7 @@ export const TYPE_DEFS = gql`
     user_id: String
     created_at: String
   }
-  input InputAssets {
+  input InputSharedAssets {
     id: String
     asset_name: String!
     folders: [InputFolders]
@@ -167,10 +171,61 @@ export const TYPE_DEFS = gql`
     folder_name: String
     parent_id: String
     title: String
-    assets: [InputAssets]
+    assets: [InputSharedAssets]
   }
 
   input WorkspaceId {
+    id: String
+  }
+
+  # ASSETS _____________________________________________________
+  # Types _____________________________________________________
+  type Assets {
+    id: ID
+    title: String!
+    type: String
+    folders: [String]
+    user_id: String
+    created_at: String
+    last_view: String
+    likes: Int
+    dislikes: Int
+    bookmarked_count: Int
+    tags: [String]
+    opening_count: Int
+  }
+
+  # Inputs _____________________________________________________
+  input InputAsset {
+    title: String
+    type: String
+    folders: [String]
+    user_id: String
+    created_at: String
+    last_view: String
+    likes: Int
+    dislikes: Int
+    bookmarked_count: Int
+    tags: [String]
+    opening_count: Int
+  }
+
+  input UpdateAsset {
+    id: String!
+    title: String
+    type: String
+    folders: [String]
+    user_id: String
+    created_at: String
+    last_view: String
+    likes: Int
+    dislikes: Int
+    bookmarked_count: Int
+    tags: [String]
+    opening_count: Int
+  }
+
+  input AssetId {
     id: String
   }
 `

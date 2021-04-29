@@ -1,9 +1,9 @@
 import WorkspacesModel from '../models/workspacesModel'
-import { IWorkspaces } from '../interfaces'
+import { IWorkspaces } from '../interfaces/workspaceInterface'
 
 // do no forget parent !!!
 
-export const createWorkspaces = async (parent: any, args: any) => {
+export const createWorkspace = async (parent: any, args: any) => {
   const input: IWorkspaces = args.input
   await WorkspacesModel.init()
   const model = new WorkspacesModel(input)
@@ -16,7 +16,7 @@ export const allWorkspaces = async () => {
   return result
 }
 
-export const deleteWorkspaces = async (parent: any, args: any) => {
+export const deleteWorkspace = async (parent: any, args: any) => {
   const id: String = args.input.id
   const workspace = await WorkspacesModel.findById(id)
   if (workspace) {
@@ -25,7 +25,7 @@ export const deleteWorkspaces = async (parent: any, args: any) => {
   return `Workspace ${workspace.title} has been successfully deleted`
 }
 
-export const updateWorkspaces = async (parent: any, args: any) => {
+export const updateWorkspace = async (parent: any, args: any) => {
   const input: IWorkspaces = args.input // values send by client
   const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
   if (workspace) {
