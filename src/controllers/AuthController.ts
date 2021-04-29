@@ -15,7 +15,7 @@ export const Login = async (parent: any, args: any) => {
     throw new Error('Invalid Credentials')
   }
   const token = jwt.sign({ userId: user.id }, env.jwt_secret)
-  const payload = { token: token }
+  const payload = { token: token, email: email }
   console.log(payload)
 
   return payload

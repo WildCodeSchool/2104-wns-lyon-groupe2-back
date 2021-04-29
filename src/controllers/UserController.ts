@@ -22,7 +22,7 @@ export const createUser = async (parent: any, args: any) => {
   iat: number
   ExpiresIn: string
 } */
-// A type !! le tokenDecrypted
+// A typer !! le tokenDecrypted
 export const getOneUser = async (token: string) => {
   const tokenDecrypted: any = jwt.verify(token, env.jwt_secret)
   const user = await UserModel.findById(tokenDecrypted.userId)
