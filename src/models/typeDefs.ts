@@ -40,6 +40,7 @@ export const TYPE_DEFS = gql`
     avatar: String
     email: String!
     password: String!
+    password_confirmation: String!
     school_id: String!
     theme_id: String
     is_school_admin: Boolean!
@@ -53,7 +54,7 @@ export const TYPE_DEFS = gql`
     firstname: String
     avatar: String
     email: String
-    password: String
+    password: String!
     school_id: String
     theme_id: String
     is_school_admin: Boolean

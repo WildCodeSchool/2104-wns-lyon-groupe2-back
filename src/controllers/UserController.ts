@@ -2,17 +2,26 @@ import UserModel from '../models/UserModel'
 import { IUser } from '../interfaces'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
-const { ForbiddenError } = require('apollo-server')
+import * as argon2 from 'argon2'
+const { ForbiddenError, UserInputError } = require('apollo-server')
 
 const env: IConfig = config
 
 // do no forget parent !!!
 
+const hashPassword = async (password: string) => argon2.hash(password)
+
+const verifyPassword = async (userPassword: any, plainPassword: string) => {
+  return argon2.verify(userPassword, plainPassword)
+}
+
 export const registerUser = async (parent: any, args: any) => {
-  console.log(args)
   const input: IUser = args.input
+  const encrypted_password = await hashPassword(input.password)
+  const { password, password_confirmation, ...datasWithoutPassword } = input
+  const userToSave = { ...datasWithoutPassword, encrypted_password }
   await UserModel.init()
-  const model = new UserModel(input)
+  const model = new UserModel(userToSave)
   const result = await model.save()
   return result
 }
@@ -21,7 +30,7 @@ export const registerUser = async (parent: any, args: any) => {
 /* interface Token {
   userId: string
   iat: number
-  ExpiresIn: string
+  ExpiresIn: strin
 } */
 // A typer !! le tokenDecrypted
 export const getOneUser = async (token: string) => {
@@ -53,8 +62,15 @@ export const deleteUser = async (parent: any, args: any, context: any) => {
 export const updateUser = async (parent: any, args: any, context: any) => {
   const input: IUser = args.input // values send by client
   const user = await UserModel.findById(input.id) // find corresponding user in DB
+  const isPasswordVerified = await verifyPassword(
+    user.encrypted_password,
+    input.password,
+  )
   if (context.user.id !== user.id) {
     throw new ForbiddenError("You're only allowed to update your profile !")
+  }
+  if (!isPasswordVerified) {
+    throw new UserInputError("Your password isn't valid !")
   }
   if (user) {
     user._doc = { ...user._doc, ...input } // update user's datas
