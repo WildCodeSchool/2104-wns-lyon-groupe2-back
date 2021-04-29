@@ -30,7 +30,7 @@ export const TYPE_DEFS = gql`
     login(input: InputLogin): AuthData
   }
   type Mutation {
-    createUser(input: InputUser!): Users
+    registerUser(input: InputUser!): Users
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
   }

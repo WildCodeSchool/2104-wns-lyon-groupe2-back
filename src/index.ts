@@ -11,10 +11,10 @@ const server = new ApolloServer({
   typeDefs: TYPE_DEFS,
   resolvers: resolvers,
   context: async ({ req }: any) => {
-    console.log(req.headers.authorization)
     const token = req.headers.authorization || ''
     if (!token) {
-      throw new Error('Unhautorized')
+      const user = null
+      return { user }
     }
     const user = await getOneUser(token)
     console.log(user)

@@ -1,10 +1,12 @@
 import {
-  createUser,
+  registerUser,
   allUsers,
   deleteUser,
   updateUser,
 } from '../controllers/UserController'
 import { Login } from '../controllers/AuthController'
+
+import { ForbiddenError } from 'apollo-server'
 
 export const resolvers = {
   Query: {
@@ -12,8 +14,16 @@ export const resolvers = {
     login: Login,
   },
   Mutation: {
-    createUser: createUser,
+    registerUser: (parent: any, args: any, context: any) => {
+      if (!context.user || context.user.user_type !== 'admin')
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      return registerUser
+    },
     updateUser: updateUser,
-    deleteUser: deleteUser,
+    deleteUser: (parent: any, args: any, context: any) => {
+      if (!context.user || context.user.user_type !== 'admin')
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      return deleteUser
+    },
   },
 }

@@ -3,12 +3,14 @@ import { IUser } from '../interfaces'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import { Interface } from 'node:readline'
+import { isContext } from 'node:vm'
+import { ConnectionStates } from 'mongoose'
 
 const env: IConfig = config
 
 // do no forget parent !!!
 
-export const createUser = async (parent: any, args: any) => {
+export const registerUser = async (parent: any, args: any) => {
   const input: IUser = args.input
   await UserModel.init()
   const model = new UserModel(input)
@@ -33,12 +35,13 @@ export const getOneUser = async (token: string) => {
 }
 
 export const allUsers = async (parents: any, arg: any, context: any) => {
+  if (!context.user) return null
   console.log(context.user)
   const result = await UserModel.find()
   return result
 }
 
-export const deleteUser = async (parent: any, args: any) => {
+export const deleteUser = async (parent: any, args: any, context: any) => {
   const id: String = args.input.id
   const user = await UserModel.findById(id)
   if (user) {
