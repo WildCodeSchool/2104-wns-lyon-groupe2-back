@@ -7,18 +7,27 @@ export const TYPE_DEFS = gql`
     firstname: String
     avatar: String
     email: String
-    password: String
     school_id: String
     theme_id: String
     is_school_admin: Boolean
     user_type: String
     workspaces_admin: [WorkspacesAdmin]
   }
+
   type WorkspacesAdmin {
     id: ID
   }
+  input InputLogin {
+    email: String!
+    password: String!
+  }
+  type AuthData {
+    token: String!
+  }
+
   type Query {
     allUsers: [Users]
+    login(input: InputLogin): AuthData
   }
   type Mutation {
     createUser(input: InputUser!): Users

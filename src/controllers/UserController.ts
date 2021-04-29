@@ -1,5 +1,10 @@
-import UserModel from '../models/models'
+import UserModel from '../models/UserModel'
 import { IUser } from '../interfaces'
+import jwt from 'jsonwebtoken'
+import { config, IConfig } from '../../env'
+import { Interface } from 'node:readline'
+
+const env: IConfig = config
 
 // do no forget parent !!!
 
@@ -11,9 +16,25 @@ export const createUser = async (parent: any, args: any) => {
   return result
 }
 
-export const allUsers = async () => {
+// J'en ai marre de pas reussir a la typer.....
+/* interface Token {
+  userId: string
+  iat: number
+  ExpiresIn: string
+} */
+// A type !! le tokenDecrypted
+export const getOneUser = async (token: string) => {
+  const tokenDecrypted: any = jwt.verify(token, env.jwt_secret)
+  const user = await UserModel.findById(tokenDecrypted.userId)
+  if (!user) {
+    throw new Error('User Not Found')
+  }
+  return user
+}
+
+export const allUsers = async (parents: any, arg: any, context: any) => {
+  console.log(context.user)
   const result = await UserModel.find()
-  console.log(result)
   return result
 }
 
