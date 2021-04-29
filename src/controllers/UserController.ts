@@ -17,6 +17,7 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 
 export const registerUser = async (parent: any, args: any) => {
   const input: IUser = args.input
+
   const encrypted_password = await hashPassword(input.password)
   const { password, password_confirmation, ...datasWithoutPassword } = input
   const userToSave = { ...datasWithoutPassword, encrypted_password }
@@ -44,7 +45,6 @@ export const getOneUser = async (token: string) => {
 
 export const allUsers = async (parents: any, arg: any, context: any) => {
   if (!context.user) return null
-  console.log(context.user)
   const result = await UserModel.find()
   return result
 }
@@ -55,7 +55,6 @@ export const deleteUser = async (parent: any, args: any, context: any) => {
   if (user) {
     const result = await UserModel.deleteOne({ _id: id })
   }
-  console.log(user)
   return `User ${user.firstname} ${user.lastname} has been successfully deleted`
 }
 

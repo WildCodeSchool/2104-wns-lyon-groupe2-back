@@ -20,9 +20,11 @@ export const Login = async (parent: any, args: any) => {
     user.encrypted_password,
     password,
   )
+
   if (!isPasswordVerified) {
     throw new Error('Invalid Credentials')
   }
+
   const token = jwt.sign({ userId: user.id }, env.jwt_secret)
   const payload = { token: token, email: email }
   return payload
