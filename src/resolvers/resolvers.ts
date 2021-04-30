@@ -13,14 +13,14 @@ import {
   createWorkspace,
   updateWorkspace,
   deleteWorkspace,
-} from '../controllers/workSpacesController'
+} from '../controllers/WorkSpacesController'
 
 import {
   allAssets,
   createAsset,
   updateAsset,
   deleteAsset,
-} from '../controllers/assetController'
+} from '../controllers/AssetController'
 
 export const resolvers = {
   Query: {
