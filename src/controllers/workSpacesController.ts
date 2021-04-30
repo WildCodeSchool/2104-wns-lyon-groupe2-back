@@ -30,6 +30,20 @@ export const updateWorkspace = async (parent: any, args: any) => {
   const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
   if (workspace) {
     workspace._doc = { ...workspace._doc, ...input } // update user's datas
+    console.log(
+      '🚀 ~ file: workSpacesController.ts ~ line 32 ~ updateWorkspace ~ workspace',
+      workspace,
+    )
+    console.log(
+      '🚀 ~ file: workSpacesController.ts ~ line 33 ~ updateWorkspace ~ workspace._doc',
+      workspace._doc,
+    )
+    const result = await workspace.save()
+    console.log(
+      '🚀 ~ file: workSpacesController.ts ~ line 34 ~ updateWorkspace ~ result',
+      result,
+    )
+
     return await workspace.save() // save datas
   }
 }

@@ -5,9 +5,10 @@ export interface IUser {
   avatar: string
   email: string
   password: string
+  password_confirmation: string
   school_id: string
   theme_id: string
-  is_school_admin: boolean
+  is_school_admin: Boolean
   user_type: string
   workspaces_admin: string[]
 }

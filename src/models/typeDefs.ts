@@ -140,7 +140,7 @@ export const TYPE_DEFS = gql`
     users_allowed: [String]
     title: String!
     feed: [InputFeed]
-    assets: [InputAsset]
+    assets: [InputSharedAssets]
     visio: String
   }
   input UpdateWorkspace {

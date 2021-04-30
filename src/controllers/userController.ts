@@ -1,5 +1,5 @@
 import UserModel from '../models/UserModel'
-import { IUser } from '../interfaces'
+import { IUser } from '../interfaces/userInterface'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'

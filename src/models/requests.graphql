@@ -97,7 +97,9 @@ mutation deleteWorkspaces($input: WorkspaceId!) {
     type
     likes
   }
-} #  create asset   _____________________________________________________
+}
+
+#  create asset   _____________________________________________________
 mutation createAsset($input: InputAsset!) {
   createAsset(input: $input) {
     title
