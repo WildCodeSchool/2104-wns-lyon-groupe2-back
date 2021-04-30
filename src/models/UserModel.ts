@@ -6,7 +6,7 @@ const UserSchema = new Schema({
   firstname: String,
   avatar: String,
   email: { type: String, unique: true },
-  password: String,
+  encrypted_password: String,
   school_id: String,
   theme_id: String,
   is_school_admin: Boolean,

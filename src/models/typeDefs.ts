@@ -5,17 +5,31 @@ export const TYPE_DEFS = gql`
     allUsers: [Users]
     allWorkspaces: [Workspaces]
     allAssets: [Assets]
+    login(input: InputLogin): AuthData
   }
   type Mutation {
     createUser(input: InputUser!): Users
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
+    registerUser(input: InputUser!): Users
     createWorkspace(input: InputWorkspace!): Workspaces
     deleteWorkspace(input: WorkspaceId!): String
     updateWorkspace(input: UpdateWorkspace!): Workspaces
     createAsset(input: InputAsset!): Assets
     deleteAsset(input: AssetId!): String
     updateAsset(input: UpdateAsset!): Assets
+  }
+
+  # AUTHENTICATION _____________________________________________________
+  # Types _____________________________________________________
+  type AuthData {
+    token: String!
+  }
+
+  # Input _____________________________________________________
+  input InputLogin {
+    email: String!
+    password: String!
   }
 
   # USERS _____________________________________________________
@@ -26,13 +40,13 @@ export const TYPE_DEFS = gql`
     firstname: String
     avatar: String
     email: String
-    password: String
     school_id: String
     theme_id: String
     is_school_admin: Boolean
     user_type: String
     workspaces_admin: [WorkspacesAdmin]
   }
+
   type WorkspacesAdmin {
     id: ID
   }
@@ -44,6 +58,7 @@ export const TYPE_DEFS = gql`
     avatar: String
     email: String!
     password: String!
+    password_confirmation: String!
     school_id: String!
     theme_id: String
     is_school_admin: Boolean!
@@ -56,7 +71,7 @@ export const TYPE_DEFS = gql`
     firstname: String
     avatar: String
     email: String
-    password: String
+    password: String!
     school_id: String
     theme_id: String
     is_school_admin: Boolean
