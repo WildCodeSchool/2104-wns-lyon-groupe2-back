@@ -27,15 +27,14 @@ export const registerUser = async (parent: any, args: any) => {
   return result
 }
 
-// J'en ai marre de pas reussir a la typer.....
-/* interface Token {
-  userId: string
+interface Token {
+  userId: any
   iat: number
-  ExpiresIn: strin
-} */
-// A typer !! le tokenDecrypted
+}
+// A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
 export const getOneUser = async (token: string) => {
-  const tokenDecrypted: any = jwt.verify(token, env.jwt_secret)
+  const tokenDecrypted: Token = jwt.verify(token, env.jwt_secret) as Token
+  console.log(tokenDecrypted)
   const user = await UserModel.findById(tokenDecrypted.userId)
   if (!user) {
     throw new Error('User Not Found')
