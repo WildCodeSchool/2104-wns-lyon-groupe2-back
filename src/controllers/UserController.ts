@@ -1,5 +1,6 @@
 import UserModel from '../models/UserModel'
-import { IUser } from '../interfaces'
+import { IUser } from '../interfaces/userInterface'
+
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
@@ -28,7 +29,7 @@ export const registerUser = async (parent: any, args: any) => {
 }
 
 interface Token {
-  userId: any
+  userId: string
   iat: number
 }
 // A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
