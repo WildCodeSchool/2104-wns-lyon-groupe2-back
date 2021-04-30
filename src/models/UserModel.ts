@@ -11,7 +11,6 @@ const UserSchema = new Schema({
   theme_id: String,
   is_school_admin: Boolean,
   user_type: String,
-  token: String,
 })
 
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)

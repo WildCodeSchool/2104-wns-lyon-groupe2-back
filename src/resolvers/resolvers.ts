@@ -8,9 +8,25 @@ import { Login } from '../controllers/AuthController'
 
 import { ForbiddenError } from 'apollo-server'
 
+import {
+  allWorkspaces,
+  createWorkspace,
+  updateWorkspace,
+  deleteWorkspace,
+} from '../controllers/workSpacesController'
+
+import {
+  allAssets,
+  createAsset,
+  updateAsset,
+  deleteAsset,
+} from '../controllers/assetController'
+
 export const resolvers = {
   Query: {
     allUsers: allUsers,
+    allWorkspaces: allWorkspaces,
+    allAssets: allAssets,
     login: Login,
   },
   Mutation: {
@@ -25,5 +41,11 @@ export const resolvers = {
         throw new ForbiddenError("You're not allowed to perform this operation")
       return deleteUser(parent, args, context)
     },
+    createWorkspace: createWorkspace,
+    updateWorkspace: updateWorkspace,
+    deleteWorkspace: deleteWorkspace,
+    createAsset: createAsset,
+    updateAsset: updateAsset,
+    deleteAsset: deleteAsset,
   },
 }
