@@ -27,9 +27,9 @@ export const resolvers = {
     allUsers: allUsers,
     allWorkspaces: allWorkspaces,
     allAssets: allAssets,
-    login: Login,
   },
   Mutation: {
+    login: Login,
     registerUser: (parent: any, args: any, context: any) => {
       if (!context.user || context.user.user_type !== 'admin')
         throw new ForbiddenError("You're not allowed to perform this operation")

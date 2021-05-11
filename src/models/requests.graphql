@@ -1,6 +1,12 @@
 # WORKSPACES REQUESTS _____________________________________________________
 #  get all workspaces  _____________________________________________________
 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# We can name query and mutations as we want !                                                                                                  #  
+# Ex: we can name a mutation createWorkspace which calling the type updateWorkspace (it dont' make any sense at all but it's for the example :))# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
 {
   allWorkspaces {
     id

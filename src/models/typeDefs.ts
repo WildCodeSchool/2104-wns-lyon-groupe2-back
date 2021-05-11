@@ -1,13 +1,15 @@
 import { gql } from 'apollo-server-core'
 
+// here we de fine the types used by graphql
+
 export const TYPE_DEFS = gql`
   type Query {
     allUsers: [Users]
     allWorkspaces: [Workspaces]
     allAssets: [Assets]
-    login(input: InputLogin): AuthData
   }
   type Mutation {
+    login(input: InputLogin!): AuthData
     createUser(input: InputUser!): Users
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
