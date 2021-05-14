@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server-core'
 
-// here we de fine the types used by graphql
+/////////////////////////////////////////////////////////////////
+// here we define the structure of data that clients can query //
+/////////////////////////////////////////////////////////////////
 
 export const TYPE_DEFS = gql`
   type Query {
@@ -45,12 +47,18 @@ export const TYPE_DEFS = gql`
     school_id: String
     theme_id: String
     is_school_admin: Boolean
-    user_type: String
+    user_type: UserType
     workspaces_admin: [WorkspacesAdmin]
   }
 
   type WorkspacesAdmin {
     id: ID
+  }
+
+  enum UserType {
+    student
+    admin
+    teacher
   }
 
   # Inputs _____________________________________________________
@@ -64,7 +72,7 @@ export const TYPE_DEFS = gql`
     school_id: String!
     theme_id: String
     is_school_admin: Boolean!
-    user_type: String!
+    user_type: UserType!
     workspaces_admin: [InputWorkspacesAdmin]
   }
   input UpdateUser {
@@ -77,7 +85,7 @@ export const TYPE_DEFS = gql`
     school_id: String
     theme_id: String
     is_school_admin: Boolean
-    user_type: String
+    user_type: UserType
     workspaces_admin: [InputWorkspacesAdmin]
   }
   input InputWorkspacesAdmin {

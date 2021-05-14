@@ -22,6 +22,11 @@ import {
   deleteAsset,
 } from '../controllers/AssetController'
 
+//////////////////////////////////////////////////////////////////////////////////////////
+// Resolvers tell Apollo Server how to fetch the data associated with a particular type.//
+// Resolvers define the technique for fetching the types defined in the schema          //
+//////////////////////////////////////////////////////////////////////////////////////////
+
 export const resolvers = {
   Query: {
     allUsers: allUsers,

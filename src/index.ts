@@ -19,9 +19,9 @@ const server = new ApolloServer({
     const user = await getOneUser(token)
     return { user }
   },
-})
+});
 
-;(async () => {
+(async () => {
   if (env.db !== undefined) {
     await mongoose.connect(env.db as string, env.options)
     console.log(`MonboDB is running, using the connection ${env.db}`)
