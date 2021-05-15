@@ -3,12 +3,12 @@ export interface IAssets {
   title: string
   type: string
   folders: [string] /* folder_id */
-  user_id: string
-  created_at: Date
-  last_view: Date
+  userId: string
+  createdAt: Date
+  lastView: Date
   likes: number
   dislikes: number
-  bookmarked_count: number
+  bookmarkedCount: number
   tags: [string] /* tag_id */
-  opening_count: number
+  openingCount: number
 }

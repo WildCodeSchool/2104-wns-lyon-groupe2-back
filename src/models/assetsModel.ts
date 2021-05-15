@@ -5,14 +5,14 @@ const AssetsSchema = new Schema({
   title: String,
   type: String,
   folders: [String],
-  user_id: String,
-  created_at: Date,
-  last_view: Date,
+  userId: String,
+  createdAt: Date,
+  lastView: Date,
   likes: Number,
   dislikes: Number,
-  bookmarked_count: Number,
+  bookmarkedCount: Number,
   tags: [String],
-  opening_count: Number,
+  openingCount: Number,
 })
 
 const WorkspacesModel: mongoose.Model<any> = mongoose.model(

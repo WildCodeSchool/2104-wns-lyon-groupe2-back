@@ -4,6 +4,7 @@ import { resolvers } from './resolvers/resolvers'
 import mongoose from 'mongoose'
 import { getOneUser } from './controllers/UserController'
 import { config, IConfig } from '../env'
+import { AuthenticationError } from 'apollo-server-errors'
 
 const env: IConfig = config
 
@@ -12,16 +13,21 @@ const server = new ApolloServer({
   resolvers: resolvers,
   context: async ({ req }: any) => {
     const token = req.headers.authorization || ''
+    let user = null
     if (!token) {
-      const user = null
       return { user }
+    } else {
+      try {
+        const user = await getOneUser(token)
+      } catch (err) {
+        const user = null
+      }
     }
-    const user = await getOneUser(token)
     return { user }
   },
-});
+})
 
-(async () => {
+;(async () => {
   if (env.db !== undefined) {
     await mongoose.connect(env.db as string, env.options)
     console.log(`MonboDB is running, using the connection ${env.db}`)

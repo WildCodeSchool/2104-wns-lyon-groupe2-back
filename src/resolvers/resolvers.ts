@@ -28,6 +28,11 @@ import {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 export const resolvers = {
+  UserType: {
+    STUDENT: 'student',
+    ADMIN: 'admin',
+    TEACHER: 'teacher',
+  },
   Query: {
     allUsers: allUsers,
     allWorkspaces: allWorkspaces,
@@ -36,13 +41,13 @@ export const resolvers = {
   Mutation: {
     login: Login,
     registerUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.user_type !== 'admin')
+      if (!context.user || context.user.userType !== 'admin')
         throw new ForbiddenError("You're not allowed to perform this operation")
       return registerUser(parent, args)
     },
     updateUser: updateUser,
     deleteUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.user_type !== 'admin')
+      if (!context.user || context.user.userType !== 'admin')
         throw new ForbiddenError("You're not allowed to perform this operation")
       return deleteUser(parent, args, context)
     },

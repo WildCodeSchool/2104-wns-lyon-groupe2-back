@@ -19,9 +19,9 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 export const registerUser = async (parent: any, args: any) => {
   const input: IUser = args.input
 
-  const encrypted_password = await hashPassword(input.password)
-  const { password, password_confirmation, ...datasWithoutPassword } = input
-  const userToSave = { ...datasWithoutPassword, encrypted_password }
+  const encryptedPassword = await hashPassword(input.password)
+  const { password, passwordConfirmation, ...datasWithoutPassword } = input
+  const userToSave = { ...datasWithoutPassword, encryptedPassword }
   await UserModel.init()
   const model = new UserModel(userToSave)
   const result = await model.save()
@@ -62,7 +62,7 @@ export const updateUser = async (parent: any, args: any, context: any) => {
   const input: IUser = args.input // values send by client
   const user = await UserModel.findById(input.id) // find corresponding user in DB
   const isPasswordVerified = await verifyPassword(
-    user.encrypted_password,
+    user.encryptedPassword,
     input.password,
   )
   if (context.user.id !== user.id) {

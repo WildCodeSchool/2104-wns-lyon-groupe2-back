@@ -1,49 +1,49 @@
-export interface Share_Assets {
+export interface IShareAssets {
   id: string
-  asset_name: string
-  folders: Folders[]
+  assetName: string
+  folders: IFolders[]
 }
-export interface Folders {
+export interface IFolders {
   id: string
-  folder_name: string
-  parent_id: string
+  folderName: string
+  parentId: string
   title: string
-  assets: Share_Assets[]
+  assets: IShareAssets[]
 }
 
 export interface IWorkspaces {
   id: string
-  school_id: string
-  user_admin: string
-  is_school_workspace: boolean
-  users_allowed: [string] /* user_id */
+  schoolId: string
+  userAdmin: string
+  isSchoolWorkspace: boolean
+  usersAllowed: [string] /* user_id */
   title: string
   feed: [
     {
       id: string
-      feed_name: string
+      feedName: string
       messages: [
         {
           id: string
           content: string
-          user_id: string
-          created_at: Date
-          asset_id: string
+          userId: string
+          createdAt: Date
+          assetId: string
           likes: number
           dislikes: number
           comments: [
             {
               id: string
               content: string
-              user_id: string
-              created_at: Date
+              userId: string
+              createdAt: Date
             },
           ]
         },
       ]
     },
   ]
-  assets: Share_Assets[]
+  assets: IShareAssets[]
 
   visio: string
 }

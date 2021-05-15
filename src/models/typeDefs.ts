@@ -4,6 +4,14 @@ import { gql } from 'apollo-server-core'
 // here we define the structure of data that clients can query //
 /////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//TIPS                                                                                                                                                           //
+// Field names should use camelCase. Many GraphQL clients are written in JavaScript, Java, Kotlin, or Swift, all of which recommend camelCase for variable names.//
+// Type names should use PascalCase. This matches how classes are defined in the languages mentioned above.                                                      //
+// Enum names should use PascalCase.                                                                                                                             //
+// Enum values should use ALL_CAPS, because they are similar to constants.                                                                                       //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export const TYPE_DEFS = gql`
   type Query {
     allUsers: [Users]
@@ -44,11 +52,11 @@ export const TYPE_DEFS = gql`
     firstname: String
     avatar: String
     email: String
-    school_id: String
-    theme_id: String
-    is_school_admin: Boolean
-    user_type: UserType
-    workspaces_admin: [WorkspacesAdmin]
+    schoolIdd: String
+    themeId: String
+    isSchoolAdmin: Boolean
+    userType: UserType
+    workspacesAdmin: [WorkspacesAdmin]
   }
 
   type WorkspacesAdmin {
@@ -56,9 +64,9 @@ export const TYPE_DEFS = gql`
   }
 
   enum UserType {
-    student
-    admin
-    teacher
+    STUDENT
+    ADMIN
+    TEACHER
   }
 
   # Inputs _____________________________________________________
@@ -68,12 +76,12 @@ export const TYPE_DEFS = gql`
     avatar: String
     email: String!
     password: String!
-    password_confirmation: String!
-    school_id: String!
-    theme_id: String
-    is_school_admin: Boolean!
-    user_type: UserType!
-    workspaces_admin: [InputWorkspacesAdmin]
+    passwordConfirmation: String!
+    schoolId: String!
+    themeId: String
+    isSchoolAdmin: Boolean!
+    userType: UserType!
+    workspacesAdmin: [InputWorkspacesAdmin]
   }
   input UpdateUser {
     id: String!
@@ -82,11 +90,11 @@ export const TYPE_DEFS = gql`
     avatar: String
     email: String
     password: String!
-    school_id: String
-    theme_id: String
-    is_school_admin: Boolean
-    user_type: UserType
-    workspaces_admin: [InputWorkspacesAdmin]
+    schoolId: String
+    themeId: String
+    isSchoolAdmin: Boolean
+    userType: UserType
+    workspacesAdmin: [InputWorkspacesAdmin]
   }
   input InputWorkspacesAdmin {
     id: String
@@ -99,10 +107,10 @@ export const TYPE_DEFS = gql`
   # Types _____________________________________________________
   type Workspaces {
     id: ID
-    school_id: String
-    user_admin: String
-    is_school_workspace: Boolean
-    users_allowed: [String]
+    schoolId: String
+    userAdmin: String
+    isSchoolWorkspace: Boolean
+    usersAllowed: [String]
     title: String
     feed: [feed]
     assets: [sharedAssets]
@@ -110,15 +118,15 @@ export const TYPE_DEFS = gql`
   }
   type feed {
     id: String
-    feed_name: String
+    feedName: String
     messages: [messages]
   }
   type messages {
     id: String
     content: String
-    user_id: String
-    created_at: String
-    asset_id: String
+    userId: String
+    createdAt: String
+    assetId: String
     likes: Int
     dislikes: Int
     comments: [comments]
@@ -126,28 +134,28 @@ export const TYPE_DEFS = gql`
   type comments {
     id: String
     content: String
-    user_id: String
-    created_at: String
+    userId: String
+    createdAt: String
   }
   type sharedAssets {
     id: String
-    asset_name: String
+    assetName: String
     folders: [folders]
   }
   type folders {
     id: String
-    folder_name: String
-    parent_id: String
+    folderName: String
+    parentId: String
     title: String
     assets: [sharedAssets]
   }
 
   # Inputs _____________________________________________________
   input InputWorkspace {
-    school_id: String
-    user_admin: String
-    is_school_workspace: Boolean!
-    users_allowed: [String]
+    schoolId: String
+    userAdmin: String
+    isSchoolWorkspace: Boolean!
+    usersAllowed: [String]
     title: String!
     feed: [InputFeed]
     assets: [InputSharedAssets]
@@ -155,10 +163,10 @@ export const TYPE_DEFS = gql`
   }
   input UpdateWorkspace {
     id: ID!
-    school_id: String
-    user_admin: String
-    is_school_workspace: Boolean!
-    users_allowed: [String]
+    schoolId: String
+    userAdmin: String
+    isSchoolWorkspace: Boolean!
+    usersAllowed: [String]
     title: String!
     feed: [InputFeed]
     assets: [InputSharedAssets]
@@ -167,15 +175,15 @@ export const TYPE_DEFS = gql`
 
   input InputFeed {
     id: String
-    feed_name: String!
+    feedName: String!
     messages: [InputMessages]
   }
   input InputMessages {
     id: String
     content: String
-    user_id: String
-    created_at: String
-    asset_id: String
+    userId: String
+    createdAt: String
+    assetId: String
     likes: Int
     dislikes: Int
     comments: [InputComments]
@@ -183,18 +191,18 @@ export const TYPE_DEFS = gql`
   input InputComments {
     id: String
     content: String
-    user_id: String
-    created_at: String
+    userId: String
+    createdAt: String
   }
   input InputSharedAssets {
     id: String
-    asset_name: String!
+    assetName: String!
     folders: [InputFolders]
   }
   input InputFolders {
     id: String
-    folder_name: String
-    parent_id: String
+    folderName: String
+    parentId: String
     title: String
     assets: [InputSharedAssets]
   }
@@ -210,14 +218,14 @@ export const TYPE_DEFS = gql`
     title: String!
     type: String
     folders: [String]
-    user_id: String
-    created_at: String
-    last_view: String
+    userId: String
+    createdAt: String
+    lastView: String
     likes: Int
     dislikes: Int
-    bookmarked_count: Int
+    bookmarkedCount: Int
     tags: [String]
-    opening_count: Int
+    openingCount: Int
   }
 
   # Inputs _____________________________________________________
@@ -225,14 +233,14 @@ export const TYPE_DEFS = gql`
     title: String
     type: String
     folders: [String]
-    user_id: String
-    created_at: String
-    last_view: String
+    userId: String
+    createdAt: String
+    lastView: String
     likes: Int
     dislikes: Int
-    bookmarked_count: Int
+    bookmarkedCount: Int
     tags: [String]
-    opening_count: Int
+    openingCount: Int
   }
 
   input UpdateAsset {
@@ -240,14 +248,14 @@ export const TYPE_DEFS = gql`
     title: String
     type: String
     folders: [String]
-    user_id: String
-    created_at: String
-    last_view: String
+    userId: String
+    createdAt: String
+    lastView: String
     likes: Int
     dislikes: Int
-    bookmarked_count: Int
+    bookmarkedCount: Int
     tags: [String]
-    opening_count: Int
+    openingCount: Int
   }
 
   input AssetId {

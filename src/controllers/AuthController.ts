@@ -17,7 +17,7 @@ export const Login = async (parent: any, args: any) => {
     throw new Error('No User Found')
   }
   const isPasswordVerified = await verifyPassword(
-    user.encrypted_password,
+    user.encryptedPassword,
     password,
   )
 
