@@ -1,4 +1,4 @@
-import UserModel from '../models/UserModel'
+import UserModel from '../models/userModel'
 import { IUser } from '../interfaces/userInterface'
 
 import jwt from 'jsonwebtoken'

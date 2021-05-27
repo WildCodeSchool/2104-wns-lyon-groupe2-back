@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server-core'
+import { Login } from '../controllers/AuthController'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -13,7 +14,7 @@ import { gql } from 'apollo-server-core'
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const typeDef = gql`
-  type Mutation {
+  extend type Mutation {
     login(input: InputLogin!): AuthData
   }
 
@@ -28,5 +29,10 @@ export const typeDef = gql`
     email: String!
     password: String!
   }
-
 `
+
+export const resolvers = {
+  Mutation: {
+    login: Login,
+  },
+}

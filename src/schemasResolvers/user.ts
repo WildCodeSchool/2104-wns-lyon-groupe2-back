@@ -1,4 +1,11 @@
 import { gql } from 'apollo-server-core'
+import {
+  registerUser,
+  allUsers,
+  deleteUser,
+  updateUser,
+} from '../controllers/UserController'
+import { ForbiddenError } from 'apollo-server'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -83,3 +90,27 @@ export const typeDef = gql`
     id: String
   }
 `
+
+export const resolvers = {
+  UserType: {
+    STUDENT: 'student',
+    ADMIN: 'admin',
+    TEACHER: 'teacher',
+  },
+  Query: {
+    allUsers: allUsers,
+  },
+  Mutation: {
+    registerUser: (parent: any, args: any, context: any) => {
+      if (!context.user || context.user.userType !== 'admin')
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      return registerUser(parent, args)
+    },
+    updateUser: updateUser,
+    deleteUser: (parent: any, args: any, context: any) => {
+      if (!context.user || context.user.userType !== 'admin')
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      return deleteUser(parent, args, context)
+    },
+  },
+}

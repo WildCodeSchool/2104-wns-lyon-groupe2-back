@@ -1,11 +1,8 @@
 const { ApolloServer, gql } = require('apollo-server')
-// import { TYPE_DEFS } from './models/typeDefs'
 import {schema} from "./schemasResolvers/schema"
-import { resolvers } from './resolvers/resolvers'
 import mongoose from 'mongoose'
 import { getOneUser } from './controllers/UserController'
 import { config, IConfig } from '../env'
-import { AuthenticationError } from 'apollo-server-errors'
 
 const env: IConfig = config
 

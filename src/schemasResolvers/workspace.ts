@@ -1,4 +1,10 @@
 import { gql } from 'apollo-server-core'
+import {
+  allWorkspaces,
+  createWorkspace,
+  updateWorkspace,
+  deleteWorkspace,
+} from '../controllers/WorkSpacesController'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -129,3 +135,14 @@ export const typeDef = gql`
     id: String
   }
 `
+
+export const resolvers = {
+  Query: {
+    allWorkspaces: allWorkspaces,
+  },
+  Mutation: {
+    createWorkspace: createWorkspace,
+    updateWorkspace: updateWorkspace,
+    deleteWorkspace: deleteWorkspace,
+  },
+}

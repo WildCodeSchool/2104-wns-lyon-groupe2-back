@@ -1,4 +1,4 @@
-import UserModel from '../models/UserModel'
+import UserModel from '../models/userModel'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
