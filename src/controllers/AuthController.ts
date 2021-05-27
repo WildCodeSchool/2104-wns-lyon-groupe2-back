@@ -13,6 +13,7 @@ export const Login = async (parent: any, args: any) => {
   console.log(args)
   const email: string = args.input.email
   const password: string = args.input.password
+  const remember: boolean = args.input.remember
   const user = await UserModel.findOne({ email: email })
   if (!user) {
     throw new Error('No User Found')
@@ -26,7 +27,13 @@ export const Login = async (parent: any, args: any) => {
     throw new Error('Invalid Credentials')
   }
 
-  const token = jwt.sign({ userId: user.id }, env.jwt_secret)
+  // Définition de la durée du token en fonction du remember depuis le formulaire
+  const tokenExpire = remember ? env.jwt_expires_remember : env.jwt_expires_base
+
+  // Crération du token
+  const token = jwt.sign({ userId: user.id }, env.jwt_secret, {
+    expiresIn: tokenExpire,
+  })
   const payload = { token: token, email: email }
   return payload
 }

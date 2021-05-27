@@ -28,6 +28,7 @@ export const typeDef = gql`
   input InputLogin {
     email: String!
     password: String!
+    remember: Boolean!
   }
 `
 
