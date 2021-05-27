@@ -5,10 +5,11 @@ import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
 const { ForbiddenError, UserInputError } = require('apollo-server')
-
 const env: IConfig = config
+import {userValidationSchema} from "./joiSchema"
+import Joi from "joi"
 
-// do no forget parent !!!
+// do not forget parent !!!
 
 const hashPassword = async (password: string) => argon2.hash(password)
 
@@ -17,6 +18,12 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 }
 
 export const registerUser = async (parent: any, args: any) => {
+  try {
+    await userValidationSchema.validateAsync(args.input);
+  }
+  catch (err) {
+    throw new UserInputError(err)
+  }
   const input: IUser = args.input
   const encryptedPassword = await hashPassword(input.password)
   const { password, passwordConfirmation, ...datasWithoutPassword } = input
@@ -34,7 +41,6 @@ interface Token {
 // A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
 export const getOneUser = async (token: string) => {
   const tokenDecrypted: Token = jwt.verify(token, env.jwt_secret) as Token
-  console.log(tokenDecrypted)
   const user = await UserModel.findById(tokenDecrypted.userId)
   if (!user) {
     throw new Error('User Not Found')

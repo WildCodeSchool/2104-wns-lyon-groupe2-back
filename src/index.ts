@@ -15,11 +15,12 @@ const server = new ApolloServer({
       return { user }
     } else {
       try {
-        const user = await getOneUser(token)
+        user = await getOneUser(token)
       } catch (err) {
-        const user = null
+        user = null
       }
     }
+    
     return { user }
   },
 })
