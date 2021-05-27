@@ -1,4 +1,4 @@
-import UserModel from '../models/UserModel'
+import UserModel from '../models/userModel'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
@@ -17,7 +17,7 @@ export const Login = async (parent: any, args: any) => {
     throw new Error('No User Found')
   }
   const isPasswordVerified = await verifyPassword(
-    user.encrypted_password,
+    user.encryptedPassword,
     password,
   )
 

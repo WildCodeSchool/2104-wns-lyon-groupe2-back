@@ -2,27 +2,27 @@ import * as mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 const WorkspacesSchema = new Schema({
-  school_id: String,
-  user_admin: String,
-  is_school_workspace: Boolean,
-  users_allowed: [String] /* user_id */,
+  school_Id: String,
+  userAdmin: String,
+  isSchoolWorkspace: Boolean,
+  usersAllowed: [String] /* user_id */,
   title: String,
   feed: [
     {
-      feed_name: String,
+      feedName: String,
       messages: [
         {
           content: String,
-          user_id: String,
-          created_at: Date,
-          asset_id: String,
+          userId: String,
+          createdAt: Date,
+          assetId: String,
           likes: Number,
           dislikes: Number,
           comments: [
             {
               content: String,
-              user_id: String,
-              created_at: Date,
+              userId: String,
+              createdAt: Date,
             },
           ],
         },

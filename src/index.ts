@@ -1,6 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
-import { TYPE_DEFS } from './models/typeDefs'
-import { resolvers } from './resolvers/resolvers'
+import {schema} from "./schemasResolvers/schema"
 import mongoose from 'mongoose'
 import { getOneUser } from './controllers/UserController'
 import { config, IConfig } from '../env'
@@ -8,15 +7,19 @@ import { config, IConfig } from '../env'
 const env: IConfig = config
 
 const server = new ApolloServer({
-  typeDefs: TYPE_DEFS,
-  resolvers: resolvers,
+  schema,
   context: async ({ req }: any) => {
     const token = req.headers.authorization || ''
+    let user = null
     if (!token) {
-      const user = null
       return { user }
+    } else {
+      try {
+        const user = await getOneUser(token)
+      } catch (err) {
+        const user = null
+      }
     }
-    const user = await getOneUser(token)
     return { user }
   },
 })

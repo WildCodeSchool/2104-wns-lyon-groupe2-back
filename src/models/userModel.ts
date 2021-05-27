@@ -6,11 +6,11 @@ const UserSchema = new Schema({
   firstname: String,
   avatar: String,
   email: { type: String, unique: true },
-  encrypted_password: String,
-  school_id: String,
-  theme_id: String,
-  is_school_admin: Boolean,
-  user_type: String,
+  encryptedPassword: String,
+  schoolId: String,
+  themeId: String,
+  isSchoolAdmin: Boolean,
+  userType: String,
 })
 
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)
