@@ -23,7 +23,7 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
   }
- extend type Mutation {
+  extend type Mutation {
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
