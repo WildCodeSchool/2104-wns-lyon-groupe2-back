@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server')
-import { TYPE_DEFS } from './models/typeDefs'
+// import { TYPE_DEFS } from './models/typeDefs'
+import {schema} from "./schemasResolvers/schema"
 import { resolvers } from './resolvers/resolvers'
 import mongoose from 'mongoose'
 import { getOneUser } from './controllers/UserController'
@@ -9,8 +10,7 @@ import { AuthenticationError } from 'apollo-server-errors'
 const env: IConfig = config
 
 const server = new ApolloServer({
-  typeDefs: TYPE_DEFS,
-  resolvers: resolvers,
+  schema,
   context: async ({ req }: any) => {
     const token = req.headers.authorization || ''
     let user = null
