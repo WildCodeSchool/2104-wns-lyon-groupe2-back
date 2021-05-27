@@ -10,6 +10,7 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 }
 
 export const Login = async (parent: any, args: any) => {
+  console.log(args)
   const email: string = args.input.email
   const password: string = args.input.password
   const user = await UserModel.findOne({ email: email })

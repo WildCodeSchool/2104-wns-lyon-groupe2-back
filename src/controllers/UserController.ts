@@ -18,7 +18,6 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 
 export const registerUser = async (parent: any, args: any) => {
   const input: IUser = args.input
-
   const encryptedPassword = await hashPassword(input.password)
   const { password, passwordConfirmation, ...datasWithoutPassword } = input
   const userToSave = { ...datasWithoutPassword, encryptedPassword }

@@ -24,7 +24,6 @@ export const typeDef = gql`
     allUsers: [Users]
   }
  extend type Mutation {
-    createUser(input: InputUser!): Users
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
