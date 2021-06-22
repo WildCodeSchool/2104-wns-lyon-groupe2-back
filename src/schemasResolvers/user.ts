@@ -63,8 +63,8 @@ export const typeDef = gql`
     firstname: String!
     avatar: String
     email: String!
-    password: String!
-    passwordConfirmation: String!
+    # password: String!
+    # passwordConfirmation: String!
     schoolId: String!
     themeId: String
     isSchoolAdmin: Boolean!

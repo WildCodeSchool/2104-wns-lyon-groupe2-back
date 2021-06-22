@@ -6,8 +6,8 @@ import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
 const { ForbiddenError, UserInputError } = require('apollo-server')
 const env: IConfig = config
-import {userValidationSchema} from "./joiSchema"
-import Joi from "joi"
+import { userValidationSchema } from './joiSchema'
+import Joi from 'joi'
 
 // do not forget parent !!!
 
@@ -19,15 +19,15 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 
 export const registerUser = async (parent: any, args: any) => {
   try {
-    await userValidationSchema.validateAsync(args.input);
-  }
-  catch (err) {
+    await userValidationSchema.validateAsync(args.input)
+  } catch (err) {
     throw new UserInputError(err)
   }
   const input: IUser = args.input
-  const encryptedPassword = await hashPassword(input.password)
-  const { password, passwordConfirmation, ...datasWithoutPassword } = input
-  const userToSave = { ...datasWithoutPassword, encryptedPassword }
+  // TODO : switch 12345678 by a generated password (ex UUID)
+  const encryptedPassword = await hashPassword('12345678')
+  // const { password, passwordConfirmation, ...datasWithoutPassword } = input
+  const userToSave = { ...input, encryptedPassword }
   await UserModel.init()
   const model = new UserModel(userToSave)
   const result = await model.save()
