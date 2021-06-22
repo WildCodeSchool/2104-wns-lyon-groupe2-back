@@ -11,8 +11,16 @@ export const createWorkspace = async (parent: any, args: any) => {
   return result
 }
 
-export const allWorkspaces = async () => {
-  const result = await WorkspacesModel.find()
+export const allWorkspaces_isSchool = async () => {
+  const result = await WorkspacesModel.find({
+    is_school_workspace: true,
+  }).exec()
+  return result
+}
+export const allWorkspaces_isNotSchool = async () => {
+  const result = await WorkspacesModel.find({
+    is_school_workspace: false,
+  }).exec()
   return result
 }
 

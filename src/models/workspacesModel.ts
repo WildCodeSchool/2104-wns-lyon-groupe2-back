@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const WorkspacesSchema = new Schema({
   school_Id: String,
   userAdmin: String,
-  isSchoolWorkspace: Boolean,
+  is_school_workspace: Boolean,
   usersAllowed: [String] /* user_id */,
   title: String,
   feed: [
