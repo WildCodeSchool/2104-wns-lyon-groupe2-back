@@ -4,6 +4,7 @@ import {
   allUsers,
   deleteUser,
   updateUser,
+  getOneUser,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -22,6 +23,7 @@ import { ForbiddenError } from 'apollo-server'
 export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
+    getOneUser(token: String!): Users
   }
   extend type Mutation {
     deleteUser(input: UserId!): String
@@ -98,6 +100,8 @@ export const resolvers = {
   },
   Query: {
     allUsers: allUsers,
+    // Context a definir ici, je ne le met plat car bloquant et relou.
+    getOneUser: (args: any, context: any) => getOneUser(args, context),
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
