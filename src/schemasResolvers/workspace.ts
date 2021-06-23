@@ -1,7 +1,6 @@
 import { gql } from 'apollo-server-core'
 import {
-  allWorkspaces_isSchool,
-  allWorkspaces_isNotSchool,
+  allWorkspaces,
   createWorkspace,
   updateWorkspace,
   deleteWorkspace,
@@ -21,8 +20,7 @@ import {
 
 export const typeDef = gql`
   extend type Query {
-    allWorkspaces_isSchool: [Workspaces]
-    allWorkspaces_isNotSchool: [Workspaces]
+    allWorkspaces(input: InputWorkspaceGet!): [Workspaces]
   }
   extend type Mutation {
     createWorkspace(input: InputWorkspace!): Workspaces
@@ -77,6 +75,9 @@ export const typeDef = gql`
   }
 
   # Inputs _____________________________________________________
+  input InputWorkspaceGet {
+    isSchoolWorkspace: Boolean!
+  }
   input InputWorkspace {
     schoolId: String
     userAdmin: String
@@ -140,8 +141,7 @@ export const typeDef = gql`
 
 export const resolvers = {
   Query: {
-    allWorkspaces_isSchool: allWorkspaces_isSchool,
-    allWorkspaces_isNotSchool: allWorkspaces_isNotSchool,
+    allWorkspaces: allWorkspaces,
   },
   Mutation: {
     createWorkspace: createWorkspace,

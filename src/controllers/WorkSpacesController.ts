@@ -11,15 +11,14 @@ export const createWorkspace = async (parent: any, args: any) => {
   return result
 }
 
-export const allWorkspaces_isSchool = async () => {
+// Permet de récupérer les workspaces en fonction de s'ils appartiennent à l'école (Ecoles/formation) ou aux élèves (Espace de travail)
+export const allWorkspaces = async (parent: any, args: any, context: any) => {
+  const isSchoolWorkspace: Boolean = args.input.isSchoolWorkspace
+  console.log(context)
+
   const result = await WorkspacesModel.find({
-    is_school_workspace: true,
-  }).exec()
-  return result
-}
-export const allWorkspaces_isNotSchool = async () => {
-  const result = await WorkspacesModel.find({
-    is_school_workspace: false,
+    is_school_workspace: isSchoolWorkspace,
+    users_allowed: context.user.id,
   }).exec()
   return result
 }
@@ -33,24 +32,25 @@ export const deleteWorkspace = async (parent: any, args: any) => {
   return `Workspace ${workspace.title} has been successfully deleted`
 }
 
+// Permet de :
+// - modifier un workspace
+// - ajouter/supprimer/modifier un feed
+// - ajouter/supprimer/modifier un shared asset
+// - ajouter/supprimer/modifier un visio
+// Pour savoir quoi faire : un verbe et une action sont demandés dans l'input
+
 export const updateWorkspace = async (parent: any, args: any) => {
   const input: IWorkspaces = args.input // values send by client
+
+  if (input.isSchoolWorkspace) {
+    // vérification que l'user a le droit de modifier
+    // Un élève peut quand même modifier le feed et les commentaires du feed
+  }
+
   const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
   if (workspace) {
-    workspace._doc = { ...workspace._doc, ...input } // update user's datas
-    console.log(
-      '🚀 ~ file: workSpacesController.ts ~ line 32 ~ updateWorkspace ~ workspace',
-      workspace,
-    )
-    console.log(
-      '🚀 ~ file: workSpacesController.ts ~ line 33 ~ updateWorkspace ~ workspace._doc',
-      workspace._doc,
-    )
+    workspace._doc = { ...workspace._doc, ...input } // update workspace's datas
     const result = await workspace.save()
-    console.log(
-      '🚀 ~ file: workSpacesController.ts ~ line 34 ~ updateWorkspace ~ result',
-      result,
-    )
 
     return await workspace.save() // save datas
   }

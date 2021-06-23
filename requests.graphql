@@ -1,28 +1,26 @@
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# We can name query and mutations as we want !                                                                                                  #
+# Ex: we can name a mutation createWorkspace which calling the type updateWorkspace (it dont' make any sense at all but it's for the example :))#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 # WORKSPACES REQUESTS _____________________________________________________
-#  get all workspaces  _____________________________________________________
+#  get all workspaces isSchool true/false  _____________________________________________________
 
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-# We can name query and mutations as we want !                                                                                                  #  
-# Ex: we can name a mutation createWorkspace which calling the type updateWorkspace (it dont' make any sense at all but it's for the example :))# 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-{
-  allWorkspaces {
+query allWorkspaces($input: InputWorkspaceGet!) {
+  allWorkspaces(input: $input) {
     id
     title
-    is_school_workspace
-    feed {
-      id
-      feed_name
-    }
-    assets {
-      id
-      asset_name
-    }
   }
 }
-#  create workspace   _____________________________________________________
+
+# Query Variables
+# {
+#   "input": {
+#  		"isSchoolWorkspace": false
+# 	}
+# }#
+
+# create workspace   _____________________________________________________
 mutation createWorspace($input: InputWorkspace!) {
   createWorkspace(input: $input) {
     id
