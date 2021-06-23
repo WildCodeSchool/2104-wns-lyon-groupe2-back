@@ -30,9 +30,24 @@ export const Login = async (parent: any, args: any) => {
   const tokenExpire = remember ? env.jwt_expires_remember : env.jwt_expires_base
 
   // Crération du token
-  const token = jwt.sign({ userId: user.id }, env.jwt_secret, {
-    expiresIn: tokenExpire,
-  })
+  const token = jwt.sign(
+    {
+      userId: user.id,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      avatar: user.string,
+      email: user.email,
+      schoolId: user.schoolId,
+      themeId: user.themeId,
+      isSchoolAdmin: user.isSchoolAdmin,
+      userType: user.userType,
+      workspacesadmin: user.workspacesadmin,
+    },
+    env.jwt_secret,
+    {
+      expiresIn: tokenExpire,
+    },
+  )
   const payload = { token: token, email: email }
   return payload
 }

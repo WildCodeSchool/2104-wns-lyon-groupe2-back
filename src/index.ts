@@ -1,5 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
-import {schema} from "./schemasResolvers/schema"
+import { schema } from './schemasResolvers/schema'
 import mongoose from 'mongoose'
 import { getOneUser } from './controllers/UserController'
 import { config, IConfig } from '../env'
@@ -20,7 +20,7 @@ const server = new ApolloServer({
         user = null
       }
     }
-    
+
     return { user }
   },
 })

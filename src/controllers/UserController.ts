@@ -38,9 +38,8 @@ interface Token {
   iat: number
 }
 // A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
-export const getOneUser = async (arg: any, context: any) => {
-  console.log(arg)
-  const tokenDecrypted: Token = jwt.verify(arg.token, env.jwt_secret) as Token
+export const getOneUser = async (args: any) => {
+  const tokenDecrypted: Token = jwt.verify(args.token, env.jwt_secret) as Token
   const user = await UserModel.findById(tokenDecrypted.userId)
   if (!user) {
     throw new Error('User Not Found')

@@ -100,8 +100,7 @@ export const resolvers = {
   },
   Query: {
     allUsers: allUsers,
-    // Context a definir ici, je ne le met plat car bloquant et relou.
-    getOneUser: (args: any, context: any) => getOneUser(args, context),
+    getOneUser: (args: any) => getOneUser(args),
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
