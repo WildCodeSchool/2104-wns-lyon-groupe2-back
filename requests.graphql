@@ -3,6 +3,28 @@
 # Ex: we can name a mutation createWorkspace which calling the type updateWorkspace (it dont' make any sense at all but it's for the example :))#
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+# USER REQUESTS _____________________________________________________
+#  register user  _____________________________________________________
+
+mutation registerUser($input: InputUser!) {
+  registerUser(input: $input) {
+    id
+  }
+}
+
+# Query Variables
+# {
+#   "input": {
+#     "lastname": "DARDILL",
+#     "firstname": "Guillem",
+#     "email": "guillem.dardill@mail.com",
+#     "password": "aqwzsxed123",
+#     "passwordConfirmation": "aqwzsxed123",
+#     "schoolId": "1",
+#     "isSchoolAdmin": true,
+#     "userType": "ADMIN"
+# 	}
+# }
 # WORKSPACES REQUESTS _____________________________________________________
 #  get all workspaces isSchool true/false  _____________________________________________________
 
@@ -16,23 +38,29 @@ query allWorkspaces($input: InputWorkspaceGet!) {
 # Query Variables
 # {
 #   "input": {
-#  		"isSchoolWorkspace": false
+#  		"isSchoolWorkspace": false,
+#     "schoolID": 1,
 # 	}
-# }#
+# }
+
+# http headers
+# {
+#   "Authorization" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGQyZTFlM2U2MjNhZDM3ODQyNThlMTEiLCJmaXJzdG5hbWUiOiJHdWlsbGVtIiwibGFzdG5hbWUiOiJEQVJESUxMIiwiZW1haWwiOiJndWlsbGVtLmRhcmRpbGxAZ21haWwuY29tIiwic2Nob29sSWQiOiIxIiwiaXNTY2hvb2xBZG1pbiI6dHJ1ZSwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTYyNDQzNjE4OCwiZXhwIjoxNjI1MDQwOTg4fQ.eVyZhv3Ly0wwWxo66nbXDvS8BOE5XGdmk5KsRDZn15E"
+# }
 
 # create workspace   _____________________________________________________
 mutation createWorspace($input: InputWorkspace!) {
   createWorkspace(input: $input) {
     id
     title
-    is_school_workspace
+    isSchoolWorkspace
     feed {
       id
-      feed_name
+      feedName
     }
     assets {
       id
-      asset_name
+      assetName
     }
   }
 }
@@ -40,12 +68,13 @@ mutation createWorspace($input: InputWorkspace!) {
 # Query Variables
 # {"input":{
 #   "title": "Général",
-#   "is_school_workspace": true,
+#   "isSchoolWorkspace": true,
+#   "usersAllowed": "all",
 # "feed": {
-#   "feed_name": "Social"
+#   "feedName": "Social"
 # },
 # "assets": {
-#   "asset_name": "Ressources"
+#   "assetName": "Ressources"
 # }}
 # }
 
@@ -55,14 +84,14 @@ mutation updateWorkspace($input: UpdateWorkspace!) {
   updateWorkspace(input: $input) {
     id
     title
-    is_school_workspace
+    isSchoolWorkspace
     feed {
       id
-      feed_name
+      feedName
     }
     assets {
       id
-      asset_name
+      assetName
     }
   }
 }
@@ -71,12 +100,12 @@ mutation updateWorkspace($input: UpdateWorkspace!) {
 # {"input":{
 #   "id": "608a791bbde5ff2c48dc239b",
 #   "title": "Alternance",
-#   "is_school_workspace": false,
+#   "isSchoolWorkspace": false,
 # "feed": {
-#   "feed_name": "Sociale"
+#   "feedName": "Sociale"
 # },
 # "assets": {
-#   "asset_name": "Ressources"
+#   "assetName": "Ressources"
 # }}
 # }
 

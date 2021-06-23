@@ -39,7 +39,7 @@ interface Token {
 }
 // A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
 export const getOneUser = async (args: any) => {
-  const tokenDecrypted: Token = jwt.verify(args.token, env.jwt_secret) as Token
+  const tokenDecrypted: Token = jwt.verify(args, env.jwt_secret) as Token
   const user = await UserModel.findById(tokenDecrypted.userId)
   if (!user) {
     throw new Error('User Not Found')
@@ -50,6 +50,11 @@ export const getOneUser = async (args: any) => {
 export const allUsers = async (parents: any, arg: any, context: any) => {
   /* if (!context.user) return null */
   const result = await UserModel.find()
+  return result
+}
+export const allUsersWithSchoolId = async (userSchoolId: string) => {
+  /* if (!context.user) return null */
+  const result = await UserModel.find({ schoolId: userSchoolId })
   return result
 }
 

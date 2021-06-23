@@ -77,12 +77,13 @@ export const typeDef = gql`
   # Inputs _____________________________________________________
   input InputWorkspaceGet {
     isSchoolWorkspace: Boolean!
+    schoolId: String
   }
   input InputWorkspace {
     schoolId: String
     userAdmin: String
     isSchoolWorkspace: Boolean!
-    usersAllowed: [String]
+    usersAllowed: [String]!
     title: String!
     feed: [InputFeed]
     assets: [InputSharedAssets]
