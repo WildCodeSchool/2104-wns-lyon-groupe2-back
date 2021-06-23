@@ -37,10 +37,9 @@ query allWorkspaces($input: InputWorkspaceGet!) {
 
 # Query Variables
 # {
-#   "input":
-#   {
-#  		"isSchoolWorkspace": false,
-#      "schoolID": "1"
+#   "input":{
+#  		"isSchoolWorkspace": true,
+#     "schoolId": "1"
 #   }
 # }
 
@@ -68,10 +67,10 @@ mutation createWorspace($input: InputWorkspace!) {
 
 # Query Variables
 # {"input":{
-#   "title": "Général",
+#   "title": "Général2",
 #   "isSchoolWorkspace": true,
+#   "schoolId": "1",
 #   "usersAllowed": "all",
-#   "schoolId : "1",
 # "feed": {
 #   "feedName": "Social"
 # },
