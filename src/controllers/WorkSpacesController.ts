@@ -17,7 +17,9 @@ export const createWorkspace = async (parent: any, args: any, context: any) => {
   // possibilité de rajouter tous les utilisateurs de son école en utilisateurs rattachés
   if (input.usersAllowed[0] === 'all') {
     const getAllUsers: any = await allUsersWithSchoolId(context.user.schoolId)
-    input.usersAllowed = getAllUsers
+    input.usersAllowed = getAllUsers.map((user: any) => {
+      return user._id
+    })
   }
   await WorkspacesModel.init()
   const model = new WorkspacesModel(input)
@@ -29,10 +31,11 @@ export const createWorkspace = async (parent: any, args: any, context: any) => {
 export const allWorkspaces = async (parent: any, args: any, context: any) => {
   const isSchoolWorkspace: Boolean = args.input.isSchoolWorkspace
   const result = await WorkspacesModel.find({
-    is_school_workspace: isSchoolWorkspace,
-    users_allowed: context.user.id,
+    isSchoolWorkspace: isSchoolWorkspace,
+    usersAllowed: context.user.id,
     schoolId: context.user.schoolId,
   }).exec()
+  console.log(context.user.id)
   return result
 }
 
@@ -47,14 +50,14 @@ export const deleteWorkspace = async (parent: any, args: any) => {
 
 export const updateWorkspace = async (parent: any, args: any, context: any) => {
   const input: IWorkspaces = args.input // values send by client
-  const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
-  console.log(
-    '🚀 ~ file: WorkSpacesController.ts ~ line 50 ~ updateWorkspace ~ workspace',
-    workspace,
-  )
+  const workspace = await WorkspacesModel.findByIdAndUpdate(
+    { _id: input.id },
+    { update: input },
+  ) // find corresponding user in DB
+
   // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teatcher
 
-  if (context.user.userType === 'student' && workspace.is_school_workspace) {
+  if (context.user.userType === 'student' && workspace.isSchoolWorkspace) {
     throw new Error(
       'not allowed to perform this action, you must be admin or teacher',
     )
@@ -62,9 +65,9 @@ export const updateWorkspace = async (parent: any, args: any, context: any) => {
 
   // const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
   if (workspace) {
-    workspace._doc = { ...workspace._doc, ...input } // update workspace's datas
-    const result = await workspace.save()
-
-    return await workspace.save() // save datas
+    // workspace._doc = { ...workspace._doc, ...input } // update workspace's datas
+    // const result = await workspace.update()
+    // await workspace.save()
+    return 'coucou' // save datas
   }
 }

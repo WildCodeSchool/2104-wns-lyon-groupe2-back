@@ -54,7 +54,7 @@ export const allUsers = async (parents: any, arg: any, context: any) => {
 }
 export const allUsersWithSchoolId = async (userSchoolId: string) => {
   /* if (!context.user) return null */
-  const result = await UserModel.find({ schoolId: userSchoolId })
+  const result = await UserModel.find({ schoolId: userSchoolId }, '_id')
   return result
 }
 

@@ -37,10 +37,11 @@ query allWorkspaces($input: InputWorkspaceGet!) {
 
 # Query Variables
 # {
-#   "input": {
+#   "input":
+#   {
 #  		"isSchoolWorkspace": false,
-#     "schoolID": 1,
-# 	}
+#      "schoolID": "1"
+#   }
 # }
 
 # http headers
@@ -70,6 +71,7 @@ mutation createWorspace($input: InputWorkspace!) {
 #   "title": "Général",
 #   "isSchoolWorkspace": true,
 #   "usersAllowed": "all",
+#   "schoolId : "1",
 # "feed": {
 #   "feedName": "Social"
 # },
@@ -98,14 +100,14 @@ mutation updateWorkspace($input: UpdateWorkspace!) {
 
 # Query Variables
 # {"input":{
-#   "id": "608a791bbde5ff2c48dc239b",
+#   "id": "60d323e6d57d126494681edb",
 #   "title": "Alternance",
 #   "isSchoolWorkspace": false,
 # "feed": {
-#   "feedName": "Sociale"
+#   "feedName": "test2"
 # },
 # "assets": {
-#   "assetName": "Ressources"
+#   "assetName": "test2"
 # }}
 # }
 
