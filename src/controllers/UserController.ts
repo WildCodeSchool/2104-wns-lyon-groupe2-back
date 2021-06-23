@@ -1,6 +1,6 @@
 import UserModel from '../models/userModel'
 import { IUser } from '../interfaces/userInterface'
-
+import {sendEmailToNewCustomer} from "../shared/tools/sendEmail"
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
@@ -25,12 +25,14 @@ export const registerUser = async (parent: any, args: any) => {
   }
   const input: IUser = args.input
   // TODO : switch 12345678 by a generated password (ex UUID)
-  const encryptedPassword = await hashPassword('12345678')
+  const password = '12345678'
+  const encryptedPassword = await hashPassword(password)
   // const { password, passwordConfirmation, ...datasWithoutPassword } = input
   const userToSave = { ...input, encryptedPassword }
   await UserModel.init()
   const model = new UserModel(userToSave)
   const result = await model.save()
+  sendEmailToNewCustomer({...input, password})
   return result
 }
 
