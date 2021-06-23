@@ -44,18 +44,22 @@ export const deleteWorkspace = async (parent: any, args: any) => {
   return `Workspace ${workspace.title} has been successfully deleted`
 }
 
-export const updateWorkspace = async (parent: any, args: any) => {
+export const updateWorkspace = async (parent: any, args: any, context: any) => {
   const input: IWorkspaces = args.input // values send by client
+  const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
+  console.log(
+    '🚀 ~ file: WorkSpacesController.ts ~ line 50 ~ updateWorkspace ~ workspace',
+    workspace,
+  )
+  // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teatcher
 
-  if (input.isSchoolWorkspace) {
-    if (args.input) {
-      console.log('test')
-    }
-    // vérification que l'user a le droit de modifier
-    // Un élève peut quand même modifier le feed et les commentaires du feed
+  if (context.user.userTpe === 'student' && workspace[0].isSchoolWorkspace) {
+    throw new Error(
+      'not allowed to perform this action, you must be admin or teacher',
+    )
   }
 
-  const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
+  // const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
   if (workspace) {
     workspace._doc = { ...workspace._doc, ...input } // update workspace's datas
     const result = await workspace.save()

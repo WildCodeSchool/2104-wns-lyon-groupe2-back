@@ -93,7 +93,7 @@ export const typeDef = gql`
     id: ID!
     schoolId: String
     userAdmin: String
-    isSchoolWorkspace: Boolean!
+    isSchoolWorkspace: Boolean
     usersAllowed: [String]
     title: String!
     feed: [InputFeed]
