@@ -14,6 +14,7 @@ export const createWorkspace = async (parent: any, args: any, context: any) => {
   }
 
   const input: IWorkspaces = args.input
+  // possibilité de rajouter tous les utilisateurs de son école en utilisateurs rattachés
   if (input.usersAllowed[0] === 'all') {
     const getAllUsers: any = await allUsersWithSchoolId(context.user.schoolId)
     input.usersAllowed = getAllUsers
@@ -53,7 +54,7 @@ export const updateWorkspace = async (parent: any, args: any, context: any) => {
   )
   // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teatcher
 
-  if (context.user.userTpe === 'student' && workspace[0].isSchoolWorkspace) {
+  if (context.user.userType === 'student' && workspace.is_school_workspace) {
     throw new Error(
       'not allowed to perform this action, you must be admin or teacher',
     )

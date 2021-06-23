@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const WorkspacesSchema = new Schema({
   school_Id: String,
   userAdmin: String,
-  is_school_workspace: Boolean,
+  isSchoolWorkspace: Boolean,
   usersAllowed: [String] /* user_id */,
   title: String,
   feed: [
@@ -31,7 +31,7 @@ const WorkspacesSchema = new Schema({
   ],
   assets: [
     {
-      asset_name: String,
+      assetName: String,
       folders: [
         {
           folder_name: String,
