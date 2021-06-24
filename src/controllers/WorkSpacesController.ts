@@ -50,24 +50,19 @@ export const deleteWorkspace = async (parent: any, args: any) => {
 
 export const updateWorkspace = async (parent: any, args: any, context: any) => {
   const input: IWorkspaces = args.input // values send by client
-  const workspace = await WorkspacesModel.findByIdAndUpdate(
+  const workspace = await WorkspacesModel.findOneAndUpdate(
     { _id: input.id },
-    { update: input },
+    input,
   ) // find corresponding user in DB
 
-  // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teatcher
+  // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teacher
+  // if (context.user.userType === 'student' && workspace.isSchoolWorkspace) {
+  //   if (input.title || input.isSchoolWorkspace || input.feed.includes()) {
+  //     throw new Error(
+  //       'not allowed to perform this action, you must be admin or teacher',
+  //     )
+  //   }
+  // }
 
-  if (context.user.userType === 'student' && workspace.isSchoolWorkspace) {
-    throw new Error(
-      'not allowed to perform this action, you must be admin or teacher',
-    )
-  }
-
-  // const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
-  if (workspace) {
-    // workspace._doc = { ...workspace._doc, ...input } // update workspace's datas
-    // const result = await workspace.update()
-    // await workspace.save()
-    return 'coucou' // save datas
-  }
+  return input
 }

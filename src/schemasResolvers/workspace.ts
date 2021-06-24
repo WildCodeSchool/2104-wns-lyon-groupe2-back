@@ -77,7 +77,6 @@ export const typeDef = gql`
   # Inputs _____________________________________________________
   input InputWorkspaceGet {
     isSchoolWorkspace: Boolean!
-    schoolId: String!
   }
   input InputWorkspace {
     schoolId: String
@@ -95,7 +94,7 @@ export const typeDef = gql`
     userAdmin: String
     isSchoolWorkspace: Boolean
     usersAllowed: [String]
-    title: String!
+    title: String
     feed: [InputFeed]
     assets: [InputSharedAssets]
     visio: String

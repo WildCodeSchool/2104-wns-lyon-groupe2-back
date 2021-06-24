@@ -98,16 +98,18 @@ mutation updateWorkspace($input: UpdateWorkspace!) {
 }
 
 # Query Variables
-# {"input":{
-#   "id": "60d323e6d57d126494681edb",
-#   "title": "Alternance",
-#   "isSchoolWorkspace": false,
-# "feed": {
-#   "feedName": "test2"
-# },
-# "assets": {
-#   "assetName": "test2"
-# }}
+# {"input":
+#   {
+#     "id": "60d33b905e384a6010dcd4ea",
+#     "title": "Alternance",
+#     "isSchoolWorkspace": false,
+#     "feed": {
+#     "feedName": "test2"
+#     },
+#     "assets": {
+#     "assetName": "test2"
+#     }
+#   }
 # }
 
 #  delete workspace   _____________________________________________________
