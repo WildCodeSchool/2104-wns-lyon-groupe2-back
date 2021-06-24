@@ -36,12 +36,32 @@ query allWorkspaces($input: InputWorkspaceGet!) {
 }
 
 # Query Variables
+{
+  "input":{
+ 		"isSchoolWorkspace": true,
+    "schoolId": "1"
+  }
+}
+
+# http headers
 # {
-#   "input":{
-#  		"isSchoolWorkspace": true,
-#     "schoolId": "1"
-#   }
+#   "Authorization" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGQyZTFlM2U2MjNhZDM3ODQyNThlMTEiLCJmaXJzdG5hbWUiOiJHdWlsbGVtIiwibGFzdG5hbWUiOiJEQVJESUxMIiwiZW1haWwiOiJndWlsbGVtLmRhcmRpbGxAZ21haWwuY29tIiwic2Nob29sSWQiOiIxIiwiaXNTY2hvb2xBZG1pbiI6dHJ1ZSwidXNlclR5cGUiOiJhZG1pbiIsImlhdCI6MTYyNDQzNjE4OCwiZXhwIjoxNjI1MDQwOTg4fQ.eVyZhv3Ly0wwWxo66nbXDvS8BOE5XGdmk5KsRDZn15E"
 # }
+
+# get a workspace by ID
+query getWorkspaceById($input: WorkspaceId!) {
+  getWorkspaceById(input: $input) {
+    id
+    title
+  }
+}
+
+# Query Variables
+{
+  "input":{
+ 		"id": "60d3515b19958f35dd26e4bd"
+  }
+}
 
 # http headers
 # {

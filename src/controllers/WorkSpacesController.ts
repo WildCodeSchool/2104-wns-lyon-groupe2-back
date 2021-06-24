@@ -61,3 +61,9 @@ export const updateWorkspace = async (parent: any, args: any, context: any) => {
 
   return workspace
 }
+
+export const getWorkspaceById = async (parent: any, args: any) => {
+  const id: String = args.input.id
+  const res = await WorkspacesModel.findById(id)
+  return res
+}
