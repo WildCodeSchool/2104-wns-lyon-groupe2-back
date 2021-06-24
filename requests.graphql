@@ -101,14 +101,20 @@ mutation updateWorkspace($input: UpdateWorkspace!) {
 # {"input":
 #   {
 #     "id": "60d33b905e384a6010dcd4ea",
-#     "title": "Alternance",
-#     "isSchoolWorkspace": false,
-#     "feed": {
-#     "feedName": "test2"
-#     },
-#     "assets": {
-#     "assetName": "test2"
-#     }
+#     "feed":
+#       {
+#       "feedName": "test",
+#       "messages":
+#         [
+#           {
+#         	"content" : "coucou tu veux voir ma bite ?"
+#       		}
+#         ]
+#       },
+#     "assets":
+#       {
+#       "assetName": "test"
+#       }
 #   }
 # }
 

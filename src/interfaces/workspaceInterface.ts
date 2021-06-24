@@ -17,7 +17,7 @@ export interface IWorkspaces {
   userAdmin: string
   isSchoolWorkspace: boolean
   usersAllowed: [string] /* user_id */
-  title: string
+  title?: string
   feed: [
     {
       id: string
