@@ -4,6 +4,7 @@ import {
   createWorkspace,
   updateWorkspace,
   deleteWorkspace,
+  getWorkspaceById,
 } from '../controllers/WorkSpacesController'
 
 /////////////////////////////////////////////////////////////////
@@ -21,6 +22,7 @@ import {
 export const typeDef = gql`
   extend type Query {
     allWorkspaces(input: InputWorkspaceGet!): [Workspaces]
+    getWorkspaceById(input: WorkspaceId!): Workspaces
   }
   extend type Mutation {
     createWorkspace(input: InputWorkspace!): Workspaces
@@ -142,6 +144,7 @@ export const typeDef = gql`
 export const resolvers = {
   Query: {
     allWorkspaces: allWorkspaces,
+    getWorkspaceById: getWorkspaceById,
   },
   Mutation: {
     createWorkspace: createWorkspace,
