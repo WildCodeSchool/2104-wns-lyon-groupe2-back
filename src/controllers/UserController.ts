@@ -7,7 +7,6 @@ import * as argon2 from 'argon2'
 const { ForbiddenError, UserInputError } = require('apollo-server')
 const env: IConfig = config
 import { userValidationSchema } from './joiSchema'
-import Joi from 'joi'
 
 // do not forget parent !!!
 
@@ -45,6 +44,17 @@ export const getOneUser = async (args: any) => {
     throw new Error('User Not Found')
   }
   return user
+}
+export const getMyPasswordBack = async (parent: any, args: any) => {
+  console.log('coucou')
+  console.log(args)
+
+  const user = await UserModel.findOne(args)
+  if (!user) {
+    throw new Error("Email isn't in the DB")
+  }
+  console.log(user)
+  return { message: 'Mail Sent', id: user.id }
 }
 
 export const allUsers = async (parents: any, arg: any, context: any) => {
