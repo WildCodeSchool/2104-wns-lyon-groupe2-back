@@ -1,6 +1,6 @@
 import UserModel from '../models/userModel'
 import { IUser } from '../interfaces/userInterface'
-import {sendEmailToNewCustomer} from "../shared/tools/sendEmail"
+import { sendEmailToNewUser } from '../shared/tools/sendEmail'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
@@ -32,7 +32,11 @@ export const registerUser = async (parent: any, args: any) => {
   await UserModel.init()
   const model = new UserModel(userToSave)
   const result = await model.save()
-  sendEmailToNewCustomer({...input, password})
+  try {
+    sendEmailToNewUser({ ...input, password })
+  } catch (err) {
+    console.log(err)
+  }
   return result
 }
 
@@ -42,7 +46,7 @@ interface Token {
 }
 // A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
 export const getOneUser = async (args: any) => {
-  const tokenDecrypted: Token = jwt.verify(args.token, env.jwt_secret) as Token
+  const tokenDecrypted: Token = jwt.verify(args, env.jwt_secret) as Token
   const user = await UserModel.findById(tokenDecrypted.userId)
   if (!user) {
     throw new Error('User Not Found')

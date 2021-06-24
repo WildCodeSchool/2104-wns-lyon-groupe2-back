@@ -1,12 +1,12 @@
 import SibApiV3Sdk from 'sib-api-v3-sdk'
 
-export const sendEmailToNewCustomer = (userData: any) => {
+export const sendEmailToNewUser = (userData: any) => {
   const defaultClient = SibApiV3Sdk.ApiClient.instance
   const apiKey = defaultClient.authentications['api-key']
   apiKey.apiKey = process.env.SENDINBLUE_API_KEY
   var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
   var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
-  
+
   sendSmtpEmail = {
     to: [
       {
