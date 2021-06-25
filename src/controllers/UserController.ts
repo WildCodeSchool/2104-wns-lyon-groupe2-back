@@ -55,6 +55,7 @@ export const getMyPasswordBack = async (parent: any, args: any) => {
   const recordedToken = await addTokenForRecovery(user.id)
   const token = recordedToken.reset_password_token
   const url = `http://localhost/3000/${token}`
+  console.log('url', url)
   //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
   return { message: 'Mail Sent', id: user.id }
 }
@@ -103,12 +104,14 @@ const addTokenForRecovery = async (userId: number) => {
   const reset_password_token = token
   const reset_password_expires = Date.now() + 3600
 
-  const user = await UserModel.findById(userId)
+  let user = await UserModel.findById(userId)
+  console.log('user', user)
   if (!user) {
     throw new Error('User Not Found')
   }
-  user._doc = { ...user._doc, reset_password_token, reset_password_expires }
+  user.reset_password_token = reset_password_token
+  user.reset_password_expires = reset_password_expires.toString()
   const updateUserWithToken = await user.save()
-  console.log(updateUserWithToken)
+  console.log('updated', updateUserWithToken)
   return updateUserWithToken
 }

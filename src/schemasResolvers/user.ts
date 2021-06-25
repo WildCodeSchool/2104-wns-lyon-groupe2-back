@@ -46,7 +46,7 @@ export const typeDef = gql`
     userType: UserType
     workspacesAdmin: [WorkspacesAdmin]
     reset_password_token: String
-    reset_password_expires: Int
+    reset_password_expires: String
   }
 
   type WorkspacesAdmin {
@@ -82,7 +82,7 @@ export const typeDef = gql`
     userType: UserType!
     workspacesAdmin: [InputWorkspacesAdmin]
     reset_password_token: String
-    reset_password_expires: Int
+    reset_password_expires: String
   }
   input UpdateUser {
     id: String!
@@ -97,7 +97,7 @@ export const typeDef = gql`
     userType: UserType
     workspacesAdmin: [InputWorkspacesAdmin]
     reset_password_token: String
-    reset_password_expires: Int
+    reset_password_expires: String
   }
 
   input UserId {
