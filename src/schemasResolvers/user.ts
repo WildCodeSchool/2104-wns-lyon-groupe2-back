@@ -25,12 +25,12 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
     getOneUser(token: String!): Users
-    getMyPasswordBack(email: String!): ResponseForRecovery
   }
   extend type Mutation {
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
+    getMyPasswordBack(email: String!): ResponseForRecovery
   }
 
   # Types _____________________________________________________
@@ -107,9 +107,7 @@ export const resolvers = {
   },
   Query: {
     allUsers: allUsers,
-    getOneUser: (args: any) => getOneUser(args),
-    getMyPasswordBack: (parent: any, args: any) =>
-      getMyPasswordBack(parent, args),
+    getOneUser: getOneUser,
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
@@ -123,5 +121,6 @@ export const resolvers = {
         throw new ForbiddenError("You're not allowed to perform this operation")
       return deleteUser(parent, args, context)
     },
+    getMyPasswordBack: getMyPasswordBack,
   },
 }

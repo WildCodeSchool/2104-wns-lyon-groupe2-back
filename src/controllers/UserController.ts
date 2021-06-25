@@ -1,5 +1,6 @@
 import UserModel from '../models/userModel'
 import { IUser } from '../interfaces/userInterface'
+import crypto from 'crypto'
 
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
@@ -7,6 +8,7 @@ import * as argon2 from 'argon2'
 const { ForbiddenError, UserInputError } = require('apollo-server')
 const env: IConfig = config
 import { userValidationSchema } from './joiSchema'
+import { randomBytes } from 'node:crypto'
 
 // do not forget parent !!!
 
@@ -46,14 +48,14 @@ export const getOneUser = async (args: any) => {
   return user
 }
 export const getMyPasswordBack = async (parent: any, args: any) => {
-  console.log('coucou')
-  console.log(args)
-
   const user = await UserModel.findOne(args)
   if (!user) {
     throw new Error("Email isn't in the DB")
   }
-  console.log(user)
+  const recordedToken = await addTokenForRecovery(user.id)
+  const token = recordedToken.reset_password_token
+  const url = `http://localhost/3000/${token}`
+  //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
   return { message: 'Mail Sent', id: user.id }
 }
 
@@ -89,4 +91,22 @@ export const updateUser = async (parent: any, args: any, context: any) => {
     user._doc = { ...user._doc, ...input } // update user's datas
     return await user.save() // save datas
   }
+}
+
+// Je calle ça ici, temporaire, a voir pour middleware.
+// Methods pour record un token avec une heure de validité
+// (a débattre).
+
+const addTokenForRecovery = async (userId: number) => {
+  const token = crypto.randomBytes(20).toString('hex')
+
+  const reset_password_token = token
+  const reset_password_expires = Date.now() + 3600
+
+  const user = await UserModel.findById(userId)
+  if (!user) {
+    throw new Error('User Not Found')
+  }
+  user._doc = { ...user._doc, reset_password_token, reset_password_expires }
+  return await user.save()
 }
