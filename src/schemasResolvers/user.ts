@@ -45,6 +45,8 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [WorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: Int
   }
 
   type WorkspacesAdmin {
@@ -79,6 +81,8 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean!
     userType: UserType!
     workspacesAdmin: [InputWorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: Int
   }
   input UpdateUser {
     id: String!
@@ -92,6 +96,8 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [InputWorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: Int
   }
 
   input UserId {

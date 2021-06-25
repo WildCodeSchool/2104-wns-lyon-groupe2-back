@@ -108,5 +108,7 @@ const addTokenForRecovery = async (userId: number) => {
     throw new Error('User Not Found')
   }
   user._doc = { ...user._doc, reset_password_token, reset_password_expires }
-  return await user.save()
+  const updateUserWithToken = await user.save()
+  console.log(updateUserWithToken)
+  return updateUserWithToken
 }
