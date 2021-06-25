@@ -3,8 +3,10 @@ import { IUser } from '../interfaces/userInterface'
 
 import crypto from 'crypto'
 
-
-import { sendEmailToNewUser } from '../shared/tools/sendEmail'
+import {
+  sendEmailToNewUser,
+  mailForPaswwordRecovery,
+} from '../shared/tools/sendEmail'
 
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
@@ -56,18 +58,6 @@ export const getOneUser = async (args: any) => {
     throw new Error('User Not Found')
   }
   return user
-}
-export const getMyPasswordBack = async (parent: any, args: any) => {
-  const user = await UserModel.findOne(args)
-  if (!user) {
-    throw new Error("Email isn't in the DB")
-  }
-  const recordedToken = await addTokenForRecovery(user.id)
-  const token = recordedToken.reset_password_token
-  const url = `http://localhost/3000/${token}`
-  console.log('url', url)
-  //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
-  return { message: 'Mail Sent', id: user.id }
 }
 
 export const allUsers = async (parents: any, arg: any, context: any) => {
@@ -124,4 +114,35 @@ const addTokenForRecovery = async (userId: number) => {
   const updateUserWithToken = await user.save()
   console.log('updated', updateUserWithToken)
   return updateUserWithToken
+}
+
+export const getMyPasswordBack = async (parent: any, args: any) => {
+  const user = await UserModel.findOne(args)
+  if (!user) {
+    throw new Error("Email isn't in the DB")
+  }
+  const recordedToken = await addTokenForRecovery(user.id)
+  const token = recordedToken.reset_password_token
+  const url = `http://localhost:3000/password_recovery/${token}/${user.id}`
+  const userData = { firstname: user.firstname, url, email: user.email }
+  console.log('url', url)
+  mailForPaswwordRecovery(userData)
+  //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
+  return { message: 'Mail Sent', id: user.id }
+}
+
+export const checkTokenWithUserId = async (parent: any, args: any) => {
+  console.log(args)
+  const {
+    input: { token },
+  } = args
+  const {
+    input: { userId },
+  } = args
+
+  const user = await UserModel.find({ reset_password_token: token, id: userId })
+  if (user.length) {
+    console.log('coucou', user)
+  }
+  return 'in progress'
 }
