@@ -330,3 +330,30 @@ mutation addLikeToMessage($input: LikeMessage!) {
 # {
 #   "Authorization" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGQyZTFlM2U2MjNhZDM3ODQyNThlMTEiLCJmaXJzdG5hbWUiOiJHdWlsbGVtIiwibGFzdG5hbWUiOiJEQVJESUxMIiwiZW1haWwiOiJndWlsbGVtLmRhcmRpbGxAZ21haWwuY29tIiwic2Nob29sSWQiOiIxIiwiaXNTY2hvb2xBZG1pbiI6dHJ1ZSwidXNlclR5cGUiOiJzdHVkZW50IiwiaWF0IjoxNjI3NDYxMDEzLCJleHAiOjE2MjgwNjU4MTN9.O-A4I4UKJjax6xw8y6XeqjI7LoFSgTsAmIPvZEVynws"
 # }
+
+#  add dislike in a message  _____________________________________________________
+
+mutation addDislikeToMessage($input: DislikeMessage!) {
+  addDislikeToMessage(input: $input) {
+    id
+    title
+    isSchoolWorkspace
+    feed {id feedName messages{id content comments{id content}} }
+    assets {
+      id
+      assetName
+    }
+  }
+}
+
+# {"input": 
+#   {
+#   "parentWorkspaceId": "60d58e8c93270145881446b4",
+#   "feedId": "610011da28f458461003c378",
+#   "messageId": "6101259b0de9075aa4e5c210",
+# 	}
+# }
+
+# {
+#   "Authorization" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGQyZTFlM2U2MjNhZDM3ODQyNThlMTEiLCJmaXJzdG5hbWUiOiJHdWlsbGVtIiwibGFzdG5hbWUiOiJEQVJESUxMIiwiZW1haWwiOiJndWlsbGVtLmRhcmRpbGxAZ21haWwuY29tIiwic2Nob29sSWQiOiIxIiwiaXNTY2hvb2xBZG1pbiI6dHJ1ZSwidXNlclR5cGUiOiJzdHVkZW50IiwiaWF0IjoxNjI3NDYxMDEzLCJleHAiOjE2MjgwNjU4MTN9.O-A4I4UKJjax6xw8y6XeqjI7LoFSgTsAmIPvZEVynws"
+# }
