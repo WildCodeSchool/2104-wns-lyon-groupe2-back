@@ -104,14 +104,17 @@ export const resolvers = {
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.userType !== 'admin')
+      console.log(context)
+      if (!context.user || context.user.userType !== 'admin') {
         throw new ForbiddenError("You're not allowed to perform this operation")
+      }
       return registerUser(parent, args)
     },
     updateUser: updateUser,
     deleteUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.userType !== 'admin')
+      if (!context.user || context.user.userType !== 'admin') {
         throw new ForbiddenError("You're not allowed to perform this operation")
+      }
       return deleteUser(parent, args, context)
     },
   },

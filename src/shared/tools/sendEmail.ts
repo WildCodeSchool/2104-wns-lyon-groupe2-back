@@ -4,12 +4,13 @@ export const sendEmailToNewUser = (userData: any) => {
   const defaultClient = SibApiV3Sdk.ApiClient.instance
   const apiKey = defaultClient.authentications['api-key']
   apiKey.apiKey = process.env.SENDINBLUE_API_KEY
-  var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
-  var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
+  const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
+  let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
 
   sendSmtpEmail = {
     to: [
       {
+        // TODO : replace this email address by the user email
         email: 'daddy.studies@gmail.com',
         name: userData.firstname + userData.lastname,
       },
@@ -25,7 +26,7 @@ export const sendEmailToNewUser = (userData: any) => {
   apiInstance
     .sendTransacEmail(sendSmtpEmail)
     .then(function (data: any) {
-      console.log('API called successfully')
+      console.log('SendInBlue API called successfully')
     })
     .catch((err: any) => console.log(err))
 }

@@ -18,16 +18,11 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 }
 
 export const registerUser = async (parent: any, args: any) => {
-  try {
-    await userValidationSchema.validateAsync(args.input)
-  } catch (err) {
-    throw new UserInputError(err)
-  }
+  await userValidationSchema.validateAsync(args.input)
   const input: IUser = args.input
   // TODO : switch 12345678 by a generated password (ex UUID)
   const password = '12345678'
   const encryptedPassword = await hashPassword(password)
-  // const { password, passwordConfirmation, ...datasWithoutPassword } = input
   const userToSave = { ...input, encryptedPassword }
   await UserModel.init()
   const model = new UserModel(userToSave)
