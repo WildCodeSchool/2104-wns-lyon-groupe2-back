@@ -10,6 +10,8 @@ import {
   createFeed,
   createMessageInFeed,
   createCommentInMessage,
+  addLikeToMessage,
+  addDislikeToMessage,
 } from '../controllers/FeedController'
 
 /////////////////////////////////////////////////////////////////
@@ -36,6 +38,8 @@ export const typeDef = gql`
     createFeed(input: InputFeedCreate!): Workspaces
     createMessageInFeed(input: InputMessages!): Workspaces
     createCommentInMessage(input: InputComments!): Workspaces
+    addLikeToMessage(input: InputLikeMessage!): Workspaces
+    addDislikeToMessage(input: InputDislikeMessage!): Workspaces
   }
 
   # Types _____________________________________________________
@@ -141,6 +145,16 @@ export const typeDef = gql`
     userId: String
     createdAt: String
   }
+  input InputLikeMessage {
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String!
+  }
+  input InputDislikeMessage {
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String!
+  }
   input InputSharedAssets {
     id: String
     assetName: String!
@@ -171,5 +185,7 @@ export const resolvers = {
     createFeed: createFeed,
     createMessageInFeed: createMessageInFeed,
     createCommentInMessage: createCommentInMessage,
+    addLikeToMessage: addLikeToMessage,
+    addDislikeToMessage: addDislikeToMessage,
   },
 }

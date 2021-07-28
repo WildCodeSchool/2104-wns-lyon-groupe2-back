@@ -148,3 +148,88 @@ export const createCommentInMessage = async (
     return error
   }
 }
+
+export const addLikeToMessage = async (
+  parent: any,
+  args: any,
+  context: any,
+) => {
+  try {
+    interface IAddLike {
+      parentWorkspaceId: string
+      feedId: string
+      messageId: string
+    }
+    const input: IAddLike = args.input
+
+    const user = context.user
+
+    const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
+      {
+        _id: input.parentWorkspaceId,
+      },
+      {
+        $inc: {
+          'feed.$[feed].messages.$[message].likes': 1,
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            'feed._id': input.feedId,
+          },
+          {
+            'message._id': input.messageId,
+          },
+        ],
+        new: true,
+      },
+    )
+
+    return updatedWorkspace
+  } catch (error) {
+    return error
+  }
+}
+export const addDislikeToMessage = async (
+  parent: any,
+  args: any,
+  context: any,
+) => {
+  try {
+    interface IAddDislike {
+      parentWorkspaceId: string
+      feedId: string
+      messageId: string
+    }
+    const input: IAddDislike = args.input
+
+    const user = context.user
+
+    const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
+      {
+        _id: input.parentWorkspaceId,
+      },
+      {
+        $inc: {
+          'feed.$[feed].messages.$[message].dislikes': 1,
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            'feed._id': input.feedId,
+          },
+          {
+            'message._id': input.messageId,
+          },
+        ],
+        new: true,
+      },
+    )
+
+    return updatedWorkspace
+  } catch (error) {
+    return error
+  }
+}
