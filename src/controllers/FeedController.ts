@@ -22,9 +22,8 @@ export const createFeed = async (parent: any, args: any, context: any) => {
       const parentWorkspace: IWorkspaces = await WorkspacesModel.findById(
         input.parentWorkspaceId,
       )
-
       if (
-        !parentWorkspace.userAdmin.includes(user.id) ||
+        !parentWorkspace.usersAllowed.includes(user.id) ||
         (user.userType === 'student' && parentWorkspace.isSchoolWorkspace)
       ) {
         return false
@@ -32,15 +31,20 @@ export const createFeed = async (parent: any, args: any, context: any) => {
       return true
     }
 
-    if (!userAuthorizationValidation(context.user, input)) {
+    // FIXME: à remettre
+    if (!(await userAuthorizationValidation(context.user, input))) {
       throw new Error('You are not allowed to perform this action')
     }
 
+    const newFeed = { feedName: input.feedName, messages: [] }
+
     const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
-      { id: input.parentWorkspaceId },
-      { $push: { feed: { feedname: input.feedName } } },
+      { _id: input.parentWorkspaceId },
+      { $push: { feed: newFeed } },
+      { new: true },
     )
-    return await WorkspacesModel.findById(input.parentWorkspaceId)
+
+    return updatedWorkspace
   } catch (error) {
     return error
   }

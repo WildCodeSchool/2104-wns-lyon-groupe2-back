@@ -203,3 +203,30 @@ mutation deleteAsset($input: AssetId!) {
 #   "id": "608ab34ddd534422e086066a"
 # }
 # }
+
+# FEED REQUESTS _____________________________________________________
+#  create a feed in a parentWorkspace  _____________________________________________________
+
+mutation createFeed($input: InputFeedCreate!) {
+  createFeed(input: $input) {
+    id
+    title
+    isSchoolWorkspace
+    feed {id feedName messages{id content}}
+    assets {
+      id
+      assetName
+    }
+  }
+}
+
+# {"input": 
+#   {
+#   "parentWorkspaceId": "60d58e8c93270145881446b4",
+# 	"feedName" : "feedName"
+# 	}
+# }
+
+# {
+#   "Authorization" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MGQyZTFlM2U2MjNhZDM3ODQyNThlMTEiLCJmaXJzdG5hbWUiOiJHdWlsbGVtIiwibGFzdG5hbWUiOiJEQVJESUxMIiwiZW1haWwiOiJndWlsbGVtLmRhcmRpbGxAZ21haWwuY29tIiwic2Nob29sSWQiOiIxIiwiaXNTY2hvb2xBZG1pbiI6dHJ1ZSwidXNlclR5cGUiOiJzdHVkZW50IiwiaWF0IjoxNjI0NTI3NDU0LCJleHAiOjE2MjQ2MTM4NTR9.Eti-aV9STD3VGG_gV1-6p3tkFm7Vy9yIkH1KTla7nE0"
+# }
