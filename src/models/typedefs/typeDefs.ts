@@ -127,7 +127,7 @@ export const TYPE_DEFS = gql`
     content: String
     userId: String
     createdAt: String
-    assetId: String
+    # assetId: String
     likes: Int
     dislikes: Int
     comments: [comments]

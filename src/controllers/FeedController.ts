@@ -12,7 +12,6 @@ export const createFeed = async (parent: any, args: any, context: any) => {
       parentWorkspaceId: string
       feedName: string
     }
-
     const input: Ifeedcreate = args.input
 
     const userAuthorizationValidation = async (
@@ -30,14 +29,11 @@ export const createFeed = async (parent: any, args: any, context: any) => {
       }
       return true
     }
-
-    // FIXME: à remettre
     if (!(await userAuthorizationValidation(context.user, input))) {
       throw new Error('You are not allowed to perform this action')
     }
 
     const newFeed = { feedName: input.feedName, messages: [] }
-
     const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
       { _id: input.parentWorkspaceId },
       { $push: { feed: newFeed } },
@@ -50,46 +46,50 @@ export const createFeed = async (parent: any, args: any, context: any) => {
   }
 }
 
-// // Permet de récupérer les workspaces en fonction de s'ils appartiennent à l'école (Ecoles/formation) ou aux élèves (Espace de travail)
-// export const allWorkspaces = async (parent: any, args: any, context: any) => {
-//   const isSchoolWorkspace: Boolean = args.input.isSchoolWorkspace
-//   const result = await WorkspacesModel.find({
-//     isSchoolWorkspace: isSchoolWorkspace,
-//     usersAllowed: context.user.id,
-//     schoolId: context.user.schoolId,
-//   }).exec()
-//   console.log(context.user.id)
-//   return result
-// }
+export const createMessageInFeed = async (
+  parent: any,
+  args: any,
+  context: any,
+) => {
+  try {
+    interface ImessageCreate {
+      parentWorkspaceId: string
+      feedId: string
+      messageContent: string
+    }
+    const input: ImessageCreate = args.input
 
-// export const deleteWorkspace = async (parent: any, args: any) => {
-//   const id: String = args.input.id
-//   const workspace = await WorkspacesModel.findById(id)
-//   if (workspace) {
-//     const result = await WorkspacesModel.deleteOne({ _id: id })
-//   }
-//   return `Workspace ${workspace.title} has been successfully deleted`
-// }
+    const user = context.user
 
-// export const updateWorkspace = async (parent: any, args: any, context: any) => {
-//   const input: IWorkspaces = args.input // values send by client
-//   // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teacher
+    // TODO: voir pourquoi dans l'update si je push cet objet au lieu de tous les champs individuels ça ne marche pas
+    const newMessage = {
+      content: input.messageContent,
+      userId: user.id,
+      createdAt: new Date(Date.now()),
+      likes: 0,
+      dislikes: 0,
+      comments: [],
+    }
 
-//   let workspace = await WorkspacesModel.findOne({ _id: input.id })
+    const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
+      { _id: input.parentWorkspaceId, 'feed._id': input.feedId },
+      {
+        $push: {
+          'feed.$.messages': {
+            content: input.messageContent,
+            userId: user.id,
+            createdAt: new Date(Date.now()),
+            likes: 0,
+            dislikes: 0,
+            comments: [],
+          },
+        },
+      },
+      { new: true },
+    )
 
-//   // voir comment gérer les autorisations
-
-//   workspace = { ...workspace, ...input }
-//   workspace.save()
-
-//   return workspace
-// }
-
-// export const getWorkspaceById = async (
-//   parent: any,
-//   args: any,
-// ): Promise<IWorkspaces> => {
-//   const id: String = args.input.id
-//   const res = await WorkspacesModel.findById(id)
-//   return res
-// }
+    return updatedWorkspace
+  } catch (error) {
+    return error
+  }
+}
