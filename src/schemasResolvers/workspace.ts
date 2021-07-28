@@ -6,7 +6,11 @@ import {
   deleteWorkspace,
   getWorkspaceById,
 } from '../controllers/WorkSpacesController'
-import { createFeed, createMessageInFeed } from '../controllers/FeedController'
+import {
+  createFeed,
+  createMessageInFeed,
+  createCommentInMessage,
+} from '../controllers/FeedController'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -31,6 +35,7 @@ export const typeDef = gql`
     updateWorkspace(input: UpdateWorkspace!): Workspaces
     createFeed(input: InputFeedCreate!): Workspaces
     createMessageInFeed(input: InputMessages!): Workspaces
+    createCommentInMessage(input: InputComments!): Workspaces
   }
 
   # Types _____________________________________________________
@@ -129,8 +134,10 @@ export const typeDef = gql`
     comments: [InputComments]
   }
   input InputComments {
-    id: String
-    content: String
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String!
+    commentContent: String
     userId: String
     createdAt: String
   }
@@ -163,5 +170,6 @@ export const resolvers = {
     deleteWorkspace: deleteWorkspace,
     createFeed: createFeed,
     createMessageInFeed: createMessageInFeed,
+    createCommentInMessage: createCommentInMessage,
   },
 }

@@ -93,3 +93,58 @@ export const createMessageInFeed = async (
     return error
   }
 }
+
+export const createCommentInMessage = async (
+  parent: any,
+  args: any,
+  context: any,
+) => {
+  try {
+    interface ICommentCreate {
+      parentWorkspaceId: string
+      feedId: string
+      messageId: string
+      commentContent: string
+    }
+    const input: ICommentCreate = args.input
+
+    const user = context.user
+
+    // TODO: voir pourquoi dans l'update si je push cet objet au lieu de tous les champs individuels ça ne marche pas
+    const newComment = {
+      content: input.commentContent,
+      userId: user.id,
+      createdAt: new Date(Date.now()),
+    }
+
+    const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
+      {
+        _id: input.parentWorkspaceId,
+      },
+      {
+        $push: {
+          'feed.$[feed].messages.$[message].comments': {
+            content: input.commentContent,
+            userId: user.id,
+            createdAt: new Date(Date.now()),
+          },
+        },
+      },
+      {
+        arrayFilters: [
+          {
+            'feed._id': input.feedId,
+          },
+          {
+            'message._id': input.messageId,
+          },
+        ],
+        new: true,
+      },
+    )
+
+    return updatedWorkspace
+  } catch (error) {
+    return error
+  }
+}
