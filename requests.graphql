@@ -25,6 +25,23 @@ mutation registerUser($input: InputUser!) {
 #     "userType": "ADMIN"
 # 	}
 # }
+
+mutation login ($input: InputLogin!) {
+  login(input: $input) {
+    token     
+  } 
+}
+
+# Query Variables
+{
+  "input":     {
+  "email":"panda@panda.com",
+  "password":"1234567D",
+  "remember": true    
+  }  
+}
+
+
 # WORKSPACES REQUESTS _____________________________________________________
 #  get all workspaces isSchool true/false  _____________________________________________________
 
@@ -36,12 +53,12 @@ query allWorkspaces($input: InputWorkspaceGet!) {
 }
 
 # Query Variables
-{
-  "input":{
- 		"isSchoolWorkspace": true,
-    "schoolId": "1"
-  }
-}
+# {
+#   "input":{
+#  		"isSchoolWorkspace": true,
+#     "schoolId": "1"
+#   }
+# }
 
 # http headers
 # {

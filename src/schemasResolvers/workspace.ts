@@ -81,6 +81,7 @@ export const typeDef = gql`
   # Inputs _____________________________________________________
   input InputWorkspaceGet {
     isSchoolWorkspace: Boolean!
+    schoolId: String
   }
   input InputWorkspace {
     schoolId: String
