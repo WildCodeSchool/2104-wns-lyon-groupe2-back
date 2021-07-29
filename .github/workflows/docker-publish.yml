@@ -15,5 +15,12 @@ jobs:
 
     steps:
 
-    - name: Start containers
+    - name: Stop container
+      run: docker-compose down
+
+      - name: Build container
       run: docker-compose build --no-cache
+
+    - name: Start container
+      run: docker-compose up 
+
