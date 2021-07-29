@@ -12,15 +12,13 @@ jobs:
   docker:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    defaults: 
-      run: 
-        working-directory: ../../
+
     steps:
       - name: Stop container
         run: docker-compose down
 
       - name: Build container
-        run: docker-compose build --no-cache
+        run: docker-compose -f "../../docker-compose.yml" build --no-cache
 
       - name: Start container
         run: docker-compose up
