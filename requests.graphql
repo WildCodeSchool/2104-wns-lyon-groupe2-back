@@ -1,0 +1,149 @@
+# WORKSPACES REQUESTS _____________________________________________________
+#  get all workspaces  _____________________________________________________
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# We can name query and mutations as we want !                                                                                                  #  
+# Ex: we can name a mutation createWorkspace which calling the type updateWorkspace (it dont' make any sense at all but it's for the example :))# 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+{
+  allWorkspaces {
+    id
+    title
+    is_school_workspace
+    feed {
+      id
+      feed_name
+    }
+    assets {
+      id
+      asset_name
+    }
+  }
+}
+#  create workspace   _____________________________________________________
+mutation createWorspace($input: InputWorkspace!) {
+  createWorkspace(input: $input) {
+    id
+    title
+    is_school_workspace
+    feed {
+      id
+      feed_name
+    }
+    assets {
+      id
+      asset_name
+    }
+  }
+}
+
+# Query Variables
+# {"input":{
+#   "title": "Général",
+#   "is_school_workspace": true,
+# "feed": {
+#   "feed_name": "Social"
+# },
+# "assets": {
+#   "asset_name": "Ressources"
+# }}
+# }
+
+#  update workspace   _____________________________________________________
+
+mutation updateWorkspace($input: UpdateWorkspace!) {
+  updateWorkspace(input: $input) {
+    id
+    title
+    is_school_workspace
+    feed {
+      id
+      feed_name
+    }
+    assets {
+      id
+      asset_name
+    }
+  }
+}
+
+# Query Variables
+# {"input":{
+#   "id": "608a791bbde5ff2c48dc239b",
+#   "title": "Alternance",
+#   "is_school_workspace": false,
+# "feed": {
+#   "feed_name": "Sociale"
+# },
+# "assets": {
+#   "asset_name": "Ressources"
+# }}
+# }
+
+#  delete workspace   _____________________________________________________
+
+mutation deleteWorkspaces($input: WorkspaceId!) {
+  deleteWorkspace(input: $input)
+}
+# Query Variables
+# {"input":{
+#   "id": "608a791bbde5ff2c48dc239b"
+# }
+# }
+
+# ASSETS REQUESTS _____________________________________________________
+#  get all assets  _____________________________________________________
+
+{
+  allAssets {
+    id
+    title
+    type
+    likes
+  }
+}
+
+#  create asset   _____________________________________________________
+mutation createAsset($input: InputAsset!) {
+  createAsset(input: $input) {
+    title
+    type
+    likes
+  }
+}
+
+# Query Variables
+# {"input": {"title": "fiche récap JS", "type": "Word", "likes":10 }}
+
+#  update asset   _____________________________________________________
+
+mutation updateAsset($input: UpdateAsset!) {
+  updateAsset(input: $input) {
+    id
+    title
+    type
+    likes
+  }
+}
+
+# Query Variables
+# {"input":{
+#   "id": "608ab34ddd534422e086066a",
+#   "title": "fiche récap React",
+#   "type": "Word",
+#   "likes":10
+# }
+# }
+
+#  delete asset   _____________________________________________________
+
+mutation deleteAsset($input: AssetId!) {
+  deleteAsset(input: $input)
+}
+# Query Variables
+# {"input":{
+#   "id": "608ab34ddd534422e086066a"
+# }
+# }
