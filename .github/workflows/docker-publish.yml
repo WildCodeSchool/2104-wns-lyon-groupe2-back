@@ -12,7 +12,9 @@ jobs:
   docker:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-
+    defaults: 
+      run: 
+        working-directory: ../../
     steps:
       - name: Stop container
         run: docker-compose down
