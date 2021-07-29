@@ -105,14 +105,12 @@ const addTokenForRecovery = async (userId: number) => {
   const reset_password_expires = Date.now() + 3600
 
   let user = await UserModel.findById(userId)
-  console.log('user', user)
   if (!user) {
     throw new Error('User Not Found')
   }
   user.reset_password_token = reset_password_token
   user.reset_password_expires = reset_password_expires.toString()
   const updateUserWithToken = await user.save()
-  console.log('updated', updateUserWithToken)
   return updateUserWithToken
 }
 
@@ -125,25 +123,26 @@ export const getMyPasswordBack = async (parent: any, args: any) => {
   const token = recordedToken.reset_password_token
   const url = `http://localhost:3000/password_recovery/${token}/${user.id}`
   const userData = { firstname: user.firstname, url, email: user.email }
-  console.log('url', url)
   mailForPaswwordRecovery(userData)
   //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
   return { message: 'Mail Sent', id: user.id }
 }
 
 export const checkTokenWithUserId = async (parent: any, args: any) => {
-  console.log(args)
+  console.log('args', args)
   const {
     input: { token },
   } = args
   const {
     input: { userId },
   } = args
-
+  console.log('coucou')
   const user = await UserModel.find({
     reset_password_token: token,
     _id: userId,
   })
+  console.log('user', user)
+
   const time = user[0].reset_password_expires
   const now = Date.now()
   if (time < now) {
@@ -157,7 +156,6 @@ export const checkTokenWithUserId = async (parent: any, args: any) => {
 }
 
 export const updatePassword = async (parent: any, args: any) => {
-  console.log('args', args)
   const _id = args.inputToChangePassword.userId
   const encryptedPassword = await argon2.hash(
     args.inputToChangePassword.password,
@@ -168,7 +166,7 @@ export const updatePassword = async (parent: any, args: any) => {
     { encryptedPassword: encryptedPassword },
     { new: true },
   )
-  console.log(user)
+  console.log('user', user)
 
   return { message: 'updated' }
 }
