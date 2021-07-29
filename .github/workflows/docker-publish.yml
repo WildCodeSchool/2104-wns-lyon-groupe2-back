@@ -1,0 +1,19 @@
+name: Docker-compose build
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Start containers
+      run: docker-compose build --no-cache
