@@ -3,10 +3,10 @@ name: Docker-compose build
 on:
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
+      - main
 
 jobs:
   docker:
@@ -14,13 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    - name: Stop container
-      run: docker-compose down
+      - name: Stop container
+        run: docker-compose down
 
       - name: Build container
-      run: docker-compose build --no-cache
+        run: docker-compose build --no-cache
 
-    - name: Start container
-      run: docker-compose up 
-
+      - name: Start container
+        run: docker-compose up
