@@ -1,0 +1,20 @@
+version: '3'
+services:
+  server:
+    container_name: daddyStudierServer
+    restart: always
+    depends_on:
+      - mongo
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    command: npm run dev
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - '27018:27017'
