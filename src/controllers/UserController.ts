@@ -1,6 +1,6 @@
 import UserModel from '../models/userModel'
 import { IUser } from '../interfaces/userInterface'
-
+import { sendEmailToNewUser } from '../shared/tools/sendEmail'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
@@ -18,18 +18,20 @@ const verifyPassword = async (userPassword: any, plainPassword: string) => {
 }
 
 export const registerUser = async (parent: any, args: any) => {
-  try {
-    await userValidationSchema.validateAsync(args.input)
-  } catch (err) {
-    throw new UserInputError(err)
-  }
+  await userValidationSchema.validateAsync(args.input)
   const input: IUser = args.input
-  const encryptedPassword = await hashPassword(input.password)
-  const { password, passwordConfirmation, ...datasWithoutPassword } = input
-  const userToSave = { ...datasWithoutPassword, encryptedPassword }
+  // TODO : switch 12345678 by a generated password (ex UUID)
+  const password = '12345678'
+  const encryptedPassword = await hashPassword(password)
+  const userToSave = { ...input, encryptedPassword }
   await UserModel.init()
   const model = new UserModel(userToSave)
   const result = await model.save()
+  try {
+    sendEmailToNewUser({ ...input, password })
+  } catch (err) {
+    console.log(err)
+  }
   return result
 }
 
@@ -39,7 +41,7 @@ interface Token {
 }
 // A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
 export const getOneUser = async (args: any) => {
-  const tokenDecrypted: Token = jwt.verify(args.token, env.jwt_secret) as Token
+  const tokenDecrypted: Token = jwt.verify(args, env.jwt_secret) as Token
   const user = await UserModel.findById(tokenDecrypted.userId)
   if (!user) {
     throw new Error('User Not Found')
