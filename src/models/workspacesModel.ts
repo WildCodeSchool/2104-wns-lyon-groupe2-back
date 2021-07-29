@@ -16,8 +16,16 @@ const WorkspacesSchema = new Schema({
           userId: String,
           createdAt: Date,
           assetId: String,
-          likes: Number,
-          dislikes: Number,
+          likes: [
+            {
+              userId: String,
+            },
+          ],
+          dislikes: [
+            {
+              userId: String,
+            },
+          ],
           comments: [
             {
               content: String,

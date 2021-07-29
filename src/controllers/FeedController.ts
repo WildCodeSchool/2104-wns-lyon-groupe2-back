@@ -162,15 +162,30 @@ export const addLikeToMessage = async (
     }
     const input: IAddLike = args.input
 
+    // TODO: faire marcher cette fonction
+
     const user = context.user
+    const currentMessage = await WorkspacesModel.aggregate([
+      { $unwind: '$feed' },
+      {
+        $match: {
+          _id: input.parentWorkspaceId,
+          'feed._id': input.feedId,
+          'message._id': input.messageId,
+        },
+      },
+    ])
+    console.log(currentMessage)
 
     const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
       {
         _id: input.parentWorkspaceId,
       },
       {
-        $inc: {
-          'feed.$[feed].messages.$[message].likes': 1,
+        $push: {
+          'feed.$[feed].messages.$[message].likes': {
+            userId: user.id,
+          },
         },
       },
       {
