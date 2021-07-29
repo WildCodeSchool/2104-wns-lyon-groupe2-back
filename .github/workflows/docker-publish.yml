@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Stop container
-        run: docker-compose down
+        run: docker-compose -f "../../docker-compose.yml" down
 
       - name: Build container
         run: docker-compose -f "../../docker-compose.yml" build --no-cache
