@@ -11,6 +11,8 @@ const UserSchema = new Schema({
   themeId: String,
   isSchoolAdmin: Boolean,
   userType: String,
+  reset_password_token: String,
+  reset_password_expires: Number,
 })
 
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)

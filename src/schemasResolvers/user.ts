@@ -5,6 +5,9 @@ import {
   deleteUser,
   updateUser,
   getOneUser,
+  getMyPasswordBack,
+  checkTokenWithUserId,
+  updatePassword,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -24,11 +27,16 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
     getOneUser(token: String!): Users
+    checkTokenWithUserId(input: InputPasswordRecovery!): String!
   }
   extend type Mutation {
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
+    getMyPasswordBack(email: String!): ResponseForRecovery
+    updatePassword(
+      inputToChangePassword: InputToChangePassword
+    ): ResponseFromPasswordUpdate
   }
 
   # Types _____________________________________________________
@@ -43,6 +51,8 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [WorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
   }
 
   type WorkspacesAdmin {
@@ -59,6 +69,14 @@ export const typeDef = gql`
     TEACHER
   }
 
+  type ResponseForRecovery {
+    message: String
+    id: String
+  }
+  type ResponseFromPasswordUpdate {
+    message: String
+  }
+
   # Inputs _____________________________________________________
   input InputUser {
     lastname: String!
@@ -72,6 +90,8 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean!
     userType: UserType!
     workspacesAdmin: [InputWorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
   }
   input UpdateUser {
     id: String!
@@ -85,10 +105,20 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [InputWorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
   }
 
   input UserId {
     id: String
+  }
+  input InputPasswordRecovery {
+    token: String
+    userId: String
+  }
+  input InputToChangePassword {
+    userId: String
+    password: String
   }
 `
 
@@ -100,7 +130,8 @@ export const resolvers = {
   },
   Query: {
     allUsers: allUsers,
-    getOneUser: (args: any) => getOneUser(args),
+    getOneUser: getOneUser,
+    checkTokenWithUserId: checkTokenWithUserId,
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
@@ -117,5 +148,7 @@ export const resolvers = {
       }
       return deleteUser(parent, args, context)
     },
+    getMyPasswordBack: getMyPasswordBack,
+    updatePassword: updatePassword,
   },
 }
