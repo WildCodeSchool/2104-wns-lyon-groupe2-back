@@ -7,6 +7,7 @@ import {
   getOneUser,
   getMyPasswordBack,
   checkTokenWithUserId,
+  updatePassword,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -33,6 +34,9 @@ export const typeDef = gql`
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
     getMyPasswordBack(email: String!): ResponseForRecovery
+    updatePassword(
+      inputToChangePassword: InputToChangePassword
+    ): ResponseFromPasswordUpdate
   }
 
   # Types _____________________________________________________
@@ -68,6 +72,9 @@ export const typeDef = gql`
   type ResponseForRecovery {
     message: String
     id: String
+  }
+  type ResponseFromPasswordUpdate {
+    message: String
   }
 
   # Inputs _____________________________________________________
@@ -109,6 +116,10 @@ export const typeDef = gql`
     token: String
     userId: String
   }
+  input InputToChangePassword {
+    userId: String
+    password: String
+  }
 `
 
 export const resolvers = {
@@ -135,5 +146,6 @@ export const resolvers = {
       return deleteUser(parent, args, context)
     },
     getMyPasswordBack: getMyPasswordBack,
+    updatePassword: updatePassword,
   },
 }

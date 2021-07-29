@@ -140,9 +140,35 @@ export const checkTokenWithUserId = async (parent: any, args: any) => {
     input: { userId },
   } = args
 
-  const user = await UserModel.find({ reset_password_token: token, id: userId })
-  if (user.length) {
-    console.log('coucou', user)
+  const user = await UserModel.find({
+    reset_password_token: token,
+    _id: userId,
+  })
+  const time = user[0].reset_password_expires
+  const now = Date.now()
+  if (time < now) {
+    return 'Token Expired'
   }
-  return 'in progress'
+  if (!user.length) {
+    return 'User Not Found'
+  }
+
+  return 'Mail Sent'
+}
+
+export const updatePassword = async (parent: any, args: any) => {
+  console.log('args', args)
+  const _id = args.inputToChangePassword.userId
+  const encryptedPassword = await argon2.hash(
+    args.inputToChangePassword.password,
+  )
+
+  const user = await UserModel.updateOne(
+    { _id: _id },
+    { encryptedPassword: encryptedPassword },
+    { new: true },
+  )
+  console.log(user)
+
+  return { message: 'updated' }
 }
