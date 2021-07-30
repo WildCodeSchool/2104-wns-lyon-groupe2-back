@@ -19,11 +19,13 @@ const WorkspacesSchema = new Schema({
           likes: [
             {
               userId: String,
+              userName: String,
             },
           ],
           dislikes: [
             {
               userId: String,
+              userName: String,
             },
           ],
           comments: [

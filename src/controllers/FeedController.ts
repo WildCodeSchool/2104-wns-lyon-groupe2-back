@@ -162,50 +162,46 @@ export const addLikeToMessage = async (
     }
     const input: IAddLike = args.input
 
-    // TODO: faire marcher cette fonction
-
     const user = context.user
-    const currentMessage = await WorkspacesModel.aggregate([
-      { $unwind: '$feed' },
-      {
-        $match: {
-          _id: input.parentWorkspaceId,
-          'feed._id': input.feedId,
-          'message._id': input.messageId,
-        },
-      },
-    ])
-    console.log(currentMessage)
+    const currentWorkspace = await WorkspacesModel.find({
+      'feed.messages._id': input.messageId,
+    })
 
-    const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
-      {
-        _id: input.parentWorkspaceId,
-      },
-      {
-        $push: {
-          'feed.$[feed].messages.$[message].likes': {
-            userId: user.id,
-          },
-        },
-      },
-      {
-        arrayFilters: [
-          {
-            'feed._id': input.feedId,
-          },
-          {
-            'message._id': input.messageId,
-          },
-        ],
-        new: true,
-      },
+    const feed = await currentWorkspace[0].feed.filter((currentFeed: any) => {
+      return currentFeed.id == input.feedId
+    })
+
+    const message = feed[0].messages.filter((currentMessage: any) => {
+      return currentMessage._id == input.messageId
+    })
+
+    const usersThatLiked = message[0].likes.map((like: any) => {
+      return (like = like.userId)
+    })
+
+    if (!usersThatLiked.includes(user.id)) {
+      message[0].likes.push({
+        userId: user.id,
+        userName: user.firstname + ' ' + user.lastname,
+      })
+    } else {
+      const filter = message[0].likes.filter((currentLike: any) => {
+        return currentLike.userId !== user.id
+      })
+      message[0].likes = filter
+    }
+
+    const result = await WorkspacesModel.updateOne(
+      { _id: input.parentWorkspaceId },
+      currentWorkspace[0],
     )
 
-    return updatedWorkspace
+    return result
   } catch (error) {
     return error
   }
 }
+
 export const addDislikeToMessage = async (
   parent: any,
   args: any,
@@ -220,30 +216,40 @@ export const addDislikeToMessage = async (
     const input: IAddDislike = args.input
 
     const user = context.user
+    const currentWorkspace = await WorkspacesModel.find({
+      'feed.messages._id': input.messageId,
+    })
 
-    const updatedWorkspace = await WorkspacesModel.findOneAndUpdate(
-      {
-        _id: input.parentWorkspaceId,
-      },
-      {
-        $inc: {
-          'feed.$[feed].messages.$[message].dislikes': 1,
-        },
-      },
-      {
-        arrayFilters: [
-          {
-            'feed._id': input.feedId,
-          },
-          {
-            'message._id': input.messageId,
-          },
-        ],
-        new: true,
-      },
+    const feed = await currentWorkspace[0].feed.filter((currentFeed: any) => {
+      return currentFeed.id == input.feedId
+    })
+
+    const message = feed[0].messages.filter((currentMessage: any) => {
+      return currentMessage._id == input.messageId
+    })
+
+    const usersThatLiked = message[0].dislikes.map((like: any) => {
+      return (like = like.userId)
+    })
+
+    if (!usersThatLiked.includes(user.id)) {
+      message[0].dislikes.push({
+        userId: user.id,
+        userName: user.firstname + ' ' + user.lastname,
+      })
+    } else {
+      const filter = message[0].dislikes.filter((currentLike: any) => {
+        return currentLike.userId !== user.id
+      })
+      message[0].dislikes = filter
+    }
+
+    const result = await WorkspacesModel.updateOne(
+      { _id: input.parentWorkspaceId },
+      currentWorkspace[0],
     )
 
-    return updatedWorkspace
+    return result
   } catch (error) {
     return error
   }
