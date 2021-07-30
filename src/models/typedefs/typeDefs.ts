@@ -16,6 +16,7 @@ export const TYPE_DEFS = gql`
   type Query {
     allUsers: [Users]
     allWorkspaces: [Workspaces]
+    getWorkspaceById: Workspaces
     allAssets: [Assets]
   }
   type Mutation {

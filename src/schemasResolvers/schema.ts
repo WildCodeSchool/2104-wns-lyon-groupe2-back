@@ -9,15 +9,9 @@ import {
   resolvers as workspaceResolvers,
 } from './workspace'
 
-const Query = `
-type Query {
-  _empty:String
-}`
+const Query = `type Query {_empty:String}`
 
-const Mutation = `
-type Mutation {
-  _empty:String
-}`
+const Mutation = `type Mutation {_empty:String}`
 
 // const resolvers = {}
 

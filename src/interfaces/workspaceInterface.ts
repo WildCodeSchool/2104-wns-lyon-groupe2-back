@@ -11,38 +11,38 @@ export interface IFolders {
   assets: IShareAssets[]
 }
 
-export interface IWorkspaces {
-  id: string
-  schoolId: string
-  userAdmin: string
-  isSchoolWorkspace: boolean
-  usersAllowed: [string] /* user_id */
-  title: string
-  feed: [
+export interface Ifeed {
+  id?: string
+  feedName?: string
+  messages?: [
     {
       id: string
-      feedName: string
-      messages: [
+      content: string
+      userId: string
+      createdAt: Date
+      assetId: string
+      likes: number
+      dislikes: number
+      comments: [
         {
           id: string
           content: string
           userId: string
           createdAt: Date
-          assetId: string
-          likes: number
-          dislikes: number
-          comments: [
-            {
-              id: string
-              content: string
-              userId: string
-              createdAt: Date
-            },
-          ]
         },
       ]
     },
   ]
+}
+
+export interface IWorkspaces {
+  id: string
+  schoolId: string
+  userAdmin: [string]
+  isSchoolWorkspace: boolean
+  usersAllowed: [string] /* user_id */
+  title?: string
+  feed: [Ifeed]
   assets: IShareAssets[]
 
   visio: string

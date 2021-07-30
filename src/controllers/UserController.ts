@@ -60,6 +60,11 @@ export const allUsers = async (parents: any, arg: any, context: any) => {
   const result = await UserModel.find()
   return result
 }
+export const allUsersWithSchoolId = async (userSchoolId: string) => {
+  /* if (!context.user) return null */
+  const result = await UserModel.find({ schoolId: userSchoolId }, '_id')
+  return result
+}
 
 export const deleteUser = async (parent: any, args: any, context: any) => {
   const id: String = args.input.id
