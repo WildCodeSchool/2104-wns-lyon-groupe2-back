@@ -28,7 +28,6 @@ export const Login = async (parent: any, args: any) => {
 
   // Définition de la durée du token en fonction du remember depuis le formulaire
   const tokenExpire = remember ? env.jwt_expires_remember : env.jwt_expires_base
-
   // Crération du token
   const token = jwt.sign(
     {
@@ -42,6 +41,7 @@ export const Login = async (parent: any, args: any) => {
       isSchoolAdmin: user.isSchoolAdmin,
       userType: user.userType,
       workspacesadmin: user.workspacesadmin,
+      first_connection: user.first_connection,
     },
     env.jwt_secret,
     {

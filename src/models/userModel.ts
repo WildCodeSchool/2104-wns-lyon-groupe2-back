@@ -13,6 +13,7 @@ const UserSchema = new Schema({
   userType: String,
   reset_password_token: String,
   reset_password_expires: Number,
+  first_connection: Boolean,
 })
 
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)

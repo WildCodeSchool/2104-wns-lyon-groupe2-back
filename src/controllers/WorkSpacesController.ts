@@ -35,7 +35,6 @@ export const allWorkspaces = async (parent: any, args: any, context: any) => {
     usersAllowed: context.user.id,
     schoolId: context.user.schoolId,
   }).exec()
-  console.log(context.user.id)
   return result
 }
 
