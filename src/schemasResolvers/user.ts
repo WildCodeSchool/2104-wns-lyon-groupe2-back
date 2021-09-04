@@ -46,7 +46,7 @@ export const typeDef = gql`
     firstname: String
     avatar: String
     email: String
-    schoolIdd: String
+    schoolId: String
     themeId: String
     isSchoolAdmin: Boolean
     userType: UserType

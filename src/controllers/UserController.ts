@@ -179,6 +179,5 @@ export const updatePassword = async (parent: any, args: any) => {
     { first_connection: first_connection },
     { new: true },
   )
-
   return { message: 'updated' }
 }
