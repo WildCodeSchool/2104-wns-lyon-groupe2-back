@@ -1,8 +1,10 @@
 import { gql } from 'apollo-server-core'
+import { ForbiddenError } from 'apollo-server'
 
 import {
   allFolders,
-  // createAsset,
+  createFolder,
+  foldersByCurrentUserId,
   // updateAsset,
   // deleteAsset,
 } from '../controllers/FolderController'
@@ -22,7 +24,7 @@ import {
 export const typeDef = gql`
   extend type Query {
     allFolders: [Folder]
-    folderByUserId: [Folder]
+    foldersByCurrentUserId(input: FolderId!): [Folder]
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
@@ -36,39 +38,47 @@ export const typeDef = gql`
     id: ID
     userId: String
     createdAt: String
-    name: string
+    name: String
     children: [ID]
     isRootDirectory: Boolean
   }
 
   # Inputs _____________________________________________________
-  type Folder {
-    id: ID!
-    userId: String!
-    name: string!
+  input InputFolder {
+    name: String!
     children: [ID]
     isRootDirectory: Boolean!
   }
 
   input UpdateFolder {
     id: ID
-    name: string
+    name: String
     children: [ID]
     isRootDirectory: Boolean
   }
 
   input FolderId {
-    id: String
+    userId: String
   }
 `
 
 export const resolvers = {
   Query: {
     allFolders: allFolders,
-    // folderByUserId: folderByUserId,
+    foldersByCurrentUserId: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return foldersByCurrentUserId(parent, args, context)
+    },
   },
   Mutation: {
-    // createFolder: createFolder,
+    createFolder: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return createFolder(parent, args, context)
+    },
     // updateAsset: updateFolder,
     // deleteAsset: deleteFolder,
   },
