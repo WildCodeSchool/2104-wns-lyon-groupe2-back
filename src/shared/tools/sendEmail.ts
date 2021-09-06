@@ -6,13 +6,11 @@ var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
 var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
 
 export const sendEmailToNewUser = (userData: any) => {
-
   const defaultClient = SibApiV3Sdk.ApiClient.instance
   const apiKey = defaultClient.authentications['api-key']
   apiKey.apiKey = process.env.SENDINBLUE_API_KEY
   const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
   let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
-
 
   sendSmtpEmail = {
     to: [
@@ -27,6 +25,7 @@ export const sendEmailToNewUser = (userData: any) => {
       firstname: userData.firstname,
       password: userData.password,
       email: userData.email,
+      url: userData.url,
     },
   }
 
