@@ -5,8 +5,8 @@ import {
   allFolders,
   createFolder,
   foldersByCurrentUserId,
-  // updateAsset,
-  // deleteAsset,
+  updateFolder,
+  deleteFolder,
 } from '../controllers/FolderController'
 
 /////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ export const typeDef = gql`
   }
 
   input FolderId {
-    userId: String
+    id: String
   }
 `
 
@@ -79,7 +79,17 @@ export const resolvers = {
       }
       return createFolder(parent, args, context)
     },
-    // updateAsset: updateFolder,
-    // deleteAsset: deleteFolder,
+    updateFolder: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return updateFolder(parent, args, context)
+    },
+    deleteFolder: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return deleteFolder(parent, args, context)
+    },
   },
 }
