@@ -19,4 +19,5 @@ export const userValidationSchema = Joi.object({
   isSchoolAdmin: Joi.boolean(),
   userType: Joi.any().valid('admin', 'student', 'teacher'),
   workspacesAdmin: Joi.array().items(Joi.number()),
+  first_connection: Joi.boolean(),
 })

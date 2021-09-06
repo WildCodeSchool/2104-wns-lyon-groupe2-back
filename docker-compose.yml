@@ -10,11 +10,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - 4000:4000
+    volumes:
+      - './src:/app/src'
     command: npm run dev
   mongo:
     container_name: mongo
     image: mongo
     volumes:
-      - ./data:/data/db
+      - daddyDB:/data/db
     ports:
       - '27018:27017'
+volumes:
+  daddyDB:

@@ -46,13 +46,14 @@ export const typeDef = gql`
     firstname: String
     avatar: String
     email: String
-    schoolIdd: String
+    schoolId: String
     themeId: String
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [WorkspacesAdmin]
     reset_password_token: String
     reset_password_expires: String
+    first_connection: Boolean
   }
 
   type WorkspacesAdmin {
@@ -92,6 +93,7 @@ export const typeDef = gql`
     workspacesAdmin: [InputWorkspacesAdmin]
     reset_password_token: String
     reset_password_expires: String
+    first_connection: Boolean!
   }
   input UpdateUser {
     id: String!
@@ -107,6 +109,7 @@ export const typeDef = gql`
     workspacesAdmin: [InputWorkspacesAdmin]
     reset_password_token: String
     reset_password_expires: String
+    first_connection: Boolean
   }
 
   input UserId {
@@ -119,6 +122,7 @@ export const typeDef = gql`
   input InputToChangePassword {
     userId: String
     password: String
+    first_connection: Boolean
   }
 `
 
@@ -135,7 +139,6 @@ export const resolvers = {
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
-      console.log(context)
       if (!context.user || context.user.userType !== 'admin') {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }

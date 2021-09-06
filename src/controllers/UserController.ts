@@ -29,12 +29,22 @@ export const registerUser = async (parent: any, args: any) => {
   // TODO : switch 12345678 by a generated password (ex UUID)
   const password = '12345678'
   const encryptedPassword = await hashPassword(password)
-  const userToSave = { ...input, encryptedPassword }
+  const token = crypto.randomBytes(20).toString('hex')
+  const reset_password_token = token
+  const reset_password_expires = Date.now() + 3600
+  const userToSave = {
+    ...input,
+    encryptedPassword,
+    reset_password_token,
+    reset_password_expires: reset_password_expires.toString(),
+  }
   await UserModel.init()
   const model = new UserModel(userToSave)
   const result = await model.save()
+  const url = `http://localhost:3000/password_management/${token}/${result._id}`
+
   try {
-    sendEmailToNewUser({ ...input, password })
+    sendEmailToNewUser({ ...input, password, url })
   } catch (err) {
     console.log(err)
   }
@@ -121,7 +131,7 @@ export const getMyPasswordBack = async (parent: any, args: any) => {
   }
   const recordedToken = await addTokenForRecovery(user.id)
   const token = recordedToken.reset_password_token
-  const url = `http://localhost:3000/password_recovery/${token}/${user.id}`
+  const url = `http://localhost:3000/password_management/${token}/${user.id}`
   const userData = { firstname: user.firstname, url, email: user.email }
   mailForPaswwordRecovery(userData)
   //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
@@ -129,19 +139,16 @@ export const getMyPasswordBack = async (parent: any, args: any) => {
 }
 
 export const checkTokenWithUserId = async (parent: any, args: any) => {
-  console.log('args', args)
   const {
     input: { token },
   } = args
   const {
     input: { userId },
   } = args
-  console.log('coucou')
   const user = await UserModel.find({
     reset_password_token: token,
     _id: userId,
   })
-  console.log('user', user)
 
   const time = user[0].reset_password_expires
   const now = Date.now()
@@ -160,13 +167,17 @@ export const updatePassword = async (parent: any, args: any) => {
   const encryptedPassword = await argon2.hash(
     args.inputToChangePassword.password,
   )
+  const first_connection = args.inputToChangePassword.first_connection
 
   const user = await UserModel.updateOne(
     { _id: _id },
     { encryptedPassword: encryptedPassword },
     { new: true },
   )
-  console.log('user', user)
-
+  const turnOffFirstConnection = await UserModel.updateOne(
+    { _id: _id },
+    { first_connection: first_connection },
+    { new: true },
+  )
   return { message: 'updated' }
 }
