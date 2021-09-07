@@ -63,6 +63,7 @@ export const typeDef = gql`
     id: String
     content: String
     userId: String
+    userName: String
     createdAt: String
     assetId: String
     likes: [like]
@@ -71,14 +72,17 @@ export const typeDef = gql`
   }
   type like {
     userId: String
+    userName: String
   }
   type dislike {
     userId: String
+    userName: String
   }
   type comments {
     id: String
     content: String
     userId: String
+    userName: String
     createdAt: String
   }
   type sharedAssets {

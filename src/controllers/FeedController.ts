@@ -65,9 +65,10 @@ export const createMessageInFeed = async (
     const newMessage = {
       content: input.messageContent,
       userId: user.id,
+      userName: user.firstname + ' ' + user.lastname,
       createdAt: new Date(Date.now()),
-      likes: 0,
-      dislikes: 0,
+      likes: [],
+      dislikes: [],
       comments: [],
     }
 
@@ -78,9 +79,10 @@ export const createMessageInFeed = async (
           'feed.$.messages': {
             content: input.messageContent,
             userId: user.id,
+            userName: user.firstname + ' ' + user.lastname,
             createdAt: new Date(Date.now()),
-            likes: 0,
-            dislikes: 0,
+            likes: [],
+            dislikes: [],
             comments: [],
           },
         },
@@ -114,6 +116,7 @@ export const createCommentInMessage = async (
     const newComment = {
       content: input.commentContent,
       userId: user.id,
+      userName: user.firstname + ' ' + user.lastname,
       createdAt: new Date(Date.now()),
     }
 
@@ -126,6 +129,7 @@ export const createCommentInMessage = async (
           'feed.$[feed].messages.$[message].comments': {
             content: input.commentContent,
             userId: user.id,
+            userName: user.firstname + ' ' + user.lastname,
             createdAt: new Date(Date.now()),
           },
         },
@@ -163,32 +167,59 @@ export const addLikeToMessage = async (
     const input: IAddLike = args.input
 
     const user = context.user
+    // Récupération du workspace
     const currentWorkspace = await WorkspacesModel.find({
       'feed.messages._id': input.messageId,
     })
-
+    // Récupération du feed
     const feed = await currentWorkspace[0].feed.filter((currentFeed: any) => {
       return currentFeed.id == input.feedId
     })
-
+    // Récupération du message
     const message = feed[0].messages.filter((currentMessage: any) => {
       return currentMessage._id == input.messageId
     })
 
+    // liste des utilisateurs ayant déjà liké
     const usersThatLiked = message[0].likes.map((like: any) => {
       return (like = like.userId)
     })
+    // liste des utilisateurs ayant déjà disliké
+    const usersThatDisliked = message[0].dislikes.map((dislike: any) => {
+      return (dislike = dislike.userId)
+    })
 
-    if (!usersThatLiked.includes(user.id)) {
+    // Si l'utilisateur n'a pas déjà liké ni disliké -> ajout du like
+    if (
+      !usersThatLiked.includes(user.id) &&
+      !usersThatDisliked.includes(user.id)
+    ) {
       message[0].likes.push({
         userId: user.id,
         userName: user.firstname + ' ' + user.lastname,
       })
-    } else {
-      const filter = message[0].likes.filter((currentLike: any) => {
+      // Si l'utilisateur n'a pas déjà liké mais a déjà disliké -> ajout du like, suppression du dislike
+    } else if (
+      !usersThatLiked.includes(user.id) &&
+      usersThatDisliked.includes(user.id)
+    ) {
+      message[0].likes.push({
+        userId: user.id,
+        userName: user.firstname + ' ' + user.lastname,
+      })
+      const dislikeDeletion = message[0].dislikes.filter(
+        (currentDisLike: any) => {
+          return currentDisLike.userId !== user.id
+        },
+      )
+      message[0].dislikes = dislikeDeletion
+    }
+    // Si l'utilisateur a déjà liké
+    else {
+      const likeDeletion = message[0].likes.filter((currentLike: any) => {
         return currentLike.userId !== user.id
       })
-      message[0].likes = filter
+      message[0].likes = likeDeletion
     }
 
     const result = await WorkspacesModel.updateOne(
@@ -216,32 +247,59 @@ export const addDislikeToMessage = async (
     const input: IAddDislike = args.input
 
     const user = context.user
+    // Récupération du workspace
     const currentWorkspace = await WorkspacesModel.find({
       'feed.messages._id': input.messageId,
     })
-
+    // Récupération du feed
     const feed = await currentWorkspace[0].feed.filter((currentFeed: any) => {
       return currentFeed.id == input.feedId
     })
-
+    // Récupération du message
     const message = feed[0].messages.filter((currentMessage: any) => {
       return currentMessage._id == input.messageId
     })
 
-    const usersThatLiked = message[0].dislikes.map((like: any) => {
+    // liste des utilisateurs ayant déjà liké
+    const usersThatLiked = message[0].likes.map((like: any) => {
       return (like = like.userId)
     })
+    // liste des utilisateurs ayant déjà disliké
+    const usersThatDisliked = message[0].dislikes.map((dislike: any) => {
+      return (dislike = dislike.userId)
+    })
 
-    if (!usersThatLiked.includes(user.id)) {
+    // Si l'utilisateur n'a pas déjà liké ni disliké -> ajout du like
+    if (
+      !usersThatLiked.includes(user.id) &&
+      !usersThatDisliked.includes(user.id)
+    ) {
       message[0].dislikes.push({
         userId: user.id,
         userName: user.firstname + ' ' + user.lastname,
       })
-    } else {
-      const filter = message[0].dislikes.filter((currentLike: any) => {
+      // Si l'utilisateur n'a pas déjà disliké mais a déjà liké -> ajout du dislike, suppression du like
+    } else if (
+      usersThatLiked.includes(user.id) &&
+      !usersThatDisliked.includes(user.id)
+    ) {
+      message[0].dislikes.push({
+        userId: user.id,
+        userName: user.firstname + ' ' + user.lastname,
+      })
+      const likeDeletion = message[0].likes.filter((currentLike: any) => {
         return currentLike.userId !== user.id
       })
-      message[0].dislikes = filter
+      message[0].likes = likeDeletion
+    }
+    // Si l'utilisateur a déjà disliké
+    else {
+      const dislikeDeletion = message[0].dislikes.filter(
+        (currentDisLike: any) => {
+          return currentDisLike.userId !== user.id
+        },
+      )
+      message[0].dislikes = dislikeDeletion
     }
 
     const result = await WorkspacesModel.updateOne(
