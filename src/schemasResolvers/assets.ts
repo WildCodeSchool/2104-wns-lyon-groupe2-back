@@ -1,4 +1,7 @@
 import { gql } from 'apollo-server-core'
+import { GraphQLUpload } from 'graphql-upload'
+import * as fs from 'fs'
+import * as path from 'path'
 
 import {
   allAssets,
@@ -20,13 +23,15 @@ import {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const typeDef = gql`
-   extend type Query {
+  scalar Upload
+  extend type Query {
     allAssets: [Assets]
   }
   extend type Mutation {
     createAsset(input: InputAsset!): Assets
     deleteAsset(input: AssetId!): String
     updateAsset(input: UpdateAsset!): Assets
+    singleUpload(data: Upload!): File!
   }
 
   # ASSETS _____________________________________________________
@@ -44,6 +49,10 @@ export const typeDef = gql`
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+  }
+
+  type File {
+    url: String!
   }
 
   # Inputs _____________________________________________________
@@ -82,6 +91,7 @@ export const typeDef = gql`
 `
 
 export const resolvers = {
+  Upload: GraphQLUpload,
   Query: {
     allAssets: allAssets,
   },
@@ -89,5 +99,14 @@ export const resolvers = {
     createAsset: createAsset,
     updateAsset: updateAsset,
     deleteAsset: deleteAsset,
+    singleUpload: async (parent: any, { data }) => {
+      console.log('coucou')
+      console.log('args', data)
+      const { createReadStream, filename, mimetype, encoding } = await data
+      const stream = createReadStream()
+      const pathName = path.join(__dirname, `../shared/ressources/${filename}`)
+      await stream.pipe(fs.createWriteStream(pathName))
+      return { url: `http://localhost:4000/src/shared/ressources/${filename}` }
+    },
   },
 }

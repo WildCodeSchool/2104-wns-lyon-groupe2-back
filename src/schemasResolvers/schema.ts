@@ -1,4 +1,3 @@
-import { makeExecutableSchema } from 'apollo-server'
 import { merge } from 'lodash'
 
 import { typeDef as Assets, resolvers as assetsResolvers } from './assets'
@@ -8,6 +7,8 @@ import {
   typeDef as Workspace,
   resolvers as workspaceResolvers,
 } from './workspace'
+
+import { makeExecutableSchema } from '@graphql-tools/schema'
 
 const Query = `type Query {_empty:String}`
 
