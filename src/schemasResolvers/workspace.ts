@@ -5,6 +5,7 @@ import {
   updateWorkspace,
   deleteWorkspace,
   getWorkspaceById,
+  getMessageById,
 } from '../controllers/WorkSpacesController'
 import {
   createFeed,
@@ -30,6 +31,7 @@ export const typeDef = gql`
   extend type Query {
     allWorkspaces(input: InputWorkspaceGet!): [Workspaces]
     getWorkspaceById(input: WorkspaceId!): Workspaces
+    getMessageById(input: InputMessages!): messages
   }
   extend type Mutation {
     createWorkspace(input: InputWorkspace!): Workspaces
@@ -63,6 +65,7 @@ export const typeDef = gql`
     id: String
     content: String
     userId: String
+    userName: String
     createdAt: String
     assetId: String
     likes: [like]
@@ -71,14 +74,17 @@ export const typeDef = gql`
   }
   type like {
     userId: String
+    userName: String
   }
   type dislike {
     userId: String
+    userName: String
   }
   type comments {
     id: String
     content: String
     userId: String
+    userName: String
     createdAt: String
   }
   type sharedAssets {
@@ -135,6 +141,7 @@ export const typeDef = gql`
   input InputMessages {
     parentWorkspaceId: String!
     feedId: String!
+    messageId: String
     messageContent: String
     userId: String
     createdAt: String
@@ -183,6 +190,7 @@ export const resolvers = {
   Query: {
     allWorkspaces: allWorkspaces,
     getWorkspaceById: getWorkspaceById,
+    getMessageById: getMessageById,
   },
   Mutation: {
     createWorkspace: createWorkspace,
