@@ -17,12 +17,11 @@ mutation registerUser($input: InputUser!) {
 #   "input": {
 #     "lastname": "DARDILL",
 #     "firstname": "Guillem",
-#     "email": "guillem.dardill@mail.com",
-#     "password": "aqwzsxed123",
-#     "passwordConfirmation": "aqwzsxed123",
+#     "email": "guillem.dardill@mail.com",   
 #     "schoolId": "1",
 #     "isSchoolAdmin": true,
 #     "userType": "ADMIN"
+#     "first_connection: true,
 # 	}
 # }
 
