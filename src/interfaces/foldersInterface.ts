@@ -3,6 +3,7 @@ export interface IFolders {
   userId: string
   createdAt: Date
   name: string
-  children: [string]
+  parentDirectory: string
   isRootDirectory: boolean
+  sequence: number
 }

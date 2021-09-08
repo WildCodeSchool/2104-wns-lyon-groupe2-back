@@ -4,8 +4,9 @@ const Schema = mongoose.Schema
 const FoldersSchema = new Schema({
   userId: String,
   createdAt: Date,
+  sequence: Number,
   name: String,
-  children: [String],
+  parentDirectory: String,
   isRootDirectory: Boolean,
 })
 

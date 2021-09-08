@@ -24,7 +24,7 @@ import {
 export const typeDef = gql`
   extend type Query {
     allFolders: [Folder]
-    foldersByCurrentUserId(input: FolderId!): [Folder]
+    foldersByCurrentUserId: [Folder]
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
@@ -36,24 +36,26 @@ export const typeDef = gql`
   # Types _____________________________________________________
   type Folder {
     id: ID
+    sequence: Int
     userId: String
     createdAt: String
     name: String
-    children: [ID]
+    parentDirectory: ID
     isRootDirectory: Boolean
   }
 
   # Inputs _____________________________________________________
   input InputFolder {
     name: String!
-    children: [ID]
+    parentDirectory: ID
     isRootDirectory: Boolean!
   }
 
   input UpdateFolder {
-    id: ID
+    id: ID!
+    sequence: Int
     name: String
-    children: [ID]
+    parentDirectory: ID
     isRootDirectory: Boolean
   }
 
