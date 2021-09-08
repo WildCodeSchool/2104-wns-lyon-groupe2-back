@@ -19,15 +19,27 @@ export interface Ifeed {
       id: string
       content: string
       userId: string
+      userName: string
       createdAt: Date
       assetId: string
-      likes: number
-      dislikes: number
+      likes: [
+        {
+          userId: string
+          userName: string
+        },
+      ]
+      dislikes: [
+        {
+          userId: string
+          userName: string
+        },
+      ]
       comments: [
         {
           id: string
           content: string
           userId: string
+          userName: string
           createdAt: Date
         },
       ]

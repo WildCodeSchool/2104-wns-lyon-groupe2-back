@@ -66,3 +66,23 @@ export const getWorkspaceById = async (parent: any, args: any) => {
   const res = await WorkspacesModel.findById(id)
   return res
 }
+
+export const getMessageById = async (parent: any, args: any) => {
+  const id: String = args.input.parentWorkspaceId
+  const feedId: String = args.input.feedId
+  const messageId: String = args.input.messageId
+  const currentMessage = await WorkspacesModel.find({
+    _id: id,
+    'feed._id': feedId,
+    'feed.messages._id': messageId,
+  }).exec()
+  const feed = await currentMessage[0].feed.filter((currentFeed: any) => {
+    return currentFeed.id == feedId
+  })
+
+  const message = feed[0].messages.filter((currentMessage: any) => {
+    return currentMessage._id == messageId
+  })
+
+  return message[0]
+}
