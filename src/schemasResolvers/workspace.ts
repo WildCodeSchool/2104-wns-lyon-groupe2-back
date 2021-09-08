@@ -164,9 +164,9 @@ export const typeDef = gql`
   input InputSharedAssets {
     id: String
     assetName: String!
-    folders: [InputFolders]
+    folders: [InputSharedFolders]
   }
-  input InputFolders {
+  input InputSharedFolders {
     id: String
     folderName: String
     parentId: String
