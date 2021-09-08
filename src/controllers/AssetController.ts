@@ -1,5 +1,7 @@
 import AssetsModel from '../models/assetsModel'
 import { IAssets } from '../interfaces/assetInterface'
+import * as fs from 'fs'
+import * as path from 'path'
 
 // do no forget parent !!!
 
@@ -32,4 +34,18 @@ export const updateAsset = async (parent: any, args: any) => {
     asset._doc = { ...asset._doc, ...input } // update user's datas
     return await asset.save() // save datas
   }
+}
+
+export const uploadAssets = async (parent: any, { data }) => {
+  const { createReadStream, filename, mimetype, encoding } = await data
+  const stream = createReadStream()
+  const queHoraEs = Date.now()
+  const filenameSplitted = filename.split('.')
+  const assetUniqName = `${filenameSplitted[0]}-${queHoraEs}.${filenameSplitted[1]}`
+  const pathName = path.join(__dirname, `../shared/ressources/${assetUniqName}`)
+  await stream.pipe(fs.createWriteStream(pathName))
+  // /!\ TODO /!\
+  // Record to db
+  //
+  return { url: `http://localhost:4000/src/shared/ressources/${assetUniqName}` }
 }

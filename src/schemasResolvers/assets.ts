@@ -1,13 +1,12 @@
 import { gql } from 'apollo-server-core'
 import { GraphQLUpload } from 'graphql-upload'
-import * as fs from 'fs'
-import * as path from 'path'
 
 import {
   allAssets,
   createAsset,
   updateAsset,
   deleteAsset,
+  uploadAssets,
 } from '../controllers/AssetController'
 
 /////////////////////////////////////////////////////////////////
@@ -31,7 +30,7 @@ export const typeDef = gql`
     createAsset(input: InputAsset!): Assets
     deleteAsset(input: AssetId!): String
     updateAsset(input: UpdateAsset!): Assets
-    singleUpload(data: Upload!): File!
+    uploadFile(data: Upload!): File!
   }
 
   # ASSETS _____________________________________________________
@@ -99,13 +98,6 @@ export const resolvers = {
     createAsset: createAsset,
     updateAsset: updateAsset,
     deleteAsset: deleteAsset,
-    singleUpload: async (parent: any, { data }) => {
-      console.log('args', data)
-      const { createReadStream, filename, mimetype, encoding } = await data
-      const stream = createReadStream()
-      const pathName = path.join(__dirname, `../shared/ressources/${filename}`)
-      await stream.pipe(fs.createWriteStream(pathName))
-      return { url: `http://localhost:4000/src/shared/ressources/${filename}` }
-    },
+    uploadFile: uploadAssets,
   },
 }
