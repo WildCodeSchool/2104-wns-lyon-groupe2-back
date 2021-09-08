@@ -100,7 +100,6 @@ export const resolvers = {
     updateAsset: updateAsset,
     deleteAsset: deleteAsset,
     singleUpload: async (parent: any, { data }) => {
-      console.log('coucou')
       console.log('args', data)
       const { createReadStream, filename, mimetype, encoding } = await data
       const stream = createReadStream()
