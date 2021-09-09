@@ -36,7 +36,7 @@ export const updateAsset = async (parent: any, args: any) => {
   }
 }
 
-export const uploadAssets = async (parent: any, { data }) => {
+export const uploadAssets = async (parent: any, { data, folderId }: any) => {
   const { createReadStream, filename, mimetype, encoding } = await data
   const stream = createReadStream()
   const queHoraEs = Date.now()
@@ -44,8 +44,12 @@ export const uploadAssets = async (parent: any, { data }) => {
   const assetUniqName = `${filenameSplitted[0]}-${queHoraEs}.${filenameSplitted[1]}`
   const pathName = path.join(__dirname, `../shared/ressources/${assetUniqName}`)
   await stream.pipe(fs.createWriteStream(pathName))
+  const url = `http://localhost:4000/ressources/${assetUniqName}`
   // /!\ TODO /!\
   // Record to db
   //
-  return { url: `http://localhost:4000/src/shared/ressources/${assetUniqName}` }
+  const dataToRecord = { title: filename, folders: folderId, url }
+  const model = new AssetsModel(dataToRecord)
+  const result = await model.save()
+  return { url }
 }

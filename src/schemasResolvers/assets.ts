@@ -30,7 +30,7 @@ export const typeDef = gql`
     createAsset(input: InputAsset!): Assets
     deleteAsset(input: AssetId!): String
     updateAsset(input: UpdateAsset!): Assets
-    uploadFile(data: Upload!): File!
+    uploadFile(data: Upload!, folderId: String!): File!
   }
 
   # ASSETS _____________________________________________________
@@ -42,12 +42,15 @@ export const typeDef = gql`
     folders: [String]
     userId: String
     createdAt: String
+    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+    size: Int
+    url: String
   }
 
   type File {
@@ -61,12 +64,15 @@ export const typeDef = gql`
     folders: [String]
     userId: String
     createdAt: String
+    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+    size: Int
+    url: String
   }
 
   input UpdateAsset {
@@ -76,12 +82,15 @@ export const typeDef = gql`
     folders: [String]
     userId: String
     createdAt: String
+    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+    size: Int
+    url: String
   }
 
   input AssetId {
