@@ -1,7 +1,8 @@
 import FoldersModel from '../models/folderModel'
 import { IFolders } from '../interfaces/foldersInterface'
 import { getOneUser } from './UserController'
-import { userInfo } from 'os'
+import { arch, userInfo } from 'os'
+import { assign } from 'lodash'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
 export const getFolderById = async (parent: any, id: string, context: any) => {
@@ -44,7 +45,10 @@ export const foldersByCurrentUserId = async (
   context: any,
 ) => {
   const userId = context.user._id
-  const res = await FoldersModel.find({ userId: userId }).exec()
+  const res = await FoldersModel.find({
+    userId: userId,
+    parentDirectory: args.parentDirectory,
+  }).exec()
   return res
 }
 
@@ -59,6 +63,7 @@ export const deleteFolder = async (parent: any, args: any, context: any) => {
 
 export const updateFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
+
   let folder = await getFolderById(parent, input.id, context)
   if (folder.sequence !== input.sequence) {
     // console.log('folder sequence has changed')
@@ -107,13 +112,28 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
           await folder.save()
         }
         return folder
+
+      }
+      let count = firstPart[firstPart.length - 1].sequence + 1
+      for (let f of secondPart) {
+        f.sequence = count
+        count += 1
+      }
+      // console.log('first part', firstPart)
+      // console.log('second part', secondPart)
+      const result = [...firstPart, ...secondPart]
+      // console.log('result is', result)
+      for (let folder of result) {
+        await folder.save()
       }
     }
+  } else {
+    if (folder) {
+      folder.sequence
+      folder.name = input?.name || folder.name
+      folder.parentDirectory = input?.parentDirectory || folder.parentDirectory
+      folder.isRootDirectory = input?.isRootDirectory || folder.isRootDirectory
+      return await folder.save()
+    }
   }
-  // if (folder) {
-  //   folder.name = input?.name
-  //   folder.parentDirectory = input?.parentDirectory
-  //   folder.isRootDirectory = input?.isRootDirectory
-  //   return await folder.save()
-  // }
 }
