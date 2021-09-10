@@ -26,7 +26,7 @@ export const typeDef = gql`
   extend type Query {
     allFolders: [Folder]
     foldersByCurrentUserId: [Folder]
-    getFolderById(input: FolderId): Folder
+    getFolderById(folderId: String!): Folder
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
@@ -78,7 +78,8 @@ export const resolvers = {
     getFolderById: (parent: any, args: any, context: any) => {
       if (!context.user)
         throw new ForbiddenError("You're not allowed to perform this operation")
-      return getFolderById(parent, args, context)
+      const { folderId } = args
+      return getFolderById(parent, folderId, context)
     },
   },
   Mutation: {

@@ -57,9 +57,6 @@ export const uploadAssets = async (parent: any, { data, folderId }: any) => {
   const pathName = path.join(__dirname, `../shared/ressources/${assetUniqName}`)
   await stream.pipe(fs.createWriteStream(pathName))
   const url = `http://localhost:4000/ressources/${assetUniqName}`
-  // /!\ TODO /!\
-  // Record to db
-  //
   const dataToRecord = { title: filename, folders: folderId, url }
   const model = new AssetsModel(dataToRecord)
   const result = await model.save()

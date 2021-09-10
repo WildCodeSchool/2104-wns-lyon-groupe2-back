@@ -4,8 +4,7 @@ import { getOneUser } from './UserController'
 import { userInfo } from 'os'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
-export const getFolderById = async (context: any, id: string) => {
-  console.log(id)
+export const getFolderById = async (parent: any, id: string, context: any) => {
   let folder
   try {
     folder = await FoldersModel.findById(id)
@@ -51,7 +50,7 @@ export const foldersByCurrentUserId = async (
 
 export const deleteFolder = async (parent: any, args: any, context: any) => {
   const id: string = args.input.id
-  const folder = await getFolderById(context, id)
+  const folder = await getFolderById(parent, id, context)
   if (folder) {
     const result = await FoldersModel.deleteOne({ _id: id })
     return `The folder ${folder.name} has been successfully deleted`
@@ -60,7 +59,7 @@ export const deleteFolder = async (parent: any, args: any, context: any) => {
 
 export const updateFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
-  let folder = await getFolderById(context, input.id)
+  let folder = await getFolderById(parent, input.id, context)
   if (folder.sequence !== input.sequence) {
     // console.log('folder sequence has changed')
     let foldersWithSameParent = await FoldersModel.find({
