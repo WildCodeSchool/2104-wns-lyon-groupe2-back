@@ -1,5 +1,6 @@
 import { gql } from 'apollo-server-core'
 import { GraphQLUpload } from 'graphql-upload'
+import { ForbiddenError } from 'apollo-server'
 
 import {
   allAssets,
@@ -7,6 +8,7 @@ import {
   updateAsset,
   deleteAsset,
   uploadAssets,
+  getAssetsByFolderId,
 } from '../controllers/AssetController'
 
 /////////////////////////////////////////////////////////////////
@@ -25,6 +27,7 @@ export const typeDef = gql`
   scalar Upload
   extend type Query {
     allAssets: [Assets]
+    getAssetsByFolderId(folderId: String!): [Assets]
   }
   extend type Mutation {
     createAsset(input: InputAsset!): Assets
@@ -102,6 +105,15 @@ export const resolvers = {
   Upload: GraphQLUpload,
   Query: {
     allAssets: allAssets,
+    getAssetsByFolderId: (
+      parent: any,
+      args: { folderId: String },
+      context: any,
+    ) => {
+      if (!context.user)
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      return getAssetsByFolderId(parent, args, context)
+    },
   },
   Mutation: {
     createAsset: createAsset,

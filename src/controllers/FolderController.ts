@@ -4,7 +4,8 @@ import { getOneUser } from './UserController'
 import { userInfo } from 'os'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
-const getFolderById = async (context: any, id: string) => {
+export const getFolderById = async (context: any, id: string) => {
+  console.log(id)
   let folder
   try {
     folder = await FoldersModel.findById(id)

@@ -1,4 +1,5 @@
 import AssetsModel from '../models/assetsModel'
+import FoldersModel from '../models/folderModel'
 import { IAssets } from '../interfaces/assetInterface'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -15,6 +16,17 @@ export const createAsset = async (parent: any, args: any) => {
 
 export const allAssets = async () => {
   const result = await AssetsModel.find()
+  return result
+}
+export const getAssetsByFolderId = async (
+  parent: any,
+  { folderId }: any,
+  context: any,
+) => {
+  console.log('this is the folderId', folderId)
+  console.log('this is the context', context)
+  const result = await AssetsModel.find({ folders: folderId })
+  console.log(result)
   return result
 }
 
