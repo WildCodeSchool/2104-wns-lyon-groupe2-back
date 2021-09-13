@@ -23,10 +23,7 @@ export const getAssetsByFolderId = async (
   { folderId }: any,
   context: any,
 ) => {
-  console.log('this is the folderId', folderId)
-  console.log('this is the context', context)
   const result = await AssetsModel.find({ folders: folderId })
-  console.log(result)
   return result
 }
 
