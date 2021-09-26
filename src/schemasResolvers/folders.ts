@@ -7,6 +7,7 @@ import {
   foldersByCurrentUserId,
   updateFolder,
   deleteFolder,
+  getPath,
 } from '../controllers/FolderController'
 
 /////////////////////////////////////////////////////////////////
@@ -24,7 +25,8 @@ import {
 export const typeDef = gql`
   extend type Query {
     allFolders: [Folder]
-    foldersByCurrentUserId(parentDirectory: String): [Folder]
+    foldersByCurrentUserId(parentDirectory: String): Folders
+    getPath(parentDirectory: String): [String]
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
@@ -34,6 +36,17 @@ export const typeDef = gql`
 
   # FOLDERS _____________________________________________________
   # Types _____________________________________________________
+
+  type Folders {
+    path: [Path]
+    folders: [Folder]
+  }
+
+  type Path {
+    name: String
+    id: String
+  }
+
   type Folder {
     id: ID
     sequence: Int
@@ -42,6 +55,7 @@ export const typeDef = gql`
     name: String
     parentDirectory: String
     isRootDirectory: Boolean
+    path: [String]
   }
 
   # Inputs _____________________________________________________
@@ -72,6 +86,12 @@ export const resolvers = {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
       return foldersByCurrentUserId(parent, args, context)
+    },
+    getPath: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return getPath(parent, args, context)
     },
   },
   Mutation: {

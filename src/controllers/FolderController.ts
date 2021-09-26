@@ -3,6 +3,7 @@ import { IFolders } from '../interfaces/foldersInterface'
 import { getOneUser } from './UserController'
 import { arch, userInfo } from 'os'
 import { assign } from 'lodash'
+import { PollingWatchKind } from 'typescript'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
 const getFolderById = async (context: any, id: string) => {
@@ -44,12 +45,19 @@ export const foldersByCurrentUserId = async (
   args: any,
   context: any,
 ) => {
+  let result: any = {
+    folders: [],
+    path: [],
+  }
   const userId = context.user._id
   const res = await FoldersModel.find({
     userId: userId,
     parentDirectory: args.parentDirectory,
   }).exec()
-  return res
+  result.folders = res
+  result.path = getPath(args.parentDirectory)
+  console.log(result)
+  return result
 }
 
 export const deleteFolder = async (parent: any, args: any, context: any) => {
@@ -58,6 +66,34 @@ export const deleteFolder = async (parent: any, args: any, context: any) => {
   if (folder) {
     const result = await FoldersModel.deleteOne({ _id: id })
     return `The folder ${folder.name} has been successfully deleted`
+  }
+}
+
+export const getPath = async (parentDirectory: string) => {
+  let path = []
+  if (!parentDirectory) {
+    return [{ name: 'Mes ressources', id: '' }]
+  } else {
+    let secondFolder = await FoldersModel.findById(parentDirectory)
+    path.push({ name: secondFolder.name, id: secondFolder.id })
+    if (secondFolder.parentDirectory === '') {
+      path.unshift({ name: 'Mes ressources', id: '' })
+      return path
+    } else {
+      let folderIdToFind = secondFolder.parentDirectory
+      for (let i = 0; i < 50; i++) {
+        let nextFolder = await FoldersModel.findById(folderIdToFind)
+        if (!nextFolder.parentDirectory || nextFolder.parentDirectory === '') {
+          path.push({ name: nextFolder.name, id: nextFolder.id })
+          path.reverse()
+          path.unshift({ name: 'Mes ressources', id: '' })
+          return path
+        } else {
+          path.push({ name: nextFolder.name, id: nextFolder.id })
+          folderIdToFind = nextFolder.parentDirectory
+        }
+      }
+    }
   }
 }
 
@@ -97,10 +133,18 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
       }
     }
   } else {
+    console.log('here')
     if (folder) {
+      let parentDirectory = folder.parentDirectory
+      console.log(parentDirectory)
+      if (input.parentDirectory && input.parentDirectory !== 'root') {
+        parentDirectory = input.parentDirectory
+      } else if (input.parentDirectory && input.parentDirectory === 'root') {
+        parentDirectory = ''
+      }
       folder.sequence
       folder.name = input?.name || folder.name
-      folder.parentDirectory = input?.parentDirectory || folder.parentDirectory
+      folder.parentDirectory = parentDirectory
       folder.isRootDirectory = input?.isRootDirectory || folder.isRootDirectory
       return await folder.save()
     }
