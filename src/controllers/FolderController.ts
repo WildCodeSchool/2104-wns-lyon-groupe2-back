@@ -1,7 +1,9 @@
 import FoldersModel from '../models/folderModel'
 import { IFolders } from '../interfaces/foldersInterface'
 import { getOneUser } from './UserController'
-import { userInfo } from 'os'
+import { arch, userInfo } from 'os'
+import { assign } from 'lodash'
+import { PollingWatchKind } from 'typescript'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
 const getFolderById = async (context: any, id: string) => {
@@ -43,9 +45,19 @@ export const foldersByCurrentUserId = async (
   args: any,
   context: any,
 ) => {
+  let result: any = {
+    folders: [],
+    path: [],
+  }
   const userId = context.user._id
-  const res = await FoldersModel.find({ userId: userId }).exec()
-  return res
+  const res = await FoldersModel.find({
+    userId: userId,
+    parentDirectory: args.parentDirectory,
+  }).exec()
+  result.folders = res
+  result.path = getPath(args.parentDirectory)
+  console.log(result)
+  return result
 }
 
 export const deleteFolder = async (parent: any, args: any, context: any) => {
@@ -57,63 +69,84 @@ export const deleteFolder = async (parent: any, args: any, context: any) => {
   }
 }
 
-export const updateFolder = async (parent: any, args: any, context: any) => {
-  const input: IFolders = args.input
-  let folder = await getFolderById(context, input.id)
-  if (folder.sequence !== input.sequence) {
-    // console.log('folder sequence has changed')
-    let foldersWithSameParent = await FoldersModel.find({
-      parentDirectory: folder.parentDirectory,
-    }).exec()
-    if (foldersWithSameParent && foldersWithSameParent.length > 0) {
-      foldersWithSameParent.sort((a, b) => a.sequence - b.sequence)
-      if (input.sequence === 0) {
-        console.log('first if')
-        const firstPart = foldersWithSameParent.slice()
-        const firstPartFiltered: any = firstPart.filter(
-          (fol) => fol.id !== folder.id,
-        )
-        folder.sequence = input.sequence
-        firstPartFiltered.unshift(folder)
-        for (let i = 0; i < firstPartFiltered.length; i++) {
-          firstPartFiltered[i].sequence = i
+export const getPath = async (parentDirectory: string) => {
+  let path = []
+  if (!parentDirectory) {
+    return [{ name: 'Mes ressources', id: '' }]
+  } else {
+    let secondFolder = await FoldersModel.findById(parentDirectory)
+    path.push({ name: secondFolder.name, id: secondFolder.id })
+    if (secondFolder.parentDirectory === '') {
+      path.unshift({ name: 'Mes ressources', id: '' })
+      return path
+    } else {
+      let folderIdToFind = secondFolder.parentDirectory
+      for (let i = 0; i < 50; i++) {
+        let nextFolder = await FoldersModel.findById(folderIdToFind)
+        if (!nextFolder.parentDirectory || nextFolder.parentDirectory === '') {
+          path.push({ name: nextFolder.name, id: nextFolder.id })
+          path.reverse()
+          path.unshift({ name: 'Mes ressources', id: '' })
+          return path
+        } else {
+          path.push({ name: nextFolder.name, id: nextFolder.id })
+          folderIdToFind = nextFolder.parentDirectory
         }
-        // console.log('first part filtered is', firstPartFiltered)
-        for (let folder of firstPartFiltered) {
-          await folder.save()
-        }
-      } else {
-        console.log('second if')
-        const firstPart = foldersWithSameParent.slice(0, input.sequence + 1)
-        const firstPartFiltered: any = firstPart.filter(
-          (fol) => fol.id !== folder.id,
-        )
-        for (let i = 0; i < firstPartFiltered.length; i++) {
-          firstPartFiltered[i].sequence = i
-        }
-        console.log('first part filtered is', firstPartFiltered)
-        const secondPart = foldersWithSameParent.slice(input.sequence + 1)
-        folder.sequence = input.sequence
-        secondPart.unshift(folder)
-        let count = firstPartFiltered[firstPartFiltered.length - 1].sequence + 1
-        for (let f of secondPart) {
-          f.sequence = count
-          count += 1
-        }
-        console.log('second part is', secondPart)
-        const result = [...firstPartFiltered, ...secondPart]
-        // console.log('result is', result)
-        for (let folder of result) {
-          await folder.save()
-        }
-        return folder
       }
     }
   }
-  // if (folder) {
-  //   folder.name = input?.name
-  //   folder.parentDirectory = input?.parentDirectory
-  //   folder.isRootDirectory = input?.isRootDirectory
-  //   return await folder.save()
-  // }
+}
+
+export const updateFolder = async (parent: any, args: any, context: any) => {
+  const input: IFolders = args.input
+  // console.log('input', input)
+  let folder = await getFolderById(context, input.id)
+  // console.log('folder', folder)
+  if (input.sequence !== null) {
+    if (input.sequence !== folder.sequence) {
+      // console.log('folder sequence has changed')
+      let foldersWithSameParent = await FoldersModel.find({
+        parentDirectory: folder.parentDirectory,
+      }).exec()
+      const foldersWithSameParentFiltered: any = foldersWithSameParent.filter(
+        (fol) => fol.id !== folder.id,
+      )
+      foldersWithSameParentFiltered.sort((a, b) => a.sequence - b.sequence)
+      const firstPart = foldersWithSameParentFiltered.slice(0, input.sequence)
+      const secondPart = foldersWithSameParentFiltered.slice(input.sequence)
+      folder.sequence = input.sequence
+      firstPart.push(folder)
+      for (let i = 0; i < firstPart.length; i++) {
+        firstPart[i].sequence = i
+      }
+      let count = firstPart[firstPart.length - 1].sequence + 1
+      for (let f of secondPart) {
+        f.sequence = count
+        count += 1
+      }
+      // console.log('first part', firstPart)
+      // console.log('second part', secondPart)
+      const result = [...firstPart, ...secondPart]
+      // console.log('result is', result)
+      for (let folder of result) {
+        await folder.save()
+      }
+    }
+  } else {
+    console.log('here')
+    if (folder) {
+      let parentDirectory = folder.parentDirectory
+      console.log(parentDirectory)
+      if (input.parentDirectory && input.parentDirectory !== 'root') {
+        parentDirectory = input.parentDirectory
+      } else if (input.parentDirectory && input.parentDirectory === 'root') {
+        parentDirectory = ''
+      }
+      folder.sequence
+      folder.name = input?.name || folder.name
+      folder.parentDirectory = parentDirectory
+      folder.isRootDirectory = input?.isRootDirectory || folder.isRootDirectory
+      return await folder.save()
+    }
+  }
 }
