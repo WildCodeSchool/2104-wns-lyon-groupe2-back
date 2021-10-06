@@ -1,0 +1,22 @@
+name: Docker-compose build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  docker:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker
+        run: |
+          docker-compose down
+          docker-compose build --no-cache
+          docker-compose up
