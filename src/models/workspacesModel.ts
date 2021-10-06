@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 const WorkspacesSchema = new Schema({
-  school_Id: String,
+  schoolId: String,
   userAdmin: String,
   isSchoolWorkspace: Boolean,
   usersAllowed: [String] /* user_id */,
@@ -14,14 +14,26 @@ const WorkspacesSchema = new Schema({
         {
           content: String,
           userId: String,
+          userName: String,
           createdAt: Date,
           assetId: String,
-          likes: Number,
-          dislikes: Number,
+          likes: [
+            {
+              userId: String,
+              userName: String,
+            },
+          ],
+          dislikes: [
+            {
+              userId: String,
+              userName: String,
+            },
+          ],
           comments: [
             {
               content: String,
               userId: String,
+              userName: String,
               createdAt: Date,
             },
           ],
@@ -31,11 +43,11 @@ const WorkspacesSchema = new Schema({
   ],
   assets: [
     {
-      asset_name: String,
+      assetName: String,
       folders: [
         {
-          folder_name: String,
-          parent_id: String,
+          folderName: String,
+          parentId: String,
           title: String,
           assets: [String],
         },

@@ -8,6 +8,7 @@ const serverPort = process.env.SERVER_PORT || '4000'
 const jwt_secret = process.env.JWT_SECRET || ''
 const jwt_expires_base = process.env.JWT_EXPIRES_BASE || ''
 const jwt_expires_remember = process.env.JWT_EXPIRES_REMEMBER || ''
+const sendInBlueApiKey = process.env.SENDINBLUE_API_KEY || ''
 
 export interface IConfig {
   db: string

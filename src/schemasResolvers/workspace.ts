@@ -4,7 +4,16 @@ import {
   createWorkspace,
   updateWorkspace,
   deleteWorkspace,
+  getWorkspaceById,
+  getMessageById,
 } from '../controllers/WorkSpacesController'
+import {
+  createFeed,
+  createMessageInFeed,
+  createCommentInMessage,
+  addLikeToMessage,
+  addDislikeToMessage,
+} from '../controllers/FeedController'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -20,12 +29,19 @@ import {
 
 export const typeDef = gql`
   extend type Query {
-    allWorkspaces: [Workspaces]
+    allWorkspaces(input: InputWorkspaceGet!): [Workspaces]
+    getWorkspaceById(input: WorkspaceId!): Workspaces
+    getMessageById(input: InputMessages!): messages
   }
   extend type Mutation {
     createWorkspace(input: InputWorkspace!): Workspaces
     deleteWorkspace(input: WorkspaceId!): String
     updateWorkspace(input: UpdateWorkspace!): Workspaces
+    createFeed(input: InputFeedCreate!): Workspaces
+    createMessageInFeed(input: InputMessages!): Workspaces
+    createCommentInMessage(input: InputComments!): Workspaces
+    addLikeToMessage(input: InputLikeMessage!): Workspaces
+    addDislikeToMessage(input: InputDislikeMessage!): Workspaces
   }
 
   # Types _____________________________________________________
@@ -49,16 +65,26 @@ export const typeDef = gql`
     id: String
     content: String
     userId: String
+    userName: String
     createdAt: String
     assetId: String
-    likes: Int
-    dislikes: Int
+    likes: [like]
+    dislikes: [dislike]
     comments: [comments]
+  }
+  type like {
+    userId: String
+    userName: String
+  }
+  type dislike {
+    userId: String
+    userName: String
   }
   type comments {
     id: String
     content: String
     userId: String
+    userName: String
     createdAt: String
   }
   type sharedAssets {
@@ -75,11 +101,15 @@ export const typeDef = gql`
   }
 
   # Inputs _____________________________________________________
+  input InputWorkspaceGet {
+    isSchoolWorkspace: Boolean!
+    schoolId: String
+  }
   input InputWorkspace {
     schoolId: String
     userAdmin: String
     isSchoolWorkspace: Boolean!
-    usersAllowed: [String]
+    usersAllowed: [String]!
     title: String!
     feed: [InputFeed]
     assets: [InputSharedAssets]
@@ -89,9 +119,9 @@ export const typeDef = gql`
     id: ID!
     schoolId: String
     userAdmin: String
-    isSchoolWorkspace: Boolean!
+    isSchoolWorkspace: Boolean
     usersAllowed: [String]
-    title: String!
+    title: String
     feed: [InputFeed]
     assets: [InputSharedAssets]
     visio: String
@@ -102,9 +132,17 @@ export const typeDef = gql`
     feedName: String!
     messages: [InputMessages]
   }
+
+  input InputFeedCreate {
+    parentWorkspaceId: String!
+    feedName: String!
+  }
+
   input InputMessages {
-    id: String
-    content: String
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String
+    messageContent: String
     userId: String
     createdAt: String
     assetId: String
@@ -113,17 +151,29 @@ export const typeDef = gql`
     comments: [InputComments]
   }
   input InputComments {
-    id: String
-    content: String
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String!
+    commentContent: String
     userId: String
     createdAt: String
+  }
+  input InputLikeMessage {
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String!
+  }
+  input InputDislikeMessage {
+    parentWorkspaceId: String!
+    feedId: String!
+    messageId: String!
   }
   input InputSharedAssets {
     id: String
     assetName: String!
-    folders: [InputFolders]
+    folders: [InputSharedFolders]
   }
-  input InputFolders {
+  input InputSharedFolders {
     id: String
     folderName: String
     parentId: String
@@ -139,10 +189,17 @@ export const typeDef = gql`
 export const resolvers = {
   Query: {
     allWorkspaces: allWorkspaces,
+    getWorkspaceById: getWorkspaceById,
+    getMessageById: getMessageById,
   },
   Mutation: {
     createWorkspace: createWorkspace,
     updateWorkspace: updateWorkspace,
     deleteWorkspace: deleteWorkspace,
+    createFeed: createFeed,
+    createMessageInFeed: createMessageInFeed,
+    createCommentInMessage: createCommentInMessage,
+    addLikeToMessage: addLikeToMessage,
+    addDislikeToMessage: addDislikeToMessage,
   },
 }

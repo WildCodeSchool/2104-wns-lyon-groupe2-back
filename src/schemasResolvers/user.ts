@@ -5,6 +5,9 @@ import {
   deleteUser,
   updateUser,
   getOneUser,
+  getMyPasswordBack,
+  checkTokenWithUserId,
+  updatePassword,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -24,11 +27,16 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
     getOneUser(token: String!): Users
+    checkTokenWithUserId(input: InputPasswordRecovery!): String!
   }
   extend type Mutation {
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
+    getMyPasswordBack(email: String!): ResponseForRecovery
+    updatePassword(
+      inputToChangePassword: InputToChangePassword
+    ): ResponseFromPasswordUpdate
   }
 
   # Types _____________________________________________________
@@ -38,11 +46,14 @@ export const typeDef = gql`
     firstname: String
     avatar: String
     email: String
-    schoolIdd: String
+    schoolId: String
     themeId: String
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [WorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
+    first_connection: Boolean
   }
 
   type WorkspacesAdmin {
@@ -59,19 +70,30 @@ export const typeDef = gql`
     TEACHER
   }
 
+  type ResponseForRecovery {
+    message: String
+    id: String
+  }
+  type ResponseFromPasswordUpdate {
+    message: String
+  }
+
   # Inputs _____________________________________________________
   input InputUser {
     lastname: String!
     firstname: String!
     avatar: String
     email: String!
-    password: String!
-    passwordConfirmation: String!
+    # password: String!
+    # passwordConfirmation: String!
     schoolId: String!
     themeId: String
     isSchoolAdmin: Boolean!
     userType: UserType!
     workspacesAdmin: [InputWorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
+    first_connection: Boolean!
   }
   input UpdateUser {
     id: String!
@@ -85,10 +107,22 @@ export const typeDef = gql`
     isSchoolAdmin: Boolean
     userType: UserType
     workspacesAdmin: [InputWorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
+    first_connection: Boolean
   }
 
   input UserId {
     id: String
+  }
+  input InputPasswordRecovery {
+    token: String
+    userId: String
+  }
+  input InputToChangePassword {
+    userId: String
+    password: String
+    first_connection: Boolean
   }
 `
 
@@ -100,19 +134,24 @@ export const resolvers = {
   },
   Query: {
     allUsers: allUsers,
-    getOneUser: (args: any) => getOneUser(args),
+    getOneUser: getOneUser,
+    checkTokenWithUserId: checkTokenWithUserId,
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.userType !== 'admin')
-        throw new ForbiddenError("You're not allowed to perform this operation")
+      // if (!context.user || context.user.userType !== 'admin') {
+      //   throw new ForbiddenError("You're not allowed to perform this operation")
+      // }
       return registerUser(parent, args)
     },
     updateUser: updateUser,
     deleteUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.userType !== 'admin')
+      if (!context.user || context.user.userType !== 'admin') {
         throw new ForbiddenError("You're not allowed to perform this operation")
+      }
       return deleteUser(parent, args, context)
     },
+    getMyPasswordBack: getMyPasswordBack,
+    updatePassword: updatePassword,
   },
 }

@@ -1,18 +1,40 @@
 import WorkspacesModel from '../models/workspacesModel'
 import { IWorkspaces } from '../interfaces/workspaceInterface'
+import { allUsersWithSchoolId } from './UserController'
+import { IUser } from '../interfaces/userInterface'
 
 // do no forget parent !!!
 
-export const createWorkspace = async (parent: any, args: any) => {
+export const createWorkspace = async (parent: any, args: any, context: any) => {
+  // Vérification de possibilité de créer un WS de l'école seulement si l'user est school admin ou teatcher
+  if (context.user.userType === 'student' && args.input.isSchoolWorkspace) {
+    throw new Error(
+      'not allowed to perform this action, you must be admin or teacher',
+    )
+  }
+
   const input: IWorkspaces = args.input
+  // possibilité de rajouter tous les utilisateurs de son école en utilisateurs rattachés
+  if (input.usersAllowed[0] === 'all') {
+    const getAllUsers: any = await allUsersWithSchoolId(context.user.schoolId)
+    input.usersAllowed = getAllUsers.map((user: any) => {
+      return user._id
+    })
+  }
   await WorkspacesModel.init()
   const model = new WorkspacesModel(input)
   const result = await model.save()
   return result
 }
 
-export const allWorkspaces = async () => {
-  const result = await WorkspacesModel.find()
+// Permet de récupérer les workspaces en fonction de s'ils appartiennent à l'école (Ecoles/formation) ou aux élèves (Espace de travail)
+export const allWorkspaces = async (parent: any, args: any, context: any) => {
+  const isSchoolWorkspace: Boolean = args.input.isSchoolWorkspace
+  const result = await WorkspacesModel.find({
+    isSchoolWorkspace: isSchoolWorkspace,
+    usersAllowed: context.user.id,
+    schoolId: context.user.schoolId,
+  }).exec()
   return result
 }
 
@@ -25,25 +47,42 @@ export const deleteWorkspace = async (parent: any, args: any) => {
   return `Workspace ${workspace.title} has been successfully deleted`
 }
 
-export const updateWorkspace = async (parent: any, args: any) => {
+export const updateWorkspace = async (parent: any, args: any, context: any) => {
   const input: IWorkspaces = args.input // values send by client
-  const workspace = await WorkspacesModel.findById(input.id) // find corresponding user in DB
-  if (workspace) {
-    workspace._doc = { ...workspace._doc, ...input } // update user's datas
-    console.log(
-      '🚀 ~ file: workSpacesController.ts ~ line 32 ~ updateWorkspace ~ workspace',
-      workspace,
-    )
-    console.log(
-      '🚀 ~ file: workSpacesController.ts ~ line 33 ~ updateWorkspace ~ workspace._doc',
-      workspace._doc,
-    )
-    const result = await workspace.save()
-    console.log(
-      '🚀 ~ file: workSpacesController.ts ~ line 34 ~ updateWorkspace ~ result',
-      result,
-    )
+  // Vérification de possibilité de modifier le isSchoolWorkspace d'un WS de l'école seulement si l'user est school admin ou teacher
 
-    return await workspace.save() // save datas
-  }
+  let workspace = await WorkspacesModel.findOne({ _id: input.id })
+
+  // voir comment gérer les autorisations
+
+  workspace = { ...workspace, ...input }
+  workspace.save()
+
+  return workspace
+}
+
+export const getWorkspaceById = async (parent: any, args: any) => {
+  const id: String = args.input.id
+  const res = await WorkspacesModel.findById(id)
+  return res
+}
+
+export const getMessageById = async (parent: any, args: any) => {
+  const id: String = args.input.parentWorkspaceId
+  const feedId: String = args.input.feedId
+  const messageId: String = args.input.messageId
+  const currentMessage = await WorkspacesModel.find({
+    _id: id,
+    'feed._id': feedId,
+    'feed.messages._id': messageId,
+  }).exec()
+  const feed = await currentMessage[0].feed.filter((currentFeed: any) => {
+    return currentFeed.id == feedId
+  })
+
+  const message = feed[0].messages.filter((currentMessage: any) => {
+    return currentMessage._id == messageId
+  })
+
+  return message[0]
 }
