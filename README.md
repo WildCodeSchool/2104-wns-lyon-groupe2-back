@@ -6,14 +6,4 @@ Stack :
 
 - apollo-server-express
 
-# Test de CD
-
-Ceci est un joli test de cd
-
-# New CD Test
-
-Ceci est encore un autre test de CD
-
-# New CD Test 2
-
-Ceci est encore un autre test de CD
+# Test pour persistence
