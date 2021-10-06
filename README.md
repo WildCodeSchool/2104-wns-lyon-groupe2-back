@@ -13,3 +13,7 @@ Ceci est un joli test de cd
 # New CD Test
 
 Ceci est encore un autre test de CD
+
+# New CD Test 2
+
+Ceci est encore un autre test de CD
