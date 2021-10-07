@@ -57,6 +57,7 @@ export const isAuth = async (parent: any, args: any, context: any) => {
   const {
     input: { token },
   } = args
+  if (!token) return { auth: false, message: 'Token Absent' }
 
   const now = Date.now()
   const decoded: iTokenDecrypted = jwtDecode(token)
