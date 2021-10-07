@@ -108,7 +108,7 @@ export const getPath = async (parentDirectory: string) => {
 
 const sameNameCheck = async (
   userId: string,
-  folderId: string | null,
+  folderId: string | null,
   parentDirectory: string,
   newName: string,
 ) => {
@@ -128,6 +128,16 @@ const sameNameCheck = async (
     }
   }
   return false
+}
+
+export const getFoldersTree = async (parent: any, args: any, context: any) => {
+  const userId = context.user._id
+  const rootDirectory = await FoldersModel.find({
+    parentDirectory: '',
+    userId: userId,
+  }).exec()
+  return rootDirectory
+  console.log('here', rootDirectory)
 }
 
 export const updateFolder = async (parent: any, args: any, context: any) => {
