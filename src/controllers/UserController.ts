@@ -76,6 +76,12 @@ export const allUsersWithSchoolId = async (userSchoolId: string) => {
   return result
 }
 
+export const getUserByID = async (parent: any, args: any) => {
+  const id: String = args.input.id
+  const user = await UserModel.findById(id)
+  return user
+}
+
 export const deleteUser = async (parent: any, args: any, context: any) => {
   const id: String = args.input.id
   const user = await UserModel.findById(id)

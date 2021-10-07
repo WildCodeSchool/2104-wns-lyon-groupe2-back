@@ -8,6 +8,7 @@ import {
   getMyPasswordBack,
   checkTokenWithUserId,
   updatePassword,
+  getUserByID,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -27,6 +28,7 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
     getOneUser(token: String!): Users
+    getUserByID(input: UserId!): Users
     checkTokenWithUserId(input: InputPasswordRecovery!): String!
   }
   extend type Mutation {
@@ -136,6 +138,7 @@ export const resolvers = {
     allUsers: allUsers,
     getOneUser: getOneUser,
     checkTokenWithUserId: checkTokenWithUserId,
+    getUserByID: getUserByID,
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
