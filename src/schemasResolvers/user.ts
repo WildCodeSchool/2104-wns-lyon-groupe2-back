@@ -93,7 +93,6 @@ export const typeDef = gql`
     workspacesAdmin: [InputWorkspacesAdmin]
     reset_password_token: String
     reset_password_expires: String
-    first_connection: Boolean!
   }
   input UpdateUser {
     id: String!
