@@ -11,4 +11,8 @@ export interface IUser {
   isSchoolAdmin: Boolean
   userType: string
   workspacesadmin: string[]
+  color: string,
+  age: string,
+  city: string,
+  bio: string
 }

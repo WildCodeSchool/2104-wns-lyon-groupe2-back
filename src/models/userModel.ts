@@ -1,3 +1,4 @@
+import { string } from 'joi'
 import * as mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
@@ -14,6 +15,10 @@ const UserSchema = new Schema({
   reset_password_token: String,
   reset_password_expires: Number,
   first_connection: Boolean,
+  color: String,
+  bio: String,
+  city: String,
+  age: Number,
 })
 
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)

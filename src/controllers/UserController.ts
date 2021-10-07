@@ -32,8 +32,16 @@ export const registerUser = async (parent: any, args: any) => {
   const token = crypto.randomBytes(20).toString('hex')
   const reset_password_token = token
   const reset_password_expires = Date.now() + 3600
+  const first_connection = false
+  const color =
+    '#' +
+    Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')
   const userToSave = {
     ...input,
+    color,
+    first_connection,
     encryptedPassword,
     reset_password_token,
     reset_password_expires: reset_password_expires.toString(),

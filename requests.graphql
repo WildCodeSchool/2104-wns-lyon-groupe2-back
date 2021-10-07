@@ -13,18 +13,18 @@ mutation registerUser($input: InputUser!) {
 }
 
 # Query Variables
-# {
-#   "input": {
-#     "lastname": "DARDILL",
-#     "firstname": "Guillem",
-#     "email": "guillem.dardill@mail.com",
-#     "password": "aqwzsxed123",
-#     "passwordConfirmation": "aqwzsxed123",
-#     "schoolId": "1",
-#     "isSchoolAdmin": true,
-#     "userType": "ADMIN"
-# 	}
-# }
+{
+  "input": {
+    "lastname": "DARDILL",
+    "firstname": "Guillem",
+    "email": "guillem.dardill@mail.com",
+    "password": "aqwzsxed123",
+    "passwordConfirmation": "aqwzsxed123",
+    "schoolId": "1",
+    "isSchoolAdmin": true,
+    "userType": "ADMIN"
+	}
+}
 
 mutation login ($input: InputLogin!) {
   login(input: $input) {
