@@ -2,7 +2,8 @@ import UserModel from '../models/userModel'
 import jwt from 'jsonwebtoken'
 import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
-
+import jwtDecode from 'jwt-decode'
+import { iTokenDecrypted } from '../interfaces/userInterface'
 const env: IConfig = config
 
 const verifyPassword = async (userPassword: any, plainPassword: string) => {
@@ -50,4 +51,17 @@ export const Login = async (parent: any, args: any) => {
   )
   const payload = { token: token, email: email }
   return payload
+}
+
+export const isAuth = async (parent: any, args: any, context: any) => {
+  const {
+    input: { token },
+  } = args
+
+  const now = Date.now()
+  const decoded: iTokenDecrypted = jwtDecode(token)
+
+  if (now > decoded.exp * 1000) return { auth: false, message: 'Token expiré' }
+
+  return { auth: true, message: 'Willkommen' }
 }
