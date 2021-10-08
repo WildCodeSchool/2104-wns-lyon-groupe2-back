@@ -66,6 +66,7 @@ export const typeDef = gql`
     content: String
     userId: String
     userName: String
+    color: String
     createdAt: String
     assetId: String
     likes: [like]
@@ -85,6 +86,7 @@ export const typeDef = gql`
     content: String
     userId: String
     userName: String
+    color: String
     createdAt: String
   }
   type sharedAssets {

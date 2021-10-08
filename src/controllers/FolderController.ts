@@ -3,9 +3,10 @@ import { IFolders } from '../interfaces/foldersInterface'
 import { getOneUser } from './UserController'
 import { arch, userInfo } from 'os'
 import { assign } from 'lodash'
+import { PollingWatchKind } from 'typescript'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
-export const getFolderById = async (parent: any, id: string, context: any) => {
+export const getFolderById = async (context: any, id: string) => {
   let folder
   try {
     folder = await FoldersModel.findById(id)
@@ -23,6 +24,16 @@ export const getFolderById = async (parent: any, id: string, context: any) => {
 }
 
 export const createFolder = async (parent: any, args: any, context: any) => {
+  const userId = context.user._id
+  const isFolderWithSameName = await sameNameCheck(
+    userId,
+    null,
+    args.input.parentDirectory,
+    args.input.name,
+  )
+  if (isFolderWithSameName) {
+    throw new UserInputError('Error : a folder has the same name')
+  }
   FoldersModel.countDocuments({}, async function (err, count) {
     const input: IFolders = args.input
     input.userId = context.user._id
@@ -44,75 +55,115 @@ export const foldersByCurrentUserId = async (
   args: any,
   context: any,
 ) => {
+  let result: any = {
+    folders: [],
+    path: [],
+  }
   const userId = context.user._id
   const res = await FoldersModel.find({
     userId: userId,
     parentDirectory: args.parentDirectory,
   }).exec()
-  return res
+  result.folders = res
+  result.path = getPath(args.parentDirectory)
+  return result
 }
 
 export const deleteFolder = async (parent: any, args: any, context: any) => {
   const id: string = args.input.id
-  const folder = await getFolderById(parent, id, context)
+  const folder = await getFolderById(context, id)
   if (folder) {
     const result = await FoldersModel.deleteOne({ _id: id })
     return `The folder ${folder.name} has been successfully deleted`
   }
 }
 
+export const getPath = async (parentDirectory: string) => {
+  let path = []
+  if (!parentDirectory) {
+    return [{ name: 'Mes ressources', id: '' }]
+  } else {
+    let secondFolder = await FoldersModel.findById(parentDirectory)
+    path.push({ name: secondFolder.name, id: secondFolder.id })
+    if (secondFolder.parentDirectory === '') {
+      path.unshift({ name: 'Mes ressources', id: '' })
+      return path
+    } else {
+      let folderIdToFind = secondFolder.parentDirectory
+      for (let i = 0; i < 50; i++) {
+        let nextFolder = await FoldersModel.findById(folderIdToFind)
+        if (!nextFolder.parentDirectory || nextFolder.parentDirectory === '') {
+          path.push({ name: nextFolder.name, id: nextFolder.id })
+          path.reverse()
+          path.unshift({ name: 'Mes ressources', id: '' })
+          return path
+        } else {
+          path.push({ name: nextFolder.name, id: nextFolder.id })
+          folderIdToFind = nextFolder.parentDirectory
+        }
+      }
+    }
+  }
+}
+
+const sameNameCheck = async (
+  userId: string,
+  folderId: string | null,
+  parentDirectory: string,
+  newName: string,
+) => {
+  // find all folders which have the same parent and the concerned user id
+  let foldersWithSameParent = await FoldersModel.find({
+    parentDirectory: parentDirectory,
+    userId: userId,
+  }).exec()
+  // removed the current folder from the list
+  const foldersWithSameParentFiltered = foldersWithSameParent.filter(
+    (f) => f.id !== folderId,
+  )
+  // return true if a folder with same name is found
+  for (let folder of foldersWithSameParentFiltered) {
+    if (folder.name === newName) {
+      return true
+    }
+  }
+  return false
+}
+
+export const getFoldersTree = async (parent: any, args: any, context: any) => {
+  const userId = context.user._id
+  const rootDirectory = await FoldersModel.find({
+    parentDirectory: '',
+    userId: userId,
+  }).exec()
+  return rootDirectory
+  console.log('here', rootDirectory)
+}
+
 export const updateFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
 
-  let folder = await getFolderById(parent, input.id, context)
-  if (folder.sequence !== input.sequence) {
-    // console.log('folder sequence has changed')
-    let foldersWithSameParent = await FoldersModel.find({
-      parentDirectory: folder.parentDirectory,
-    }).exec()
-    if (foldersWithSameParent && foldersWithSameParent.length > 0) {
-      foldersWithSameParent.sort((a, b) => a.sequence - b.sequence)
-      if (input.sequence === 0) {
-        console.log('first if')
-        const firstPart = foldersWithSameParent.slice()
-        const firstPartFiltered: any = firstPart.filter(
-          (fol) => fol.id !== folder.id,
-        )
-        folder.sequence = input.sequence
-        firstPartFiltered.unshift(folder)
-        for (let i = 0; i < firstPartFiltered.length; i++) {
-          firstPartFiltered[i].sequence = i
-        }
-        // console.log('first part filtered is', firstPartFiltered)
-        for (let folder of firstPartFiltered) {
-          await folder.save()
-        }
-      } else {
-        console.log('second if')
-        const firstPart = foldersWithSameParent.slice(0, input.sequence + 1)
-        const firstPartFiltered: any = firstPart.filter(
-          (fol) => fol.id !== folder.id,
-        )
-        for (let i = 0; i < firstPartFiltered.length; i++) {
-          firstPartFiltered[i].sequence = i
-        }
-        console.log('first part filtered is', firstPartFiltered)
-        const secondPart = foldersWithSameParent.slice(input.sequence + 1)
-        folder.sequence = input.sequence
-        secondPart.unshift(folder)
-        let count = firstPartFiltered[firstPartFiltered.length - 1].sequence + 1
-        for (let f of secondPart) {
-          f.sequence = count
-          count += 1
-        }
-        console.log('second part is', secondPart)
-        const result = [...firstPartFiltered, ...secondPart]
-        // console.log('result is', result)
-        for (let folder of result) {
-          await folder.save()
-        }
-        return folder
-
+  const userId = context.user._id
+  // console.log('input', input)
+  let folder = await getFolderById(context, input.id)
+  // console.log('folder', folder)
+  if (input.sequence !== null) {
+    if (input.sequence !== folder.sequence) {
+      // console.log('folder sequence has changed')
+      let foldersWithSameParent = await FoldersModel.find({
+        parentDirectory: folder.parentDirectory,
+        userId: userId,
+      }).exec()
+      const foldersWithSameParentFiltered: any = foldersWithSameParent.filter(
+        (fol) => fol.id !== folder.id,
+      )
+      foldersWithSameParentFiltered.sort((a, b) => a.sequence - b.sequence)
+      const firstPart = foldersWithSameParentFiltered.slice(0, input.sequence)
+      const secondPart = foldersWithSameParentFiltered.slice(input.sequence)
+      folder.sequence = input.sequence
+      firstPart.push(folder)
+      for (let i = 0; i < firstPart.length; i++) {
+        firstPart[i].sequence = i
       }
       let count = firstPart[firstPart.length - 1].sequence + 1
       for (let f of secondPart) {
@@ -129,9 +180,24 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
     }
   } else {
     if (folder) {
+      let parentDirectory = folder.parentDirectory
+      const isFolderWithSameName = await sameNameCheck(
+        userId,
+        input.id,
+        folder.parentDirectory,
+        input.name,
+      )
+      if (isFolderWithSameName) {
+        throw new UserInputError('Error : a folder has the same name')
+      }
+      if (input.parentDirectory && input.parentDirectory !== 'root') {
+        parentDirectory = input.parentDirectory
+      } else if (input.parentDirectory && input.parentDirectory === 'root') {
+        parentDirectory = ''
+      }
       folder.sequence
       folder.name = input?.name || folder.name
-      folder.parentDirectory = input?.parentDirectory || folder.parentDirectory
+      folder.parentDirectory = parentDirectory
       folder.isRootDirectory = input?.isRootDirectory || folder.isRootDirectory
       return await folder.save()
     }

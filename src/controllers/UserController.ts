@@ -32,10 +32,25 @@ export const registerUser = async (parent: any, args: any) => {
   const token = crypto.randomBytes(20).toString('hex')
   const reset_password_token = token
   const reset_password_expires = Date.now() + 3600
+  const first_connection = false
+  const color =
+    '#' +
+    Math.floor(Math.random() * 16777215)
+      .toString(16)
+      .padStart(6, '0')
+  const city = ''
+  const bio = ''
+  const age = null
   const userToSave = {
     ...input,
+    color,
+    city,
+    age,
+    bio,
+    first_connection,
     encryptedPassword,
     reset_password_token,
+    first_connection: true,
     reset_password_expires: reset_password_expires.toString(),
   }
   await UserModel.init()
@@ -76,6 +91,12 @@ export const allUsersWithSchoolId = async (userSchoolId: string) => {
   return result
 }
 
+export const getUserByID = async (parent: any, args: any) => {
+  const id: String = args.input.id
+  const user = await UserModel.findById(id)
+  return user
+}
+
 export const deleteUser = async (parent: any, args: any, context: any) => {
   const id: String = args.input.id
   const user = await UserModel.findById(id)
@@ -92,6 +113,7 @@ export const updateUser = async (parent: any, args: any, context: any) => {
     user.encryptedPassword,
     input.password,
   )
+  console.log(context)
   if (context.user.id !== user.id) {
     throw new ForbiddenError("You're only allowed to update your profile !")
   }

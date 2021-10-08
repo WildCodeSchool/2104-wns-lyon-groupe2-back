@@ -66,6 +66,7 @@ export const createMessageInFeed = async (
       content: input.messageContent,
       userId: user.id,
       userName: user.firstname + ' ' + user.lastname,
+      color: user.color,
       createdAt: new Date(Date.now()),
       likes: [],
       dislikes: [],
@@ -80,6 +81,7 @@ export const createMessageInFeed = async (
             content: input.messageContent,
             userId: user.id,
             userName: user.firstname + ' ' + user.lastname,
+            color: user.color,
             createdAt: new Date(Date.now()),
             likes: [],
             dislikes: [],
@@ -117,6 +119,7 @@ export const createCommentInMessage = async (
       content: input.commentContent,
       userId: user.id,
       userName: user.firstname + ' ' + user.lastname,
+      color: user.color,
       createdAt: new Date(Date.now()),
     }
 
@@ -130,6 +133,7 @@ export const createCommentInMessage = async (
             content: input.commentContent,
             userId: user.id,
             userName: user.firstname + ' ' + user.lastname,
+            color: user.color,
             createdAt: new Date(Date.now()),
           },
         },

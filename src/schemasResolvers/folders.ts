@@ -8,6 +8,8 @@ import {
   updateFolder,
   deleteFolder,
   getFolderById,
+  getPath,
+  getFoldersTree,
 } from '../controllers/FolderController'
 
 /////////////////////////////////////////////////////////////////
@@ -25,8 +27,11 @@ import {
 export const typeDef = gql`
   extend type Query {
     allFolders: [Folder]
+
     getFolderById(folderId: String!): Folder
-    foldersByCurrentUserId(parentDirectory: String): [Folder]
+    foldersByCurrentUserId(parentDirectory: String): Folders
+    getPath(parentDirectory: String): [String]
+    getFoldersTree: [LightFolder]
 
   }
   extend type Mutation {
@@ -37,6 +42,17 @@ export const typeDef = gql`
 
   # FOLDERS _____________________________________________________
   # Types _____________________________________________________
+
+  type Folders {
+    path: [Path]
+    folders: [Folder]
+  }
+
+  type Path {
+    name: String
+    id: String
+  }
+
   type Folder {
     id: ID
     sequence: Int
@@ -45,6 +61,12 @@ export const typeDef = gql`
     name: String
     parentDirectory: String
     isRootDirectory: Boolean
+    path: [String]
+  }
+
+  type LightFolder {
+    id: ID
+    name: String
   }
 
   # Inputs _____________________________________________________
@@ -76,11 +98,25 @@ export const resolvers = {
       }
       return foldersByCurrentUserId(parent, args, context)
     },
+
     getFolderById: (parent: any, args: any, context: any) => {
       if (!context.user)
         throw new ForbiddenError("You're not allowed to perform this operation")
       const { folderId } = args
       return getFolderById(parent, folderId, context)
+
+    getPath: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return getPath(parent)
+    },
+    getFoldersTree: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return getFoldersTree(parent, args, context)
+
     },
   },
   Mutation: {
