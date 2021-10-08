@@ -8,6 +8,7 @@ import {
   updateFolder,
   deleteFolder,
   getPath,
+  getFoldersTree,
 } from '../controllers/FolderController'
 
 /////////////////////////////////////////////////////////////////
@@ -27,6 +28,7 @@ export const typeDef = gql`
     allFolders: [Folder]
     foldersByCurrentUserId(parentDirectory: String): Folders
     getPath(parentDirectory: String): [String]
+    getFoldersTree: [LightFolder]
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
@@ -56,6 +58,11 @@ export const typeDef = gql`
     parentDirectory: String
     isRootDirectory: Boolean
     path: [String]
+  }
+
+  type LightFolder {
+    id: ID
+    name: String
   }
 
   # Inputs _____________________________________________________
@@ -91,7 +98,13 @@ export const resolvers = {
       if (!context.user) {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
-      return getPath(parent, args, context)
+      return getPath(parent)
+    },
+    getFoldersTree: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return getFoldersTree(parent, args, context)
     },
   },
   Mutation: {

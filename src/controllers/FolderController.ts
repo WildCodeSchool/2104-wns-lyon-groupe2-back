@@ -24,6 +24,16 @@ const getFolderById = async (context: any, id: string) => {
 }
 
 export const createFolder = async (parent: any, args: any, context: any) => {
+  const userId = context.user._id
+  const isFolderWithSameName = await sameNameCheck(
+    userId,
+    null,
+    args.input.parentDirectory,
+    args.input.name,
+  )
+  if (isFolderWithSameName) {
+    throw new UserInputError('Error : a folder has the same name')
+  }
   FoldersModel.countDocuments({}, async function (err, count) {
     const input: IFolders = args.input
     input.userId = context.user._id
@@ -56,7 +66,6 @@ export const foldersByCurrentUserId = async (
   }).exec()
   result.folders = res
   result.path = getPath(args.parentDirectory)
-  console.log(result)
   return result
 }
 
@@ -97,8 +106,43 @@ export const getPath = async (parentDirectory: string) => {
   }
 }
 
+const sameNameCheck = async (
+  userId: string,
+  folderId: string | null,
+  parentDirectory: string,
+  newName: string,
+) => {
+  // find all folders which have the same parent and the concerned user id
+  let foldersWithSameParent = await FoldersModel.find({
+    parentDirectory: parentDirectory,
+    userId: userId,
+  }).exec()
+  // removed the current folder from the list
+  const foldersWithSameParentFiltered = foldersWithSameParent.filter(
+    (f) => f.id !== folderId,
+  )
+  // return true if a folder with same name is found
+  for (let folder of foldersWithSameParentFiltered) {
+    if (folder.name === newName) {
+      return true
+    }
+  }
+  return false
+}
+
+export const getFoldersTree = async (parent: any, args: any, context: any) => {
+  const userId = context.user._id
+  const rootDirectory = await FoldersModel.find({
+    parentDirectory: '',
+    userId: userId,
+  }).exec()
+  return rootDirectory
+  console.log('here', rootDirectory)
+}
+
 export const updateFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
+  const userId = context.user._id
   // console.log('input', input)
   let folder = await getFolderById(context, input.id)
   // console.log('folder', folder)
@@ -107,6 +151,7 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
       // console.log('folder sequence has changed')
       let foldersWithSameParent = await FoldersModel.find({
         parentDirectory: folder.parentDirectory,
+        userId: userId,
       }).exec()
       const foldersWithSameParentFiltered: any = foldersWithSameParent.filter(
         (fol) => fol.id !== folder.id,
@@ -133,10 +178,17 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
       }
     }
   } else {
-    console.log('here')
     if (folder) {
       let parentDirectory = folder.parentDirectory
-      console.log(parentDirectory)
+      const isFolderWithSameName = await sameNameCheck(
+        userId,
+        input.id,
+        folder.parentDirectory,
+        input.name,
+      )
+      if (isFolderWithSameName) {
+        throw new UserInputError('Error : a folder has the same name')
+      }
       if (input.parentDirectory && input.parentDirectory !== 'root') {
         parentDirectory = input.parentDirectory
       } else if (input.parentDirectory && input.parentDirectory === 'root') {
