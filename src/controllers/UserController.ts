@@ -36,6 +36,7 @@ export const registerUser = async (parent: any, args: any) => {
     ...input,
     encryptedPassword,
     reset_password_token,
+    first_connection: true,
     reset_password_expires: reset_password_expires.toString(),
   }
   await UserModel.init()
@@ -98,6 +99,7 @@ export const updateUser = async (parent: any, args: any, context: any) => {
     user.encryptedPassword,
     input.password,
   )
+  console.log(context)
   if (context.user.id !== user.id) {
     throw new ForbiddenError("You're only allowed to update your profile !")
   }
