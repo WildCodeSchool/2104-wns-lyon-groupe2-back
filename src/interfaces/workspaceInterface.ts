@@ -20,6 +20,7 @@ export interface Ifeed {
       content: string
       userId: string
       userName: string
+      color: string
       createdAt: Date
       assetId: string
       likes: [
@@ -40,6 +41,7 @@ export interface Ifeed {
           content: string
           userId: string
           userName: string
+          color: string
           createdAt: Date
         },
       ]

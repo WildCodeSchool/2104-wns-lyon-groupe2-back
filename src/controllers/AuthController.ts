@@ -37,6 +37,7 @@ export const Login = async (parent: any, args: any) => {
       lastname: user.lastname,
       avatar: user.string,
       email: user.email,
+      color: user.color,
       schoolId: user.schoolId,
       themeId: user.themeId,
       isSchoolAdmin: user.isSchoolAdmin,
