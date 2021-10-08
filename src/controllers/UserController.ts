@@ -38,9 +38,15 @@ export const registerUser = async (parent: any, args: any) => {
     Math.floor(Math.random() * 16777215)
       .toString(16)
       .padStart(6, '0')
+  const city = ''
+  const bio = ''
+  const age = null
   const userToSave = {
     ...input,
     color,
+    city,
+    age,
+    bio,
     first_connection,
     encryptedPassword,
     reset_password_token,

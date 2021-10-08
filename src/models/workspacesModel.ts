@@ -15,6 +15,7 @@ const WorkspacesSchema = new Schema({
           content: String,
           userId: String,
           userName: String,
+          color: String,
           createdAt: Date,
           assetId: String,
           likes: [
@@ -34,6 +35,7 @@ const WorkspacesSchema = new Schema({
               content: String,
               userId: String,
               userName: String,
+              color: String,
               createdAt: Date,
             },
           ],

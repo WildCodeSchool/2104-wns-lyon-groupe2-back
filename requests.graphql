@@ -102,19 +102,19 @@ mutation createWorspace($input: InputWorkspace!) {
   }
 }
 
-# Query Variables
-# {"input":{
-#   "title": "Général2",
-#   "isSchoolWorkspace": true,
-#   "schoolId": "1",
-#   "usersAllowed": "all",
-# "feed": {
-#   "feedName": "Social"
-# },
-# "assets": {
-#   "assetName": "Ressources"
-# }}
-# }
+Query Variables
+{"input":{
+  "title": "Général2",
+  "isSchoolWorkspace": true,
+  "schoolId": "1",
+  "usersAllowed": "all",
+"feed": {
+  "feedName": "Social"
+},
+"assets": {
+  "assetName": "Ressources"
+}}
+}
 
 #  update workspace   _____________________________________________________
 
