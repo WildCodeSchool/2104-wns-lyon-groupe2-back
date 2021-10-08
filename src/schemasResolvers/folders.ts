@@ -32,7 +32,6 @@ export const typeDef = gql`
     foldersByCurrentUserId(parentDirectory: String): Folders
     getPath(parentDirectory: String): [String]
     getFoldersTree: [LightFolder]
-
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
@@ -98,27 +97,16 @@ export const resolvers = {
       }
       return foldersByCurrentUserId(parent, args, context)
     },
+  },
 
-    getFolderById: (parent: any, args: any, context: any) => {
-      if (!context.user)
-        throw new ForbiddenError("You're not allowed to perform this operation")
-      const { folderId } = args
-      return getFolderById(parent, folderId, context)
-
-    getPath: (parent: any, args: any, context: any) => {
+  /*  getPath: (parent: any, args: any, context: any) => {
       if (!context.user) {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
       return getPath(parent)
     },
-    getFoldersTree: (parent: any, args: any, context: any) => {
-      if (!context.user) {
-        throw new ForbiddenError("You're not allowed to perform this operation")
-      }
-      return getFoldersTree(parent, args, context)
+   */
 
-    },
-  },
   Mutation: {
     createFolder: (parent: any, args: any, context: any) => {
       if (!context.user) {
