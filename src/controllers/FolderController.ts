@@ -137,7 +137,6 @@ export const getFoldersTree = async (parent: any, args: any, context: any) => {
     userId: userId,
   }).exec()
   return rootDirectory
-  console.log('here', rootDirectory)
 }
 
 export const updateFolder = async (parent: any, args: any, context: any) => {
