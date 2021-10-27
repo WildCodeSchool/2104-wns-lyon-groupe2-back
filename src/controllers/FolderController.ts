@@ -139,6 +139,17 @@ export const getFoldersTree = async (parent: any, args: any, context: any) => {
   return rootDirectory
 }
 
+export const moveFolder = async (parent: any, args: any, context: any) => {
+  const input: IFolders = args.input
+  let folder = await getFolderById(context, input.id)
+  if (folder) {
+    folder.parentDirectory = input.parentDirectory
+    return await folder.save()
+  } else {
+    throw new UserInputError('Error : the folder has not been found')
+  }
+}
+
 export const updateFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
   const userId = context.user._id
