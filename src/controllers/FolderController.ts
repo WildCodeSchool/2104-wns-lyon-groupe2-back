@@ -110,8 +110,11 @@ const sameNameCheck = async (
   userId: string,
   folderId: string | null,
   parentDirectory: string,
-  newName: string,
+  name: string,
 ) => {
+  if (parentDirectory === 'root') {
+    parentDirectory = ''
+  }
   // find all folders which have the same parent and the concerned user id
   let foldersWithSameParent = await FoldersModel.find({
     parentDirectory: parentDirectory,
@@ -123,7 +126,7 @@ const sameNameCheck = async (
   )
   // return true if a folder with same name is found
   for (let folder of foldersWithSameParentFiltered) {
-    if (folder.name === newName) {
+    if (folder.name === name) {
       return true
     }
   }
@@ -143,6 +146,15 @@ export const moveFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
   let folder = await getFolderById(context, input.id)
   if (folder) {
+    const isFolderWithSameName = await sameNameCheck(
+      context.user._id,
+      folder.id,
+      input.parentDirectory,
+      folder.name,
+    )
+    if (isFolderWithSameName) {
+      throw new Error('A folder with same name has been found')
+    }
     folder.parentDirectory = input.parentDirectory
     return await folder.save()
   } else {
@@ -188,26 +200,37 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
       }
     }
   } else {
+    // in this case we want to move the folder to an other directory or change his name
     if (folder) {
-      let parentDirectory = folder.parentDirectory
-      const isFolderWithSameName = await sameNameCheck(
-        userId,
-        input.id,
-        folder.parentDirectory,
-        input.name,
-      )
-      if (isFolderWithSameName) {
-        throw new UserInputError('Error : a folder has the same name')
+      // rename folder (parent directory is missing in this case)
+      if (input.parentDirectory === undefined) {
+        const isFolderWithSameName = await sameNameCheck(
+          userId,
+          input.id,
+          folder.parentDirectory,
+          input.name,
+        )
+        if (isFolderWithSameName) {
+          throw new Error('A folder with same name has been found')
+        }
+        folder.name = input.name
+        // move folder (parent directory is present in this case)
+      } else {
+        const isFolderWithSameName = await sameNameCheck(
+          userId,
+          input.id,
+          input.parentDirectory,
+          input.name,
+        )
+        if (isFolderWithSameName) {
+          throw new Error('A folder with same name has been found')
+        }
+        if (input.parentDirectory && input.parentDirectory !== 'root') {
+          folder.parentDirectory = input.parentDirectory
+        } else if (input.parentDirectory && input.parentDirectory === 'root') {
+          folder.parentDirectory = ''
+        }
       }
-      if (input.parentDirectory && input.parentDirectory !== 'root') {
-        parentDirectory = input.parentDirectory
-      } else if (input.parentDirectory && input.parentDirectory === 'root') {
-        parentDirectory = ''
-      }
-      folder.sequence
-      folder.name = input?.name || folder.name
-      folder.parentDirectory = parentDirectory
-      folder.isRootDirectory = input?.isRootDirectory || folder.isRootDirectory
       return await folder.save()
     }
   }
