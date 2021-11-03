@@ -4,6 +4,5 @@ export interface IFolders {
   createdAt: Date
   name: string
   parentDirectory: string
-  isRootDirectory: boolean
   sequence: number
 }

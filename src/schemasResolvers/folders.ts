@@ -10,6 +10,7 @@ import {
   getFolderById,
   getPath,
   getFoldersTree,
+  moveFolder,
 } from '../controllers/FolderController'
 
 /////////////////////////////////////////////////////////////////
@@ -37,6 +38,7 @@ export const typeDef = gql`
     createFolder(input: InputFolder!): Folder
     deleteFolder(input: FolderId!): String
     updateFolder(input: UpdateFolder!): Folder
+    moveFolder(input: UpdateFolder!): Folder
   }
 
   # FOLDERS _____________________________________________________
@@ -119,6 +121,12 @@ export const resolvers = {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
       return updateFolder(parent, args, context)
+    },
+    moveFolder: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return moveFolder(parent, args, context)
     },
     deleteFolder: (parent: any, args: any, context: any) => {
       if (!context.user) {
