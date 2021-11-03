@@ -15,7 +15,7 @@ export const Login = async (parent: any, args: any) => {
   const remember: boolean = args.input.remember
   const user = await UserModel.findOne({ email: email })
   if (!user) {
-    throw new Error('No User Found')
+    throw new Error('Invalid Credentials')
   }
   const isPasswordVerified = await verifyPassword(
     user.encryptedPassword,
