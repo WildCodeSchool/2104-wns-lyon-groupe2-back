@@ -7,7 +7,6 @@ const FoldersSchema = new Schema({
   sequence: Number,
   name: String,
   parentDirectory: String,
-  isRootDirectory: Boolean,
 })
 
 const FoldersModel: mongoose.Model<any> = mongoose.model(
