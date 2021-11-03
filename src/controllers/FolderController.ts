@@ -145,6 +145,10 @@ export const getFoldersTree = async (parent: any, args: any, context: any) => {
 export const moveFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
   let folder = await getFolderById(context, input.id)
+
+  if (input.id === input.parentDirectory) {
+    throw new Error("You can't move this folder inside himself !")
+  }
   if (folder) {
     const isFolderWithSameName = await sameNameCheck(
       context.user._id,
@@ -216,6 +220,7 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
         folder.name = input.name
         // move folder (parent directory is present in this case)
       } else {
+        console.log('input', input, 'folder', folder)
         const isFolderWithSameName = await sameNameCheck(
           userId,
           input.id,
