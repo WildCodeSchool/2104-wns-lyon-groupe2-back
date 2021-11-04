@@ -15,6 +15,24 @@ const AssetsSchema = new Schema({
   openingCount: Number,
 })
 
+// Création des indexs de la table (si non existants) au moment de la création du Model
+AssetsSchema.index(
+  {
+    title: 'text',
+    type: 'text',
+    tags: 'text',
+  },
+  {
+    weights: {
+      title: 25,
+      type: 20,
+      tags: 20,
+    },
+    default_language: 'fr',
+    name: 'search with weight',
+  },
+)
+
 const WorkspacesModel: mongoose.Model<any> = mongoose.model(
   'assets',
   AssetsSchema,
