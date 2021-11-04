@@ -31,7 +31,7 @@ export const typeDef = gql`
   }
   extend type Mutation {
     createAsset(input: InputAsset!): Assets
-    deleteAsset(input: AssetId!): String
+    deleteAsset(input: [String]): String
     updateAsset(input: UpdateAsset!): Assets
     uploadFile(data: Upload!, folderId: String!): File!
   }
@@ -97,8 +97,9 @@ export const typeDef = gql`
   }
 
   input AssetId {
-    id: String
-  }
+    id: [String]
+  } 
+  
 `
 
 export const resolvers = {

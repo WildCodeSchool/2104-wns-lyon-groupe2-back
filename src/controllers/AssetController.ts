@@ -29,12 +29,37 @@ export const getAssetsByFolderId = async (
 }
 
 export const deleteAsset = async (parent: any, args: any) => {
-  const id: String = args.input.id
-  const asset = await AssetsModel.findById(id)
-  if (asset) {
-    const result = await AssetsModel.deleteOne({ _id: id })
+  try {
+    const idArray: String[] = args.input
+
+    // Récupération des documents à supprimer
+    const assetsToDelete: any[] = await AssetsModel.find({
+      _id: { $in: idArray },
+    })
+    // Stockage dans un tableau de tous les noms de fichiers qu'il faudra supprimer
+    const assetsFileToDelete: string[] = []
+    for (const asset of assetsToDelete) {
+      const assetFileName = asset.title
+      assetsFileToDelete.push(assetFileName)
+    }
+
+    // Suppression des documents dans mongo
+    await AssetsModel.deleteMany({ _id: { $in: idArray } })
+
+    const pathName = path.join(__dirname, `../shared/ressources/`)
+
+    // Suppresion des fichiers sur le serveur
+    for (const fileName of assetsFileToDelete) {
+      fs.unlink(pathName + fileName, function (err: any) {
+        if (err) throw err
+      })
+    }
+
+    return `Assets were been successfully deleted`
+  } catch (error) {
+    console.log(error)
+    throw new Error('An error occured')
   }
-  return `The asset storage area ${asset.title} has been successfully deleted`
 }
 
 export const updateAsset = async (parent: any, args: any) => {
