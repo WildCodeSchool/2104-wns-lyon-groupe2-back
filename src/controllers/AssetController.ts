@@ -1,5 +1,6 @@
 import AssetsModel from '../models/assetsModel'
 import { IAssets } from '../interfaces/assetInterface'
+var fs = require('fs')
 
 // do no forget parent !!!
 
@@ -17,12 +18,36 @@ export const allAssets = async () => {
 }
 
 export const deleteAsset = async (parent: any, args: any) => {
-  const id: String = args.input.id
-  const asset = await AssetsModel.findById(id)
-  if (asset) {
-    const result = await AssetsModel.deleteOne({ _id: id })
+  try {
+    const idArray: String[] = args.input
+
+    // Récupération des documents à supprimer
+    const assetsToDelete: any[] = await AssetsModel.find({
+      title: { $in: idArray },
+    })
+    // Stockage dans un tableau de tous les noms de fichiers qu'il faudra supprimer
+    const assetsFileToDelete: String[] = []
+    for (const asset of assetsToDelete) {
+      const assetFileName = asset.title + '.' + asset.type
+      assetsFileToDelete.push(assetFileName)
+    }
+
+    // Suppression des documents dans mongo
+    await AssetsModel.deleteMany({ _id: { $in: idArray } })
+
+    // Suppresion des fichiers sur le serveur
+    for (const fileName of assetsFileToDelete) {
+      fs.unlink(fileName, function (err: any) {
+        if (err) throw err
+        console.log(fileName + 'deleted!')
+      })
+    }
+
+    return `Assets were been successfully deleted`
+  } catch (error) {
+    console.log(error)
+    throw new Error('An error occured')
   }
-  return `The asset storage area ${asset.title} has been successfully deleted`
 }
 
 export const updateAsset = async (parent: any, args: any) => {
