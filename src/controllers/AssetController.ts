@@ -23,6 +23,7 @@ export const getAssetsByFolderId = async (
   { folderId }: any,
   context: any,
 ) => {
+  console.log(folderId)
   const result = await AssetsModel.find({ folders: folderId })
   return result
 }
@@ -47,6 +48,8 @@ export const updateAsset = async (parent: any, args: any) => {
 
 export const uploadAssets = async (parent: any, { data, folderId }: any) => {
   const { createReadStream, filename, mimetype, encoding } = await data
+  const type = mimetype.split('/')[1]
+  const updatedAt = Date.now()
   const stream = createReadStream()
   const queHoraEs = Date.now()
   const filenameSplitted = filename.split('.')
@@ -54,7 +57,13 @@ export const uploadAssets = async (parent: any, { data, folderId }: any) => {
   const pathName = path.join(__dirname, `../shared/ressources/${assetUniqName}`)
   await stream.pipe(fs.createWriteStream(pathName))
   const url = `http://localhost:4000/ressources/${assetUniqName}`
-  const dataToRecord = { title: filename, folders: folderId, url }
+  const dataToRecord = {
+    title: filename,
+    folders: folderId,
+    url,
+    type,
+    updatedAt,
+  }
   const model = new AssetsModel(dataToRecord)
   const result = await model.save()
   return { url }
