@@ -58,7 +58,7 @@ export const uploadAssets = async (parent: any, { data, folderId }: any) => {
   await stream.pipe(fs.createWriteStream(pathName))
   const url = `http://localhost:4000/ressources/${assetUniqName}`
   const dataToRecord = {
-    title: filename,
+    title: assetUniqName,
     folders: folderId,
     url,
     type,
