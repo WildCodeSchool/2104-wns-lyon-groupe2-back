@@ -8,6 +8,7 @@ import {
   typeDef as Workspace,
   resolvers as workspaceResolvers,
 } from './workspace'
+import { typeDef as School, resolvers as schoolResolvers } from './school'
 
 import { makeExecutableSchema } from '@graphql-tools/schema'
 
@@ -18,12 +19,13 @@ const Mutation = `type Mutation {_empty:String}`
 // const resolvers = {}
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, Mutation, Folders, Assets, Auth, User, Workspace],
+  typeDefs: [Query, Mutation, Folders, Assets, Auth, User, Workspace, School],
   resolvers: merge(
     assetsResolvers,
     authResolvers,
     userResolvers,
     workspaceResolvers,
     foldersResolvers,
+    schoolResolvers,
   ),
 })
