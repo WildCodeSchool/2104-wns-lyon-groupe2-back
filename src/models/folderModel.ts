@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const FoldersSchema = new Schema({
   userId: String,
-  createdAt: Date,
+  createdAt: { type: Date, default: Date.now },
   sequence: Number,
   name: String,
   parentDirectory: String,
