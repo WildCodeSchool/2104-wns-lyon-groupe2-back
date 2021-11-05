@@ -23,14 +23,14 @@ export const typeDef = gql`
 
   # ASSETS _____________________________________________________
   # Types _____________________________________________________
-type SearchResult {
-  assets: [Assets]
-  folders: [Folders]
-  users: [Users]
-}
+  type SearchResult {
+    assets: [Assets]
+    folders: [Folders]
+    users: [Users]
+  }
 
   type Assets {
-    id: ID
+    _id: ID
     title: String!
     type: String
     folders: [String]
@@ -55,7 +55,7 @@ type SearchResult {
   }
 
   type Folder {
-    id: ID
+    _id: ID
     sequence: Int
     userId: String
     createdAt: String
@@ -66,7 +66,7 @@ type SearchResult {
   }
 
   type Users {
-    id: ID
+    _id: ID
     lastname: String
     firstname: String
     avatar: String
