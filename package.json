@@ -10,7 +10,8 @@
     "dev": "ts-node-dev --poll --transpile-only --respawn  ./src/index.ts",
     "prod": "tsc && node ./built/src/index.js",
     "debug": "tsc && node --inspect ./src/index.js",
-    "test": "jasmin-ts --config=jamsmine.json"
+    "test": "jest",
+    "init": "jest --init"
   },
   "repository": {
     "type": "git",
@@ -58,6 +59,7 @@
     "jasmine": "^3.7.0",
     "jasmine-spec-reporter": "^7.0.0",
     "jasmine-ts": "^0.3.3",
+    "jest": "^27.3.1",
     "nodemon": "^2.0.7",
     "prettier": "2.2.1",
     "ts-node-dev": "^1.1.8"

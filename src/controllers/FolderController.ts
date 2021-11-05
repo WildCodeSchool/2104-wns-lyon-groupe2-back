@@ -2,7 +2,7 @@ import FoldersModel from '../models/folderModel'
 import { IFolders } from '../interfaces/foldersInterface'
 import { getOneUser } from './UserController'
 import { arch, userInfo } from 'os'
-import { assign } from 'lodash'
+import { assign, update } from 'lodash'
 import { PollingWatchKind } from 'typescript'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
