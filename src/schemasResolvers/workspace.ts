@@ -194,7 +194,6 @@ export const typeDef = gql`
 export const resolvers = {
   Query: {
     allWorkspaces: (parent: any, args: AnyNaptrRecord, context: any) => {
-      console.log('context from shcmeR', context)
       if (!context.user) {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
