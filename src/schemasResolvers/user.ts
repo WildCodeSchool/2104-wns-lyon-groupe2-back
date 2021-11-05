@@ -8,6 +8,7 @@ import {
   getMyPasswordBack,
   checkTokenWithUserId,
   updatePassword,
+  getUserByID,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -27,6 +28,7 @@ export const typeDef = gql`
   extend type Query {
     allUsers: [Users]
     getOneUser(token: String!): Users
+    getUserByID(input: UserId!): Users
     checkTokenWithUserId(input: InputPasswordRecovery!): String!
   }
   extend type Mutation {
@@ -54,6 +56,10 @@ export const typeDef = gql`
     reset_password_token: String
     reset_password_expires: String
     first_connection: Boolean
+    color: String
+    age: String
+    city: String
+    bio: String
   }
 
   type WorkspacesAdmin {
@@ -93,7 +99,7 @@ export const typeDef = gql`
     workspacesAdmin: [InputWorkspacesAdmin]
     reset_password_token: String
     reset_password_expires: String
-    first_connection: Boolean!
+    # first_connection: Boolean!
   }
   input UpdateUser {
     id: String!
@@ -136,12 +142,13 @@ export const resolvers = {
     allUsers: allUsers,
     getOneUser: getOneUser,
     checkTokenWithUserId: checkTokenWithUserId,
+    getUserByID: getUserByID,
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
-      // if (!context.user || context.user.userType !== 'admin') {
-      //   throw new ForbiddenError("You're not allowed to perform this operation")
-      // }
+      if (!context.user || context.user.userType !== 'admin') {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
       return registerUser(parent, args)
     },
     updateUser: updateUser,

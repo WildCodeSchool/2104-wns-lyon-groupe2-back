@@ -7,7 +7,10 @@ import {
   foldersByCurrentUserId,
   updateFolder,
   deleteFolder,
+  getFolderById,
   getPath,
+  getFoldersTree,
+  moveFolder,
 } from '../controllers/FolderController'
 
 /////////////////////////////////////////////////////////////////
@@ -25,13 +28,17 @@ import {
 export const typeDef = gql`
   extend type Query {
     allFolders: [Folder]
+
+    getFolderById(folderId: String!): Folder
     foldersByCurrentUserId(parentDirectory: String): Folders
     getPath(parentDirectory: String): [String]
+    getFoldersTree: [LightFolder]
   }
   extend type Mutation {
     createFolder(input: InputFolder!): Folder
     deleteFolder(input: FolderId!): String
     updateFolder(input: UpdateFolder!): Folder
+    moveFolder(input: UpdateFolder!): Folder
   }
 
   # FOLDERS _____________________________________________________
@@ -56,6 +63,11 @@ export const typeDef = gql`
     parentDirectory: String
     isRootDirectory: Boolean
     path: [String]
+  }
+
+  type LightFolder {
+    id: ID
+    name: String
   }
 
   # Inputs _____________________________________________________
@@ -87,13 +99,16 @@ export const resolvers = {
       }
       return foldersByCurrentUserId(parent, args, context)
     },
-    getPath: (parent: any, args: any, context: any) => {
+  },
+
+  /*  getPath: (parent: any, args: any, context: any) => {
       if (!context.user) {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
-      return getPath(parent, args, context)
+      return getPath(parent)
     },
-  },
+   */
+
   Mutation: {
     createFolder: (parent: any, args: any, context: any) => {
       if (!context.user) {
@@ -106,6 +121,12 @@ export const resolvers = {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
       return updateFolder(parent, args, context)
+    },
+    moveFolder: (parent: any, args: any, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return moveFolder(parent, args, context)
     },
     deleteFolder: (parent: any, args: any, context: any) => {
       if (!context.user) {

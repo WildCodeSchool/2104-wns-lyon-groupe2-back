@@ -13,18 +13,20 @@ mutation registerUser($input: InputUser!) {
 }
 
 # Query Variables
-# {
-#   "input": {
-#     "lastname": "DARDILL",
-#     "firstname": "Guillem",
-#     "email": "guillem.dardill@mail.com",
-#     "password": "aqwzsxed123",
-#     "passwordConfirmation": "aqwzsxed123",
-#     "schoolId": "1",
-#     "isSchoolAdmin": true,
-#     "userType": "ADMIN"
-# 	}
-# }
+
+{
+  "input": {
+    "lastname": "DARDILL",
+    "firstname": "Guillem",
+    "email": "guillem.dardill@mail.com",
+    "password": "aqwzsxed123",
+    "passwordConfirmation": "aqwzsxed123",
+    "schoolId": "1",
+    "isSchoolAdmin": true,
+    "userType": "ADMIN"
+	}
+}
+
 
 mutation login ($input: InputLogin!) {
   login(input: $input) {
@@ -102,19 +104,19 @@ mutation createWorspace($input: InputWorkspace!) {
   }
 }
 
-# Query Variables
-# {"input":{
-#   "title": "Général2",
-#   "isSchoolWorkspace": true,
-#   "schoolId": "1",
-#   "usersAllowed": "all",
-# "feed": {
-#   "feedName": "Social"
-# },
-# "assets": {
-#   "assetName": "Ressources"
-# }}
-# }
+Query Variables
+{"input":{
+  "title": "Général2",
+  "isSchoolWorkspace": true,
+  "schoolId": "1",
+  "usersAllowed": "all",
+"feed": {
+  "feedName": "Social"
+},
+"assets": {
+  "assetName": "Ressources"
+}}
+}
 
 #  update workspace   _____________________________________________________
 
