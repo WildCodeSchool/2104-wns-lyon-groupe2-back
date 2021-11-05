@@ -6,7 +6,7 @@ import * as path from 'path'
 
 // do no forget parent !!!
 
-export const createAsset = async (parent: any, args: any) => {
+export const createAsset = async (parent: any, args: any, context: any) => {
   const input: IAssets = args.input
   await AssetsModel.init()
   const model = new AssetsModel(input)
@@ -23,8 +23,8 @@ export const getAssetsByFolderId = async (
   { folderId }: any,
   context: any,
 ) => {
-  console.log(folderId)
-  const result = await AssetsModel.find({ folders: folderId })
+  const userId = context.user._id
+  const result = await AssetsModel.find({ folders: folderId, userId: userId })
   return result
 }
 
@@ -71,7 +71,11 @@ export const updateAsset = async (parent: any, args: any) => {
   }
 }
 
-export const uploadAssets = async (parent: any, { data, folderId }: any) => {
+export const uploadAssets = async (
+  parent: any,
+  { data, folderId }: any,
+  context: any,
+) => {
   const { createReadStream, filename, mimetype, encoding } = await data
   const type = mimetype.split('/')[1]
   const updatedAt = Date.now()
@@ -82,12 +86,14 @@ export const uploadAssets = async (parent: any, { data, folderId }: any) => {
   const pathName = path.join(__dirname, `../shared/ressources/${assetUniqName}`)
   await stream.pipe(fs.createWriteStream(pathName))
   const url = `http://localhost:4000/ressources/${assetUniqName}`
+  const userId = context.user._id
   const dataToRecord = {
     title: assetUniqName,
     folders: folderId,
     url,
     type,
     updatedAt,
+    userId,
   }
   const model = new AssetsModel(dataToRecord)
   const result = await model.save()

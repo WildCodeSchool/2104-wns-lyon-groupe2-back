@@ -98,8 +98,7 @@ export const typeDef = gql`
 
   input AssetId {
     id: [String]
-  } 
-  
+  }
 `
 
 export const resolvers = {
