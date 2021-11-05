@@ -47,7 +47,6 @@ export const registerUser = async (parent: any, args: any) => {
     city,
     age,
     bio,
-    first_connection,
     encryptedPassword,
     reset_password_token,
     first_connection: true,

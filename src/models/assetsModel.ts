@@ -6,13 +6,16 @@ const AssetsSchema = new Schema({
   type: String,
   folders: [String],
   userId: String,
-  createdAt: Date,
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: Date,
   lastView: Date,
   likes: Number,
   dislikes: Number,
   bookmarkedCount: Number,
   tags: [String],
   openingCount: Number,
+  size: Number,
+  url: String,
 })
 
 // Création des indexs de la table (si non existants) au moment de la création du Model

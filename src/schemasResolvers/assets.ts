@@ -1,13 +1,14 @@
 import { gql } from 'apollo-server-core'
 import { GraphQLUpload } from 'graphql-upload'
-import * as fs from 'fs'
-import * as path from 'path'
+import { ForbiddenError } from 'apollo-server'
 
 import {
   allAssets,
   createAsset,
   updateAsset,
   deleteAsset,
+  uploadAssets,
+  getAssetsByFolderId,
 } from '../controllers/AssetController'
 
 /////////////////////////////////////////////////////////////////
@@ -26,12 +27,13 @@ export const typeDef = gql`
   scalar Upload
   extend type Query {
     allAssets: [Assets]
+    getAssetsByFolderId(folderId: String!): [Assets]
   }
   extend type Mutation {
     createAsset(input: InputAsset!): Assets
-    deleteAsset(input: AssetId!): String
+    deleteAsset(input: [String]): String
     updateAsset(input: UpdateAsset!): Assets
-    singleUpload(data: Upload!): File!
+    uploadFile(data: Upload!, folderId: String!): File!
   }
 
   # ASSETS _____________________________________________________
@@ -43,12 +45,15 @@ export const typeDef = gql`
     folders: [String]
     userId: String
     createdAt: String
+    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+    size: Int
+    url: String
   }
 
   type File {
@@ -62,12 +67,15 @@ export const typeDef = gql`
     folders: [String]
     userId: String
     createdAt: String
+    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+    size: Int
+    url: String
   }
 
   input UpdateAsset {
@@ -77,35 +85,41 @@ export const typeDef = gql`
     folders: [String]
     userId: String
     createdAt: String
+    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
+    size: Int
+    url: String
   }
 
   input AssetId {
-    id: String
-  }
+    id: [String]
+  } 
+  
 `
 
 export const resolvers = {
   Upload: GraphQLUpload,
   Query: {
     allAssets: allAssets,
+    getAssetsByFolderId: (
+      parent: any,
+      args: { folderId: String },
+      context: any,
+    ) => {
+      if (!context.user)
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      return getAssetsByFolderId(parent, args, context)
+    },
   },
   Mutation: {
     createAsset: createAsset,
     updateAsset: updateAsset,
     deleteAsset: deleteAsset,
-    singleUpload: async (parent: any, { data }) => {
-      console.log('args', data)
-      const { createReadStream, filename, mimetype, encoding } = await data
-      const stream = createReadStream()
-      const pathName = path.join(__dirname, `../shared/ressources/${filename}`)
-      await stream.pipe(fs.createWriteStream(pathName))
-      return { url: `http://localhost:4000/src/shared/ressources/${filename}` }
-    },
+    uploadFile: uploadAssets,
   },
 }

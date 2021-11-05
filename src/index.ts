@@ -1,5 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server-express')
 const express = require('express')
+import * as path from 'path'
 import { schema } from './schemasResolvers/schema'
 import mongoose from 'mongoose'
 import { getOneUser } from './controllers/UserController'
@@ -36,6 +37,8 @@ async function startServer() {
   const app = express()
   app.use(graphqlUploadExpress())
   server.applyMiddleware({ app })
+
+  app.use(express.static(path.join(__dirname, './shared')))
   await new Promise((r) => app.listen({ port: 4000 }, r))
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`)
 }

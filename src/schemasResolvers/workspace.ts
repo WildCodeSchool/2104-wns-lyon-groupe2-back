@@ -1,4 +1,6 @@
 import { gql } from 'apollo-server-core'
+import { ForbiddenError } from 'apollo-server'
+
 import {
   allWorkspaces,
   createWorkspace,
@@ -14,6 +16,7 @@ import {
   addLikeToMessage,
   addDislikeToMessage,
 } from '../controllers/FeedController'
+import { AnyNaptrRecord } from 'dns'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -190,7 +193,12 @@ export const typeDef = gql`
 
 export const resolvers = {
   Query: {
-    allWorkspaces: allWorkspaces,
+    allWorkspaces: (parent: any, args: AnyNaptrRecord, context: any) => {
+      if (!context.user) {
+        throw new ForbiddenError("You're not allowed to perform this operation")
+      }
+      return allWorkspaces(parent, args, context)
+    },
     getWorkspaceById: getWorkspaceById,
     getMessageById: getMessageById,
   },
