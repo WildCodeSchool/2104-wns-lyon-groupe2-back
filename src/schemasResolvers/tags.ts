@@ -1,7 +1,11 @@
 import { gql } from 'apollo-server-core'
 import { GraphQLUpload } from 'graphql-upload'
 import { ForbiddenError } from 'apollo-server'
-import { createTag, getAllTags } from '../controllers/TagsController'
+import {
+  createTag,
+  getAllTags,
+  tagsAutocomplete,
+} from '../controllers/TagsController'
 
 // TODO \\
 /////////////////////////////////////////////////////////////////
@@ -11,6 +15,7 @@ import { createTag, getAllTags } from '../controllers/TagsController'
 export const typeDef = gql`
   extend type Query {
     getAllTags: [Tags]
+    tagsAutocomplete(input: InputAutocomplete!): [Tags]
   }
   extend type Mutation {
     createTag(input: [InputTag!]): Tags
@@ -24,10 +29,14 @@ export const typeDef = gql`
   input InputTag {
     title: String
   }
+  input InputAutocomplete {
+    title: String
+  }
 `
 export const resolvers = {
   Query: {
     getAllTags: getAllTags,
+    tagsAutocomplete: tagsAutocomplete,
   },
   Mutation: {
     createTag: createTag,
