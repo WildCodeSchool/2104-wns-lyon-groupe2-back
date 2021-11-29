@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-core'
-import { createSchool } from '../controllers/SchoolController'
+import { createSchool, getSchool } from '../controllers/SchoolController'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -15,6 +15,9 @@ import { createSchool } from '../controllers/SchoolController'
 
 export const typeDef = gql`
   # SCHOOL _____________________________________________________
+  extend type Query {
+    getSchool(input: String): School
+  }
   extend type Mutation {
     createSchool(input: InputSchool!): SchoolResult
   }
@@ -113,10 +116,16 @@ export const typeDef = gql`
     primaryColor: String
     secondaryColor: String
   }
+
+  input SchoolId {
+    schoolId: String
+  }
 `
 
 export const resolvers = {
-  Query: {},
+  Query: {
+    getSchool: getSchool,
+  },
   Mutation: {
     createSchool: createSchool,
   },
