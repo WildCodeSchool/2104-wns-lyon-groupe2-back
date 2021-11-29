@@ -23,11 +23,9 @@ export const tagsAutocomplete = async (
   context: any,
 ) => {
   const searchKeywords = args.input.title
-  console.log(searchKeywords)
-  const result = await TagsModel.aggregate([
-    {
-      $match: { $text: { $search: searchKeywords } },
-    },
-  ])
+
+  const result = await TagsModel.find({
+    title: { $regex: searchKeywords, $options: 'i' },
+  })
   return result
 }
