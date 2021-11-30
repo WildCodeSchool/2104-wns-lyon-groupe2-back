@@ -6,7 +6,7 @@ import { assign } from 'lodash'
 import { PollingWatchKind } from 'typescript'
 const { UserInputError, ForbiddenError } = require('apollo-server')
 
-const getFolderById = async (context: any, id: string) => {
+export const getFolderById = async (context: any, id: string) => {
   let folder
   try {
     folder = await FoldersModel.findById(id)
@@ -70,12 +70,36 @@ export const foldersByCurrentUserId = async (
 }
 
 export const deleteFolder = async (parent: any, args: any, context: any) => {
-  const id: string = args.input.id
-  const folder = await getFolderById(context, id)
-  if (folder) {
-    const result = await FoldersModel.deleteOne({ _id: id })
-    return `The folder ${folder.name} has been successfully deleted`
+  const folderId: string = args.input.id
+  const allCascadingFolder: string[] = []
+
+  const actualFolder = await FoldersModel.find({ _id: folderId })
+  if (actualFolder) {
+    allCascadingFolder.push(actualFolder[0].id)
   }
+
+  const recursiveSubFolder = async (parentFolderId: string[]) => {
+    const subFolderArray = await FoldersModel.find({
+      parentDirectory: { $in: parentFolderId },
+    })
+    if (subFolderArray.length) {
+      try {
+        const currentCascadingFolder = []
+        for (const subFolder of subFolderArray) {
+          allCascadingFolder.push(subFolder.id)
+          currentCascadingFolder.push(subFolder.id)
+          recursiveSubFolder(currentCascadingFolder)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    } else {
+      await FoldersModel.deleteMany({ _id: { $in: allCascadingFolder } })
+      return `The folder ${actualFolder[0].name} and all subfolders were been successfully deleted`
+    }
+  }
+
+  recursiveSubFolder(actualFolder[0]._id)
 }
 
 export const getPath = async (parentDirectory: string) => {
@@ -145,6 +169,10 @@ export const getFoldersTree = async (parent: any, args: any, context: any) => {
 export const moveFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
   let folder = await getFolderById(context, input.id)
+
+  if (input.id === input.parentDirectory) {
+    throw new Error("You can't move this folder inside himself !")
+  }
   if (folder) {
     const isFolderWithSameName = await sameNameCheck(
       context.user._id,
@@ -164,6 +192,7 @@ export const moveFolder = async (parent: any, args: any, context: any) => {
 
 export const updateFolder = async (parent: any, args: any, context: any) => {
   const input: IFolders = args.input
+
   const userId = context.user._id
   // console.log('input', input)
   let folder = await getFolderById(context, input.id)
@@ -216,6 +245,7 @@ export const updateFolder = async (parent: any, args: any, context: any) => {
         folder.name = input.name
         // move folder (parent directory is present in this case)
       } else {
+        console.log('input', input, 'folder', folder)
         const isFolderWithSameName = await sameNameCheck(
           userId,
           input.id,
