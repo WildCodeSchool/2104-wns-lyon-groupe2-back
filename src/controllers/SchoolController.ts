@@ -3,8 +3,8 @@ import SchoolModel from '../models/schoolModel'
 import { registerUser } from './UserController'
 import { createWorkspace } from './WorkSpacesController'
 
-export const getSchool = async (parent: any, args: any) => {
-  const schoolId: String = args.input
+export const getSchool = async (parent: any, args: any, context: any) => {
+  const schoolId: String = context.user.schoolId
   const res = await SchoolModel.findById(schoolId)
   return res
 }

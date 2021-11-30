@@ -34,7 +34,7 @@ export const allWorkspaces = async (parent: any, args: any, context: any) => {
   console.log(context.user.schoolId)
   const result = await WorkspacesModel.find({
     isSchoolWorkspace: isSchoolWorkspace,
-    usersAllowed: 'all',
+    // usersAllowed: 'all',
     schoolId: context.user.schoolId,
   }).exec()
   return result
