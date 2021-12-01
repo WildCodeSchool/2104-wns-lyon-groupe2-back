@@ -29,6 +29,7 @@ export const typeDef = gql`
   # Inputs _____________________________________________________
   input InputTag {
     label: String
+    id: String
   }
   input InputAutocomplete {
     label: String
