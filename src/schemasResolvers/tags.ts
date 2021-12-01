@@ -23,14 +23,15 @@ export const typeDef = gql`
   # ASSETS _____________________________________________________
   # Types _____________________________________________________
   type Tags {
-    title: String
+    id: String
+    label: String
   }
   # Inputs _____________________________________________________
   input InputTag {
-    title: String
+    label: String
   }
   input InputAutocomplete {
-    title: String
+    label: String
   }
 `
 export const resolvers = {

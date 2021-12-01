@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 const TagsSchema = new Schema({
-  title: String,
+  label: String,
 })
 
 TagsSchema.index(
