@@ -73,9 +73,10 @@ export const updateAsset = async (parent: any, args: any) => {
 
 export const uploadAssets = async (
   parent: any,
-  { data, folderId }: any,
+  { data, folderId, tagsSelected }: any,
   context: any,
 ) => {
+  const tagsToRecord = tagsSelected.map((tag) => tag.id)
   const { createReadStream, filename, mimetype, encoding } = await data
   const type = mimetype.split('/')[1]
   const updatedAt = Date.now()
@@ -94,6 +95,7 @@ export const uploadAssets = async (
     type,
     updatedAt,
     userId,
+    tags: tagsToRecord,
   }
   const model = new AssetsModel(dataToRecord)
   const result = await model.save()

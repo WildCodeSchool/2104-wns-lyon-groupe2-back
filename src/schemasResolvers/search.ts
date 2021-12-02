@@ -1,15 +1,6 @@
 import { gql } from 'apollo-server-core'
-import { GraphQLUpload } from 'graphql-upload'
-import { ForbiddenError } from 'apollo-server'
 
-import {
-  allAssets,
-  createAsset,
-  updateAsset,
-  deleteAsset,
-  uploadAssets,
-  getAssetsByFolderId,
-} from '../controllers/AssetController'
+import { searchEverywhere } from '../controllers/searchController'
 
 /////////////////////////////////////////////////////////////////
 // here we define the structure of data that clients can query //
@@ -24,113 +15,89 @@ import {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const typeDef = gql`
-  scalar Upload
-  extend type Query {
-    allAssets: [Assets]
-    getAssetsByFolderId(folderId: String!): [Assets]
-  }
+  # extend type Query {
+  # }
   extend type Mutation {
-    createAsset(input: InputAsset!): Assets
-    deleteAsset(input: [String]): String
-    updateAsset(input: UpdateAsset!): Assets
-    uploadFile(
-      data: Upload!
-      folderId: String!
-      tagsSelected: [InputTag]
-    ): File!
+    search(input: InputSearch!): SearchResult
   }
 
   # ASSETS _____________________________________________________
   # Types _____________________________________________________
+  type SearchResult {
+    assets: [Assets]
+    folders: [Folders]
+    users: [Users]
+  }
+
   type Assets {
-    id: ID
+    _id: ID
     title: String!
     type: String
     folders: [String]
     userId: String
     createdAt: String
-    updatedAt: String
     lastView: String
     likes: Int
     dislikes: Int
     bookmarkedCount: Int
     tags: [String]
     openingCount: Int
-    size: Int
-    url: String
   }
 
-  type File {
-    url: String!
+  type Folders {
+    path: [Path]
+    folders: [Folder]
   }
-  type Tags {
+
+  type Path {
+    name: String
     id: String
-    label: String
+  }
+
+  type Folder {
+    _id: ID
+    sequence: Int
+    userId: String
+    createdAt: String
+    name: String
+    parentDirectory: String
+    isRootDirectory: Boolean
+    path: [String]
+  }
+
+  type Users {
+    _id: ID
+    lastname: String
+    firstname: String
+    avatar: String
+    email: String
+    schoolId: String
+    themeId: String
+    isSchoolAdmin: Boolean
+    userType: UserType
+    workspacesAdmin: [WorkspacesAdmin]
+    reset_password_token: String
+    reset_password_expires: String
+    first_connection: Boolean
+    color: String
+    age: String
+    city: String
+    bio: String
+  }
+
+  type WorkspacesAdmin {
+    id: ID
   }
 
   # Inputs _____________________________________________________
-  input InputTag {
-    label: String
-    id: String
-  }
-  input InputAsset {
-    title: String
-    type: String
-    folders: [String]
-    userId: String
-    createdAt: String
-    updatedAt: String
-    lastView: String
-    likes: Int
-    dislikes: Int
-    bookmarkedCount: Int
-    tags: [String]
-    openingCount: Int
-    size: Int
-    url: String
-  }
-
-  input UpdateAsset {
-    id: String!
-    title: String
-    type: String
-    folders: [String]
-    userId: String
-    createdAt: String
-    updatedAt: String
-    lastView: String
-    likes: Int
-    dislikes: Int
-    bookmarkedCount: Int
-    tags: [String]
-    openingCount: Int
-    size: Int
-    url: String
-  }
-
-  input AssetId {
-    id: [String]
+  input InputSearch {
+    keywords: String
   }
 `
 
 export const resolvers = {
-  Upload: GraphQLUpload,
-  Query: {
-    allAssets: allAssets,
-    getAssetsByFolderId: (
-      parent: any,
-      args: { folderId: String },
-      context: any,
-    ) => {
-      if (!context.user)
-        throw new ForbiddenError("You're not allowed to perform this operation")
-      return getAssetsByFolderId(parent, args, context)
-    },
-  },
+  // Query: {},
   Mutation: {
-    createAsset: createAsset,
-    updateAsset: updateAsset,
-    deleteAsset: deleteAsset,
-    uploadFile: uploadAssets,
+    search: searchEverywhere,
   },
 }
