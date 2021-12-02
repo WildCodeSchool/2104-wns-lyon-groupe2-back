@@ -23,6 +23,24 @@ const UserSchema = new Schema({
   backgroundUrl: String,
 })
 
+// Création des indexs de la table (si non existants) au moment de la création du Model
+UserSchema.index(
+  {
+    email: 'text',
+    firstname: 'text',
+    lastname: 'text',
+  },
+  {
+    weights: {
+      email: 10,
+      firstname: 20,
+      lastname: 20,
+    },
+    default_language: 'fr',
+    name: 'search with weight',
+  },
+)
+
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)
 export default UserModel
 

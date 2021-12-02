@@ -14,7 +14,7 @@ export const userValidationSchema = Joi.object({
   email: Joi.string().email().messages({ 'string.email': '101' }),
   // password: Joi.string().min(8),
   // passwordConfirmation: Joi.string().valid(Joi.ref('password')),
-  schoolId: Joi.number(),
+  schoolId: Joi.string(),
   themeId: Joi.number(),
   isSchoolAdmin: Joi.boolean(),
   userType: Joi.any().valid('admin', 'student', 'teacher'),

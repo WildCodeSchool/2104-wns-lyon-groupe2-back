@@ -9,6 +9,20 @@ const FoldersSchema = new Schema({
   parentDirectory: String,
 })
 
+// Création des indexs de la table (si non existants) au moment de la création du Model
+FoldersSchema.index(
+  {
+    name: 'text',
+  },
+  {
+    weights: {
+      name: 25,
+    },
+    default_language: 'fr',
+    name: 'search with weight',
+  },
+)
+
 const FoldersModel: mongoose.Model<any> = mongoose.model(
   'folders',
   FoldersSchema,

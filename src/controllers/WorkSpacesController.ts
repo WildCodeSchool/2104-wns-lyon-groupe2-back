@@ -7,11 +7,11 @@ import { IUser } from '../interfaces/userInterface'
 
 export const createWorkspace = async (parent: any, args: any, context: any) => {
   // Vérification de possibilité de créer un WS de l'école seulement si l'user est school admin ou teatcher
-  if (context.user.userType === 'student' && args.input.isSchoolWorkspace) {
-    throw new Error(
-      'not allowed to perform this action, you must be admin or teacher',
-    )
-  }
+  // if (context.user.userType === 'student' && args.input.isSchoolWorkspace) {
+  //   throw new Error(
+  //     'not allowed to perform this action, you must be admin or teacher',
+  //   )
+  // }
 
   const input: IWorkspaces = args.input
   // possibilité de rajouter tous les utilisateurs de son école en utilisateurs rattachés
@@ -30,9 +30,11 @@ export const createWorkspace = async (parent: any, args: any, context: any) => {
 // Permet de récupérer les workspaces en fonction de s'ils appartiennent à l'école (Ecoles/formation) ou aux élèves (Espace de travail)
 export const allWorkspaces = async (parent: any, args: any, context: any) => {
   const isSchoolWorkspace: Boolean = args.input.isSchoolWorkspace
+  console.log(context.user.id)
+  console.log(context.user.schoolId)
   const result = await WorkspacesModel.find({
     isSchoolWorkspace: isSchoolWorkspace,
-    usersAllowed: context.user.id,
+    // usersAllowed: 'all',
     schoolId: context.user.schoolId,
   }).exec()
   return result
