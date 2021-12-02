@@ -236,6 +236,7 @@ export const uploadUserProfil = async (
       { $set: { backgroundUrl: url } },
     )
     const user = await UserModel.findById(userId)
-    return user
+    const response = generateToken(user)
+    return response
   }
 }
