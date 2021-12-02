@@ -124,10 +124,6 @@ export const updateUser = async (parent: any, args: any, context: any) => {
   }
 }
 
-// Je calle ça ici, temporaire, a voir pour middleware.
-// Methods pour record un token avec une heure de validité
-// (a débattre).
-
 const addTokenForRecovery = async (userId: number) => {
   const token = crypto.randomBytes(20).toString('hex')
 
@@ -200,4 +196,8 @@ export const updatePassword = async (parent: any, args: any) => {
     { new: true },
   )
   return { message: 'updated' }
+}
+export const uploadUserProfil = (parent: any, args: any) => {
+  console.log(args)
+  return args
 }

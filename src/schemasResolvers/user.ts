@@ -9,6 +9,7 @@ import {
   checkTokenWithUserId,
   updatePassword,
   getUserByID,
+  uploadUserProfil,
 } from '../controllers/UserController'
 import { ForbiddenError } from 'apollo-server'
 
@@ -25,6 +26,7 @@ import { ForbiddenError } from 'apollo-server'
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const typeDef = gql`
+  scalar Upload
   extend type Query {
     allUsers: [Users]
     getOneUser(token: String!): Users
@@ -32,6 +34,7 @@ export const typeDef = gql`
     checkTokenWithUserId(input: InputPasswordRecovery!): String!
   }
   extend type Mutation {
+    uploadUserProfil(data: Upload!, userId: String!): File
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
@@ -60,6 +63,9 @@ export const typeDef = gql`
     age: String
     city: String
     bio: String
+  }
+  type File {
+    url: String
   }
 
   type WorkspacesAdmin {
@@ -160,5 +166,6 @@ export const resolvers = {
     },
     getMyPasswordBack: getMyPasswordBack,
     updatePassword: updatePassword,
+    uploadUserProfil: uploadUserProfil,
   },
 }

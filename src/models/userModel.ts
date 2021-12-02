@@ -19,6 +19,8 @@ const UserSchema = new Schema({
   bio: String,
   city: String,
   age: Number,
+  avatarUrl: String,
+  backgroundUrl: String,
 })
 
 const UserModel: mongoose.Model<any> = mongoose.model('user', UserSchema)

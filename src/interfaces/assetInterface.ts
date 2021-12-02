@@ -12,3 +12,8 @@ export interface IAssets {
   tags: [string] /* tag_id */
   openingCount: number
 }
+
+export interface ITag {
+  id: string
+  label: string
+}
