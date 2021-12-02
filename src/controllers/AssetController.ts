@@ -1,6 +1,6 @@
 import AssetsModel from '../models/assetsModel'
 import FoldersModel from '../models/folderModel'
-import { IAssets } from '../interfaces/assetInterface'
+import { IAssets, ITag } from '../interfaces/assetInterface'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -76,7 +76,7 @@ export const uploadAssets = async (
   { data, folderId, tagsSelected }: any,
   context: any,
 ) => {
-  const tagsToRecord = tagsSelected.map((tag) => tag.id)
+  const tagsToRecord = tagsSelected.map((tag: ITag) => tag.id)
   const { createReadStream, filename, mimetype, encoding } = await data
   const type = mimetype.split('/')[1]
   const updatedAt = Date.now()

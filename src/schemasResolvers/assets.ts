@@ -33,7 +33,7 @@ export const typeDef = gql`
     createAsset(input: InputAsset!): Assets
     deleteAsset(input: [String]): String
     updateAsset(input: UpdateAsset!): Assets
-    uploadFile(
+    uploadAssets(
       data: Upload!
       folderId: String!
       tagsSelected: [InputTag]
@@ -131,6 +131,6 @@ export const resolvers = {
     createAsset: createAsset,
     updateAsset: updateAsset,
     deleteAsset: deleteAsset,
-    uploadFile: uploadAssets,
+    uploadAssets: uploadAssets,
   },
 }

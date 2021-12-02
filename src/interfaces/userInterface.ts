@@ -2,7 +2,6 @@ export interface IUser {
   id: string
   lastname: string
   firstname: string
-  avatar: string
   email: string
   password: string
   passwordConfirmation: string
@@ -11,10 +10,13 @@ export interface IUser {
   isSchoolAdmin: Boolean
   userType: string
   workspacesadmin: string[]
-  color: string,
-  age: string,
-  city: string,
+  color: string
+  age: string
+  city: string
   bio: string
+  backgroundUrl: string
+  avatarUrl: string
+  first_connection: boolean
 }
 
 export interface iTokenDecrypted {

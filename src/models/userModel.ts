@@ -19,6 +19,8 @@ const UserSchema = new Schema({
   bio: String,
   city: String,
   age: Number,
+  avatarUrl: String,
+  backgroundUrl: String,
 })
 
 // Création des indexs de la table (si non existants) au moment de la création du Model
