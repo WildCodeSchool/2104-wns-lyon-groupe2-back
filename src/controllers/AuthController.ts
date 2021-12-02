@@ -4,6 +4,7 @@ import { config, IConfig } from '../../env'
 import * as argon2 from 'argon2'
 import jwtDecode from 'jwt-decode'
 import { iTokenDecrypted } from '../interfaces/userInterface'
+import { generateToken } from '../shared/tools/token'
 const env: IConfig = config
 
 const verifyPassword = async (userPassword: any, plainPassword: string) => {
@@ -27,31 +28,7 @@ export const Login = async (parent: any, args: any) => {
     throw new Error('Invalid Credentials')
   }
 
-  // Définition de la durée du token en fonction du remember depuis le formulaire
-  const tokenExpire = remember ? env.jwt_expires_remember : env.jwt_expires_base
-  // Crération du token
-  const token = jwt.sign(
-    {
-      userId: user.id,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      avatar: user.string,
-      email: user.email,
-      color: user.color,
-      schoolId: user.schoolId,
-      themeId: user.themeId,
-      isSchoolAdmin: user.isSchoolAdmin,
-      userType: user.userType,
-      workspacesadmin: user.workspacesadmin,
-      first_connection: user.first_connection,
-    },
-    env.jwt_secret,
-    {
-      expiresIn: tokenExpire,
-    },
-  )
-  const payload = { token: token, email: email }
-  return payload
+  return generateToken(user, remember)
 }
 
 export const isAuth = async (parent: any, args: any, context: any) => {

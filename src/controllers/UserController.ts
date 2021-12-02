@@ -14,6 +14,9 @@ import * as argon2 from 'argon2'
 const { ForbiddenError, UserInputError } = require('apollo-server')
 const env: IConfig = config
 import { userValidationSchema } from './joiSchema'
+import * as fs from 'fs'
+import * as path from 'path'
+import { generateToken } from '../shared/tools/token'
 
 // do not forget parent !!!
 
@@ -40,6 +43,8 @@ export const registerUser = async (parent: any, args: any) => {
       .padStart(6, '0')
   const city = ''
   const bio = ''
+  const avatarUrl = ''
+  const backgroundUrl = ''
   const age = null
   const userToSave = {
     ...input,
@@ -51,6 +56,8 @@ export const registerUser = async (parent: any, args: any) => {
     reset_password_token,
     first_connection: true,
     reset_password_expires: reset_password_expires.toString(),
+    backgroundUrl,
+    avatarUrl,
   }
   await UserModel.init()
   const model = new UserModel(userToSave)
@@ -150,7 +157,6 @@ export const getMyPasswordBack = async (parent: any, args: any) => {
   const url = `http://localhost:3000/password_management/${token}/${user.id}`
   const userData = { firstname: user.firstname, url, email: user.email }
   mailForPaswwordRecovery(userData)
-  //TODO\\ Method d'envoi du mail avec sendingBlue //TODO\\
   return { message: 'Mail Sent', id: user.id }
 }
 
@@ -197,7 +203,39 @@ export const updatePassword = async (parent: any, args: any) => {
   )
   return { message: 'updated' }
 }
-export const uploadUserProfil = (parent: any, args: any) => {
-  console.log(args)
-  return args
+export const uploadUserProfil = async (
+  parent: any,
+  args: any,
+  context: any,
+) => {
+  const { data, type } = args
+  const { createReadStream, filename } = await data
+  const stream = createReadStream()
+  const queHoraEs = Date.now()
+  const filenameSplitted = filename.split('.')
+  const imgUniqName = `${filenameSplitted[0]}-${queHoraEs}.${filenameSplitted[1]}`
+  const pathName = path.join(
+    __dirname,
+    `../shared/ressources/img/${imgUniqName}`,
+  )
+  await stream.pipe(fs.createWriteStream(pathName))
+  const url = `http://localhost:4000/ressources/img/${imgUniqName}`
+  const userId = context.user._id
+  let userWithPix
+  if (type === 'avatarUpload') {
+    userWithPix = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { avatarUrl: url } },
+    )
+    const user = await UserModel.findById(userId)
+    const response = generateToken(user)
+    return response
+  } else if (type === 'backgroundUpload') {
+    userWithPix = await UserModel.updateOne(
+      { _id: userId },
+      { $set: { backgroundUrl: url } },
+    )
+    const user = await UserModel.findById(userId)
+    return user
+  }
 }

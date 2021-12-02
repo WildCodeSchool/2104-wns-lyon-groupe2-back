@@ -34,7 +34,7 @@ export const typeDef = gql`
     checkTokenWithUserId(input: InputPasswordRecovery!): String!
   }
   extend type Mutation {
-    uploadUserProfil(data: Upload!, userId: String!): File
+    uploadUserProfil(data: Upload!, type: String!): userUpdated
     deleteUser(input: UserId!): String
     updateUser(input: UpdateUser!): Users
     registerUser(input: InputUser!): Users
@@ -63,9 +63,11 @@ export const typeDef = gql`
     age: String
     city: String
     bio: String
+    avatarUrl: String
+    backgroundUrl: String
   }
-  type File {
-    url: String
+  type userUpdated {
+    token: String!
   }
 
   type WorkspacesAdmin {
