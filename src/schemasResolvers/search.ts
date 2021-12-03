@@ -25,7 +25,7 @@ export const typeDef = gql`
   # Types _____________________________________________________
   type SearchResult {
     assets: [Assets]
-    folders: [Folders]
+    folders: [Folder]
     users: [Users]
   }
 
