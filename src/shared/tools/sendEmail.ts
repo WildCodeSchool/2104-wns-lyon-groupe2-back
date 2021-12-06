@@ -16,7 +16,6 @@ export const sendEmailToNewUser = (userData: any) => {
   sendSmtpEmail = {
     to: [
       {
-        // TODO : replace this email address by the user email
         email: userData.email,
         name: userData.firstname + userData.lastname,
       },
