@@ -1,4 +1,5 @@
-import SibApiV3Sdk from 'sib-api-v3-sdk'
+const SibApiV3Sdk = require('sib-api-v3-sdk')
+
 const defaultClient = SibApiV3Sdk.ApiClient.instance
 const apiKey = defaultClient.authentications['api-key']
 apiKey.apiKey = process.env.SENDINBLUE_API_KEY
@@ -16,7 +17,7 @@ export const sendEmailToNewUser = (userData: any) => {
     to: [
       {
         // TODO : replace this email address by the user email
-        email: 'daddy.studies@gmail.com',
+        email: userData.email,
         name: userData.firstname + userData.lastname,
       },
     ],
