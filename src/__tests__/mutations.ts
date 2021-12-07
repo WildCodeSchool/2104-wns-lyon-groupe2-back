@@ -7,3 +7,11 @@ export const REGISTER_USER = gql`
     }
   }
 `
+
+export const CREATE_TAGS = gql`
+  mutation createTag($input: [InputTag!]) {
+    createTag(input: $input) {
+      label
+    }
+  }
+`

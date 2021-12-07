@@ -18,7 +18,7 @@ export const typeDef = gql`
     tagsAutocomplete(input: InputAutocomplete!): [Tags]
   }
   extend type Mutation {
-    createTag(input: [InputTag!]): Tags
+    createTag(input: [InputTag!]): [Tags]
   }
   # ASSETS _____________________________________________________
   # Types _____________________________________________________

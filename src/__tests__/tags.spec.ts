@@ -4,6 +4,7 @@ import { config } from '../../env'
 import { GET_ALL_TAGS } from './query'
 
 import mongoose from 'mongoose'
+import { CREATE_TAGS } from './mutations'
 
 let apolloServer
 let mongo
@@ -22,11 +23,21 @@ describe('testing tags manipulation', () => {
     mongo.stop()
     mongoose.disconnect()
   })
+  it('should create a tag', async () => {
+    const result = await apolloServer.executeOperation({
+      query: CREATE_TAGS,
+      variables: {
+        input: [{ label: 'test' }],
+      },
+    })
+    expect(result.data).toBeDefined()
+    expect(result.data.createTag).toContain('label')
+  })
   it('test a random query without data', async () => {
     const result = await apolloServer.executeOperation({
       query: GET_ALL_TAGS,
     })
-    expect(result.data.getAllTags).toEqual([])
+    expect(result.data.getAllTags).toEqual([{ label: 'test' }])
     expect(result.errors).toBe(undefined)
   })
 })

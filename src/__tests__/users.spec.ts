@@ -22,13 +22,7 @@ describe('testing user manipluation', () => {
     mongo.stop()
     mongoose.disconnect()
   })
-  /* it('test a random query without data', async () => {
-    const result = await apolloServer.executeOperation({
-      query: GET_ALL_TAGS,
-    })
-    expect(result.data.getAllTags).toEqual([])
-    expect(result.errors).toBe(undefined)
-  }) */
+
   it('should returned the created user', async () => {
     const addUser = await apolloServer.executeOperation({
       query: REGISTER_USER,
