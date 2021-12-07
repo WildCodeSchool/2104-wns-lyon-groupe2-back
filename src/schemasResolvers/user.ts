@@ -154,7 +154,7 @@ export const resolvers = {
   },
   Mutation: {
     registerUser: (parent: any, args: any, context: any) => {
-      if (!context.user || context.user.userType !== 'admin') {
+      if (!context.user || context.user.userType !== 'ADMIN') {
         throw new ForbiddenError("You're not allowed to perform this operation")
       }
       return registerUser(parent, args)

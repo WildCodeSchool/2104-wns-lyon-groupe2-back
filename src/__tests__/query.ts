@@ -7,11 +7,3 @@ export const GET_ALL_TAGS = gql`
     }
   }
 `
-
-export const GET_ONE_USER = gql`
-  query Query {
-    getAllTests {
-      title
-    }
-  }
-`

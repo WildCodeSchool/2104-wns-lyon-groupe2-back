@@ -23,7 +23,6 @@ async function startServer() {
           user = null
         }
       }
-
       return { user }
     },
   })

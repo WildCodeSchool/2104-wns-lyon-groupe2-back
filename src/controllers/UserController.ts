@@ -65,7 +65,7 @@ export const registerUser = async (parent: any, args: any) => {
   const url = `http://localhost:3000/password_management/${token}/${result._id}`
 
   try {
-    sendEmailToNewUser({ ...input, password, url })
+    await sendEmailToNewUser({ ...input, password, url })
   } catch (err) {
     console.log(err)
   }
