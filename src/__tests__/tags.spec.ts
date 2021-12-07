@@ -31,6 +31,7 @@ describe('testing tags manipulation', () => {
       },
     })
     expect(result.data).toBeDefined()
+    // the test below fail for now
     expect(result.data.createTag).toContain('label')
   })
   it('test a random query without data', async () => {
