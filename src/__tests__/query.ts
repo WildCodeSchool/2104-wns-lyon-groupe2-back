@@ -7,3 +7,12 @@ export const GET_ALL_TAGS = gql`
     }
   }
 `
+
+export const GET_ALL_USERS = gql`
+  query Query {
+    allUsers {
+      firstname
+      lastname
+    }
+  }
+`

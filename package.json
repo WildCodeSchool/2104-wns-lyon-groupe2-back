@@ -10,7 +10,7 @@
     "dev": "ts-node-dev --poll --transpile-only --respawn  ./src/index.ts",
     "prod": "tsc && node ./built/src/index.js",
     "debug": "tsc && node --inspect ./src/index.js",
-    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest --runInBand"
   },
   "repository": {
     "type": "git",

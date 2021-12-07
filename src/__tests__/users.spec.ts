@@ -1,5 +1,4 @@
 import createServer from './serverCreation'
-import { GET_ALL_TAGS } from './query'
 import { REGISTER_USER } from './mutations'
 import MongoMemoryServer from 'mongodb-memory-server-core'
 import { config } from '../../env'
@@ -10,7 +9,7 @@ let mongo
 
 jest.setTimeout(20000)
 
-describe('testing our server configuration', () => {
+describe('testing user manipluation', () => {
   beforeAll(async () => {
     mongo = await MongoMemoryServer.create()
     config.db = mongo.getUri()
@@ -30,7 +29,7 @@ describe('testing our server configuration', () => {
     expect(result.data.getAllTags).toEqual([])
     expect(result.errors).toBe(undefined)
   }) */
-  it('test a mutation', async () => {
+  it('should returned the created user', async () => {
     const addUser = await apolloServer.executeOperation({
       query: REGISTER_USER,
       variables: {
