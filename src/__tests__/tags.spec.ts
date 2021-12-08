@@ -32,7 +32,18 @@ describe('testing tags manipulation', () => {
     })
     expect(result.data).toBeDefined()
     // the test below fail for now
-    expect(result.data.createTag).toContain('label')
+    const expected = [{ label: 'test' }]
+    expect(result.data.createTag).toEqual(expect.arrayContaining(expected))
+  })
+  it('should return an error', async () => {
+    const result = await apolloServer.executeOperation({
+      query: CREATE_TAGS,
+      variables: {
+        input: [{ toto: 'error' }],
+      },
+    })
+    expect(result.errors).toBeTruthy()
+    expect(result.data).toBeFalsy()
   })
   it('test a random query without data', async () => {
     const result = await apolloServer.executeOperation({
