@@ -8,6 +8,7 @@ const createServer = async (config) => {
     context: { user: { userType: 'ADMIN' } },
   })
   await server.listen(config.serverPortTest)
+  //don't remove the "useless" await below, it's not useless...
   await mongoose.connect(config.db as string, config.options)
   return server
 }
