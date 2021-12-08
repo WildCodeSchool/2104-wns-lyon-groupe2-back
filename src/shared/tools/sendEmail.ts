@@ -1,12 +1,11 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk')
-
 const defaultClient = SibApiV3Sdk.ApiClient.instance
 const apiKey = defaultClient.authentications['api-key']
 apiKey.apiKey = process.env.SENDINBLUE_API_KEY
 var apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
 var sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
 
-export const sendEmailToNewUser = (userData: any) => {
+export const sendEmailToNewUser = async (userData: any) => {
   const defaultClient = SibApiV3Sdk.ApiClient.instance
   const apiKey = defaultClient.authentications['api-key']
   apiKey.apiKey = process.env.SENDINBLUE_API_KEY
@@ -29,7 +28,7 @@ export const sendEmailToNewUser = (userData: any) => {
     },
   }
 
-  apiInstance
+  await apiInstance
     .sendTransacEmail(sendSmtpEmail)
     .then(function (data: any) {
       console.log('SendInBlue API called successfully')

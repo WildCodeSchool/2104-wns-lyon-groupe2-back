@@ -7,7 +7,6 @@ type Tags = {
 export const createTag = async (parent: any, args: any, context: any) => {
   const input: Tags = args.input
   const result = await TagsModel.insertMany(input)
-  console.log(result)
   return result
 }
 
