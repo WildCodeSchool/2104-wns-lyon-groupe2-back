@@ -76,7 +76,6 @@ interface Token {
   userId: string
   iat: number
 }
-// A voir pour le type assertions ligne 37 "as Token" bonne pratique ?
 export const getOneUser = async (args: any) => {
   const tokenDecrypted: Token = jwt.verify(args, env.jwt_secret) as Token
   const user = await UserModel.findById(tokenDecrypted.userId)

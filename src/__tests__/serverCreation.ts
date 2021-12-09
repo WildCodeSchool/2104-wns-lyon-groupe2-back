@@ -5,7 +5,9 @@ import mongoose from 'mongoose'
 const createServer = async (config) => {
   const server = new ApolloServer({
     schema,
-    context: { user: { userType: 'ADMIN' } },
+    context: () => {
+      return { user: { userType: 'ADMIN' } }
+    },
   })
   await server.listen(config.serverPortTest)
   //don't remove the "useless" await below, it's not useless...

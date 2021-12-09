@@ -10,7 +10,7 @@ const jwt_expires_base = process.env.JWT_EXPIRES_BASE || ''
 const jwt_expires_remember = process.env.JWT_EXPIRES_REMEMBER || ''
 const sendInBlueApiKey = process.env.SENDINBLUE_API_KEY || ''
 const serverPortTest = process.env.SERVER_PORT_TEST
-
+const tokenForTest = process.env.TOKEN_FOR_TEST
 export interface IConfig {
   db: string
   options: any
@@ -19,6 +19,7 @@ export interface IConfig {
   jwt_secret: string
   jwt_expires_base: string
   jwt_expires_remember: string
+  tokenForTest: string
 }
 
 export const config: IConfig = {
@@ -29,4 +30,5 @@ export const config: IConfig = {
   jwt_secret,
   jwt_expires_base,
   jwt_expires_remember,
+  tokenForTest,
 }
